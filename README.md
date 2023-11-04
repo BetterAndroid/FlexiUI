@@ -58,9 +58,9 @@ If you are interested in this project, you can click `Star` and `Watch` in the u
 ## Design Preview
 
 <div style="display: flex">
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/master/img-src/UI-Day.png?raw=true" width = "200" alt="SCREENSHOT"/>
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/master/img-src/UI-Night.png?raw=true" width = "200" alt="SCREENSHOT"/>
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/master/img-src/UI-Dark.png?raw=true" width = "200" alt="SCREENSHOT"/>
+  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Day.png?raw=true" width = "200" alt="SCREENSHOT"/>
+  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Night.png?raw=true" width = "200" alt="SCREENSHOT"/>
+  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Dark.png?raw=true" width = "200" alt="SCREENSHOT"/>
 </div>
 
 ## Star History
