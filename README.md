@@ -5,7 +5,7 @@
 [![Telegram](https://img.shields.io/badge/discussion%20dev-Telegram-blue.svg?logo=telegram)](https://t.me/HighCapable_Dev)
 
 | <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid](https://github.com/BetterAndroid) |
-|---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 
 This project belongs to the above-mentioned organization, **click the link above to follow this organization** and discover more good projects.
 
@@ -17,7 +17,7 @@ A flexible and useful UI component library, named after the word "flexible".
 
 The reason why this UI was born is that currently in `Jetpack Compose` or `Flutter`, except for the officially recommended Material Design, there is no UI framework that I am completely satisfied with that can be used out of the box.
 
-This UI will not depend on any Material components, using `Jetpack Compose` and `Flutter` as the basis, and is completely implemented by itself.
+This UI will not actually depend on any Material components, it uses `Jetpack Compose` and `Flutter` as the basis, uses and integrates some basic Material style elements (such as the familiar progress indicator and click ripple effect, etc), and is completely reconstruct a new UI.
 
 The advantage of being a multi-platform framework allows this UI to be presented on more platforms and can be quickly introduced and used by developers who are familiar with development languages.
 
@@ -25,13 +25,19 @@ The basic structure of the project on the Android native platform has been stabl
 
 There is a preview version [FlexiUI-Preview](https://github.com/BetterAndroid/FlexiUI-Preview) for the Android version. If you are interested, you can [join the Telegram group](https://t.me/BetterAndroid) Contact me to add viewing permissions.
 
-This UI is expected to support `Jetpack Compose`, `Jetpack Compose Multiplatform`, and `Flutter`.
+This UI is expected to support `Jetpack Compose`, and `Flutter`.
 
-Priority will be given to supporting `Jetpack Compose Multiplatform` and publishing it in the `compose` branch.
+Priority will be given to supporting `Jetpack Compose` and publishing it in the `compose` branch.
 
 The main branch `main` will only provide documentation. Please check other related branches for more information.
 
 If you are interested in this project, you can click `Star` and `Watch` in the upper right corner to follow this project.
+
+> **Note**
+> 
+> **Development of the Jetpack Compose part is ongoing.**
+>
+> You can click on the `main` branch in the upper left corner of this page and switch to the `compose-dev` branch to view the current work progress.
 
 ## 简体中文
 
@@ -39,7 +45,7 @@ If you are interested in this project, you can click `Star` and `Watch` in the u
 
 这套 UI 诞生的原因是因为目前在 `Jetpack Compose` 或 `Flutter` 中，除了官方推荐的 Material Design 之外，没有完全能够拿来开箱即用的任何一套令我十分满意的 UI 框架。
 
-这套 UI 将不依赖于任何 Material 组件，借助 `Jetpack Compose` 和 `Flutter` 作为基础，完全由自己实现。
+这套 UI 将不实际依赖于任何 Material 组件，借助 `Jetpack Compose` 和 `Flutter` 作为基础，使用并集成部分基础的 Material 风格元素 (例如我们熟悉的进度指示器和点按波纹效果等)，完全重构一套全新的 UI。
 
 作为多平台框架的优势使得这套 UI 能在更多的平台上呈现，并可被熟悉开发语言的开发者快速引入并使用。
 
@@ -47,13 +53,19 @@ If you are interested in this project, you can click `Star` and `Watch` in the u
 
 对于 Android 版本有一个预览版 [FlexiUI-Preview](https://github.com/BetterAndroid/FlexiUI-Preview)，如果你感兴趣，你可以 [加入 Telegram 群组](https://t.me/BetterAndroid) 联系我添加查看权限。
 
-这套 UI 预计将会支持 `Jetpack Compose`、`Jetpack Compose Multiplatform`、`Flutter`。
+这套 UI 预计将会支持 `Jetpack Compose`、`Flutter`。
 
-将会优先支持 `Jetpack Compose Multiplatform` 并发布在 `compose` 分支。
+将会优先支持 `Jetpack Compose` 并发布在 `compose` 分支。
 
 主分支 `main` 将仅做说明文档，届时更多内容请查看其它相关分支。
 
 如果你对此项目感兴趣，你可以点击右上角的 `Star` 和 `Watch` 来关注此项目。
+
+> **Note**
+> 
+> **Jetpack Compose 部分的开发正在进行。**
+>
+> 你可以在此页面左上角点击 `main` 分支，切换到 `compose-dev` 分支来查看当前的工作进度。
 
 ## Design Preview
 
