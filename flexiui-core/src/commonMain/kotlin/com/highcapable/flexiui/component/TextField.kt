@@ -321,7 +321,7 @@ object TextField {
     val style: TextStyle
         @Composable
         @ReadOnlyComposable
-        get() = LocalTextStyle.current.copy(color = LocalColors.current.textPrimary)
+        get() = LocalTextStyle.current.default(LocalColors.current.textPrimary)
 }
 
 @Composable

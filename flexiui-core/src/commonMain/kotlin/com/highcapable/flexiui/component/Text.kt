@@ -159,4 +159,8 @@ internal val DefaultTextStyle = DefaultTypography.primary
 
 @Composable
 @ReadOnlyComposable
-private fun defaultTextColor() = LocalTextStyle.current.color.orElse() ?: LocalColors.current.textPrimary
+internal fun TextStyle.default(color: Color) = copy(color = LocalTextStyle.current.color.orElse() ?: color)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultTextColor() = LocalTextStyle.current.default(LocalColors.current.textPrimary).color
