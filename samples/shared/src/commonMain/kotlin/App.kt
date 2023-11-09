@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -41,10 +42,12 @@ import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.Surface
+import com.highcapable.flexiui.component.Switch
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
 import com.highcapable.flexiui.greenColors
+import com.highcapable.flexiui.interaction.clickable
 import com.highcapable.flexiui.orangeColors
 import com.highcapable.flexiui.pinkColors
 import com.highcapable.flexiui.purpleColors
@@ -76,6 +79,16 @@ fun App() {
                             placeholder = { Text(text = "Type something here...") },
                             onValueChange = { input = it }
                         )
+                        Spacer(Modifier.padding(15.dp))
+                        Row {
+                            var checked by remember { mutableStateOf(true) }
+                            Text(
+                                text = "Switch Status: ${if (checked) "Checked" else "Unchecked"}",
+                                modifier = Modifier.width(200.dp).clickable { checked = !checked }
+                            )
+                            Spacer(Modifier.padding(10.dp))
+                            Switch(checked = checked, onCheckedChange = { checked = it })
+                        }
                     }
                 }
                 Spacer(Modifier.padding(10.dp))
