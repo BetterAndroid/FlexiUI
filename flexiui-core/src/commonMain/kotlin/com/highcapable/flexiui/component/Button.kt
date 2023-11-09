@@ -25,14 +25,11 @@ package com.highcapable.flexiui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -49,12 +46,14 @@ import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.interaction.rippleToggleable
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
 
 @Immutable
 data class ButtonColors(
-    val fillColor: Color,
+    val rippleColor: Color,
     val contentColor: Color,
     val backgroundColor: Color
 )
@@ -78,12 +77,12 @@ fun Button(
     content: @Composable RowScope.() -> Unit
 ) {
     var sModifier = modifier.clip(shape = shape)
-    sModifier = if (enabled) sModifier.clickable(
-        onClick = onClick,
+    sModifier = if (enabled) sModifier.rippleClickable(
         enabled = enabled,
         role = Role.Button,
-        indication = rememberRipple(color = colors.fillColor),
-        interactionSource = interactionSource
+        rippleColor = colors.rippleColor,
+        interactionSource = interactionSource,
+        onClick = onClick
     ) else sModifier.alpha(0.5f)
     sModifier = sModifier.background(color = colors.backgroundColor, shape = shape)
     sModifier = sModifier.borderOrNot(border = border, shape = shape)
@@ -117,18 +116,19 @@ fun Button(
 fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    fillColor: Color = Button.colors.fillColor,
+    rippleColor: Color = Button.colors.rippleColor,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier.clickable(
-            onClick = onClick,
+        modifier = modifier.rippleClickable(
+            rippleColor = rippleColor,
+            bounded = false,
             enabled = enabled,
             role = Role.Button,
             interactionSource = interactionSource,
-            indication = rememberRipple(bounded = false, color = fillColor)
+            onClick = onClick
         ),
         contentAlignment = Alignment.Center,
     ) { content() }
@@ -139,19 +139,20 @@ fun IconToggleButton(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    fillColor: Color = Button.colors.fillColor,
+    rippleColor: Color = Button.colors.rippleColor,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier.toggleable(
+        modifier = modifier.rippleToggleable(
             value = checked,
+            rippleColor = rippleColor,
+            bounded = false,
             onValueChange = onCheckedChange,
             enabled = enabled,
             role = Role.Checkbox,
-            interactionSource = interactionSource,
-            indication = rememberRipple(bounded = false, color = fillColor)
+            interactionSource = interactionSource
         ),
         contentAlignment = Alignment.Center
     ) { content() }
@@ -214,7 +215,7 @@ private fun defaultButtonShape() = LocalShapes.current.tertiary
 @Composable
 @ReadOnlyComposable
 private fun defaultButtonInBoxColors() = ButtonColors(
-    fillColor = LocalColors.current.themeSecondary,
+    rippleColor = LocalColors.current.themeSecondary,
     contentColor = LocalColors.current.textPrimary,
     backgroundColor = LocalColors.current.foregroundSecondary
 )
@@ -222,7 +223,7 @@ private fun defaultButtonInBoxColors() = ButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultButtonOutBoxColors() = ButtonColors(
-    fillColor = LocalColors.current.foregroundSecondary,
+    rippleColor = LocalColors.current.foregroundSecondary,
     contentColor = Color.White,
     backgroundColor = LocalColors.current.themePrimary
 )

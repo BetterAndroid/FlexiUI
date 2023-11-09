@@ -27,7 +27,6 @@ import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.ContextMenuRepresentation
 import androidx.compose.foundation.ContextMenuState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -40,7 +39,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -76,13 +74,13 @@ import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.utils.orElse
 import java.awt.event.KeyEvent
 
 @Immutable
 data class ContextMenuStyle(
     val backgroundColor: Color,
-    val fillColor: Color,
     val textColor: Color,
     val padding: Dp,
     val shadowSize: Dp,
@@ -130,7 +128,6 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
                 ) {
                     items().forEach { item ->
                         MenuItemContent(
-                            fillColor = style.fillColor,
                             shape = shape,
                             onClick = {
                                 state.status = ContextMenuState.Status.Closed
@@ -146,7 +143,6 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
 
 @Composable
 private fun MenuItemContent(
-    fillColor: Color,
     shape: Shape,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
@@ -155,9 +151,8 @@ private fun MenuItemContent(
     Row(
         modifier = Modifier
             .clip(shape)
-            .clickable(
+            .rippleClickable(
                 onClick = onClick,
-                indication = rememberRipple(color = fillColor),
                 interactionSource = remember { MutableInteractionSource() }
             )
             .onHover { hovered = it }
@@ -200,7 +195,6 @@ object DesktopContextMenu {
 val LocalContextMenuStyle = compositionLocalOf {
     ContextMenuStyle(
         backgroundColor = Color.Unspecified,
-        fillColor = Color.Unspecified,
         textColor = Color.Unspecified,
         padding = Dp.Unspecified,
         shadowSize = Dp.Unspecified,
@@ -212,7 +206,6 @@ val LocalContextMenuStyle = compositionLocalOf {
 @ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
     backgroundColor = LocalContextMenuStyle.current.backgroundColor.orElse() ?: LocalColors.current.foregroundPrimary,
-    fillColor = LocalContextMenuStyle.current.fillColor.orElse() ?: LocalColors.current.themeSecondary,
     textColor = LocalContextMenuStyle.current.textColor.orElse() ?: LocalColors.current.textPrimary,
     padding = LocalContextMenuStyle.current.padding.orElse() ?: LocalSizes.current.spacingTertiary,
     shadowSize = LocalContextMenuStyle.current.shadowSize.orElse() ?: LocalSizes.current.zoomSizeTertiary,
