@@ -42,7 +42,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,21 +76,26 @@ import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.utils.orElse
 import java.awt.event.KeyEvent
 
-internal class FlexiContextMenuRepresentation(
-    private val backgroundColor: Color,
-    private val fillColor: Color,
-    private val textColor: Color,
-    private val padding: Dp,
-    private val shadowSize: Dp,
-    private val shape: Shape
-) : ContextMenuRepresentation {
+@Immutable
+data class ContextMenuStyle(
+    val backgroundColor: Color,
+    val fillColor: Color,
+    val textColor: Color,
+    val padding: Dp,
+    val shadowSize: Dp,
+    val shape: Shape?
+)
+
+internal class DesktopContextMenuRepresentation(private val style: ContextMenuStyle) : ContextMenuRepresentation {
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
         val status = state.status
         if (status is ContextMenuState.Status.Open) {
+            val shape = style.shape ?: return
             var focusManager: FocusManager? by mutableStateOf(null)
             var inputModeManager: InputModeManager? by mutableStateOf(null)
             Popup(
@@ -115,15 +122,15 @@ internal class FlexiContextMenuRepresentation(
                 inputModeManager = LocalInputModeManager.current
                 Column(
                     modifier = Modifier
-                        .shadow(elevation = shadowSize, shape = shape)
-                        .background(color = backgroundColor, shape = shape)
-                        .padding(padding)
+                        .shadow(elevation = style.shadowSize, shape = shape)
+                        .background(color = style.backgroundColor, shape = shape)
+                        .padding(style.padding)
                         .width(IntrinsicSize.Max)
                         .verticalScroll(rememberScrollState())
                 ) {
                     items().forEach { item ->
                         MenuItemContent(
-                            fillColor = fillColor,
+                            fillColor = style.fillColor,
                             shape = shape,
                             onClick = {
                                 state.status = ContextMenuState.Status.Closed
@@ -183,13 +190,31 @@ private fun Modifier.onHover(onHover: (Boolean) -> Unit) = pointerInput(Unit) {
     }
 }
 
+object DesktopContextMenu {
+    val style: ContextMenuStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalContextMenuStyle.current
+}
+
+val LocalContextMenuStyle = compositionLocalOf {
+    ContextMenuStyle(
+        backgroundColor = Color.Unspecified,
+        fillColor = Color.Unspecified,
+        textColor = Color.Unspecified,
+        padding = Dp.Unspecified,
+        shadowSize = Dp.Unspecified,
+        shape = null
+    )
+}
+
 @Composable
 @ReadOnlyComposable
-internal fun defaultFlexiContextMenuRepresentation() = FlexiContextMenuRepresentation(
-    backgroundColor = LocalColors.current.foregroundPrimary,
-    fillColor = LocalColors.current.themeSecondary,
-    textColor = LocalColors.current.textPrimary,
-    padding = LocalSizes.current.spacingTertiary,
-    shadowSize = LocalSizes.current.zoomSizeTertiary,
-    shape = LocalShapes.current.primary
+internal fun defaultContextMenuStyle() = ContextMenuStyle(
+    backgroundColor = LocalContextMenuStyle.current.backgroundColor.orElse() ?: LocalColors.current.foregroundPrimary,
+    fillColor = LocalContextMenuStyle.current.fillColor.orElse() ?: LocalColors.current.themeSecondary,
+    textColor = LocalContextMenuStyle.current.textColor.orElse() ?: LocalColors.current.textPrimary,
+    padding = LocalContextMenuStyle.current.padding.orElse() ?: LocalSizes.current.spacingTertiary,
+    shadowSize = LocalContextMenuStyle.current.shadowSize.orElse() ?: LocalSizes.current.zoomSizeTertiary,
+    shape = LocalContextMenuStyle.current.shape ?: LocalShapes.current.primary
 )
