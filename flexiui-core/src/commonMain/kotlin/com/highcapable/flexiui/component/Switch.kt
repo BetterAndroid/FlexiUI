@@ -73,6 +73,7 @@ data class SwitchColors(
     val trackActive: Color
 )
 
+@Immutable
 data class SwitchStyle(
     val thumbDiameter: Dp,
     val thumbGain: Float,
