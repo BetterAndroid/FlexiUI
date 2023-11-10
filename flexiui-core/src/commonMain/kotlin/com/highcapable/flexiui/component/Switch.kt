@@ -119,8 +119,8 @@ fun Switch(
 
     @Composable
     fun Track(content: @Composable RowScope.() -> Unit) {
-        val cModifier = if (enabled)
-            Modifier.clickable(
+        Row(
+            modifier = Modifier.clickable(
                 interactionSource = interactionSource,
                 enabled = enabled,
                 role = Role.Switch
@@ -128,11 +128,7 @@ fun Switch(
                 distance = maxOffset
                 offsetX = if (checked) 0f else maxOffset
                 onCheckedChange(!checked)
-            }
-        else Modifier.alpha(0.5f)
-        Row(
-            modifier = cModifier
-                .background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
+            }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrNot(style.trackBorder, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
                 .padding(start = padding, end = padding),

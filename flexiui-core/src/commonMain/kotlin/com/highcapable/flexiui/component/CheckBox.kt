@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
@@ -94,14 +95,12 @@ fun CheckBox(
     val animatedContentLayer by animateFloatAsState(if (checked) 1f else 0f)
     val sModifier = if (enabled) modifier else modifier.alpha(0.5f)
     Row(modifier = sModifier, verticalAlignment = Alignment.CenterVertically) {
-        val cModifier = if (enabled)
-            Modifier.clickable(
+        Box(
+            modifier = Modifier.clickable(
                 enabled = enabled,
                 interactionSource = interactionSource
             ) { onCheckedChange(!checked) }
-        else Modifier.alpha(0.5f)
-        Box(
-            modifier = cModifier.size(style.strokeSize)
+                .size(style.strokeSize)
                 .scale(animatedStrokeScale)
                 .background(animatedColor, style.shape)
                 .borderOrNot(style.border, style.shape),
