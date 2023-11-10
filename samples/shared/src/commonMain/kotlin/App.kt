@@ -41,13 +41,14 @@ import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.Button
+import com.highcapable.flexiui.component.CheckBox
+import com.highcapable.flexiui.component.RadioButton
 import com.highcapable.flexiui.component.Surface
 import com.highcapable.flexiui.component.Switch
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
 import com.highcapable.flexiui.greenColors
-import com.highcapable.flexiui.interaction.clickable
 import com.highcapable.flexiui.orangeColors
 import com.highcapable.flexiui.pinkColors
 import com.highcapable.flexiui.purpleColors
@@ -80,14 +81,30 @@ fun App() {
                             onValueChange = { input = it }
                         )
                         Spacer(Modifier.padding(15.dp))
+                        var switchChecked by remember { mutableStateOf(true) }
+                        Switch(checked = switchChecked, onCheckedChange = { switchChecked = it }) {
+                            Text(modifier = Modifier.width(200.dp), text = "Switch Status: ${if (switchChecked) "Checked" else "Unchecked"}")
+                        }
+                        Spacer(Modifier.padding(15.dp))
+                        var boxChecked by remember { mutableStateOf(true) }
+                        CheckBox(checked = boxChecked, onCheckedChange = { boxChecked = it }) {
+                            Text(modifier = Modifier.width(210.dp), text = "CheckBox Status: ${if (boxChecked) "Checked" else "Unchecked"}")
+                        }
+                        Spacer(Modifier.padding(15.dp))
                         Row {
-                            var checked by remember { mutableStateOf(true) }
-                            Text(
-                                text = "Switch Status: ${if (checked) "Checked" else "Unchecked"}",
-                                modifier = Modifier.width(200.dp).clickable { checked = !checked }
-                            )
-                            Spacer(Modifier.padding(10.dp))
-                            Switch(checked = checked, onCheckedChange = { checked = it })
+                            var option1Seleted by remember { mutableStateOf(true) }
+                            var option2Seleted by remember { mutableStateOf(false) }
+                            fun switchOption(option1: Boolean) {
+                                option1Seleted = option1
+                                option2Seleted = !option1
+                            }
+                            RadioButton(option1Seleted, onClick = { switchOption(option1 = true) }) {
+                                Text(text = "Option 1")
+                            }
+                            Spacer(Modifier.padding(15.dp))
+                            RadioButton(option2Seleted, onClick = { switchOption(option1 = false) }) {
+                                Text(text = "Option 2")
+                            }
                         }
                     }
                 }
