@@ -260,7 +260,7 @@ private fun TextFieldDecorationBox(
             Box {
                 Box(modifier = Modifier.alpha(placeholderAlpha)) {
                     CompositionLocalProvider(
-                        LocalTextStyle provides LocalTextStyle.current.copy(color = LocalColors.current.textSecondary)
+                        LocalTextStyle provides LocalTextStyle.current.default(LocalColors.current.textSecondary)
                     ) { placeholder() }
                 }
                 innerTextField()
