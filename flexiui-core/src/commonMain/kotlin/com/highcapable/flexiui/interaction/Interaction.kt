@@ -25,16 +25,25 @@ package com.highcapable.flexiui.interaction
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
 import androidx.compose.foundation.clickable as foundationClickable
+import androidx.compose.foundation.selection.selectable as foundationSelectable
 import androidx.compose.foundation.selection.toggleable as foundationToggleable
+import androidx.compose.material.ripple.rememberRipple as materialRememberRipple
+
+@Composable
+fun rememberRipple(
+    bounded: Boolean = true,
+    radius: Dp = Dp.Unspecified,
+    color: Color = Interaction.rippleColor
+) = materialRememberRipple(bounded, radius, color)
 
 @Composable
 fun Modifier.clickable(
@@ -55,6 +64,16 @@ fun Modifier.toggleable(
     role: Role? = null,
     onValueChange: (Boolean) -> Unit
 ) = foundationToggleable(value, interactionSource, indication, enabled, role, onValueChange)
+
+@Composable
+fun Modifier.selectable(
+    selected: Boolean,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    enabled: Boolean = true,
+    role: Role? = null,
+    onClick: () -> Unit
+) = foundationSelectable(selected, interactionSource, indication, enabled, role, onClick)
 
 @Composable
 fun Modifier.rippleClickable(
@@ -90,6 +109,24 @@ fun Modifier.rippleToggleable(
     enabled = enabled,
     role = role,
     onValueChange = onValueChange
+)
+
+@Composable
+fun Modifier.rippleSelectable(
+    selected: Boolean,
+    rippleColor: Color = Interaction.rippleColor,
+    bounded: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    enabled: Boolean = true,
+    role: Role? = null,
+    onClick: () -> Unit
+) = selectable(
+    selected = selected,
+    interactionSource = interactionSource,
+    indication = rememberRipple(bounded = bounded, color = rippleColor),
+    enabled = enabled,
+    role = role,
+    onClick = onClick
 )
 
 object Interaction {
