@@ -88,9 +88,9 @@ fun CheckBox(
 ) {
     val hovered by interactionSource.collectIsHoveredAsState()
     val pressed by interactionSource.collectIsPressedAsState()
-    val animatedStrokeScale by animateFloatAsState(if (pressed) 0.9f else 1f)
+    val animatedStrokeScale by animateFloatAsState(if (pressed) style.pressedGain else 1f)
     val animatedColor by animateColorAsState(if (checked) colors.activeColor else colors.inactiveColor)
-    val animatedContentScale by animateFloatAsState(if (hovered) 1.1f else 1f)
+    val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentAlpha by animateFloatAsState(if (checked) 1f else 0f)
     val animatedContentLayer by animateFloatAsState(if (checked) 1f else 0f)
     val sModifier = if (enabled) modifier else modifier.alpha(0.5f)
