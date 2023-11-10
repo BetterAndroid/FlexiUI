@@ -97,8 +97,9 @@ fun CheckBox(
     Row(modifier = sModifier, verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier.clickable(
+                interactionSource = interactionSource,
                 enabled = enabled,
-                interactionSource = interactionSource
+                role = Role.Checkbox
             ) { onCheckedChange(!checked) }
                 .size(style.strokeSize)
                 .scale(animatedStrokeScale)
