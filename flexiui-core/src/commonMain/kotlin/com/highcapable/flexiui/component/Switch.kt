@@ -95,7 +95,9 @@ fun Switch(
     colors: SwitchColors = Switch.colors,
     style: SwitchStyle = Switch.style,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    contentSpacing: Dp = Switch.contentSpacing,
+    content: @Composable () -> Unit = {}
 ) {
     val maxOffset = with(LocalDensity.current) { (style.trackWidth - style.thumbDiameter - padding * 2).toPx() }
     val halfWidth = maxOffset / 2
@@ -113,11 +115,12 @@ fun Switch(
     updateTrackColor()
     val animatedTrackColor by animateColorAsState(trackColor)
     val efficientDragging = dragging && distance > 5
+    val sModifier = if (enabled) modifier else modifier.alpha(0.5f)
 
     @Composable
     fun Track(content: @Composable RowScope.() -> Unit) {
-        val sModifier = if (enabled)
-            modifier.clickable(
+        val cModifier = if (enabled)
+            Modifier.clickable(
                 interactionSource = interactionSource,
                 enabled = enabled,
                 role = Role.Switch
@@ -126,9 +129,9 @@ fun Switch(
                 offsetX = if (checked) 0f else maxOffset
                 onCheckedChange(!checked)
             }
-        else modifier.alpha(0.5f)
+        else Modifier.alpha(0.5f)
         Row(
-            modifier = sModifier
+            modifier = cModifier
                 .background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrNot(style.trackBorder, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
@@ -171,7 +174,13 @@ fun Switch(
                 )
         )
     }
-    Track { Thumb() }
+    Row(modifier = sModifier) {
+        Box(
+            modifier = Modifier.padding(end = contentSpacing)
+                .clickable(enabled = enabled) { onCheckedChange(!checked) }
+        ) { content() }
+        Track { Thumb() }
+    }
 }
 
 object Switch {
@@ -187,6 +196,10 @@ object Switch {
         @Composable
         @ReadOnlyComposable
         get() = defaultSwitchStyle()
+    val contentSpacing: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultSwitchContentSpacing()
 }
 
 @Composable
@@ -214,6 +227,10 @@ private fun defaultSwitchStyle() = SwitchStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultSwitchBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultSwitchContentSpacing() = LocalSizes.current.spacingSecondary
 
 private val DefaultSwitchPadding = 4.dp
 
