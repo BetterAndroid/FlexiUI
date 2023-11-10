@@ -53,9 +53,9 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.clickable
-import com.highcapable.flexiui.resources.IconRes
+import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.icon.CheckMark
 import com.highcapable.flexiui.utils.borderOrNot
-import org.jetbrains.compose.resources.painterResource
 
 @Immutable
 data class CheckBoxColors(
@@ -116,7 +116,7 @@ fun CheckBox(
                         scaleX = animatedContentLayer,
                         scaleY = animatedContentLayer
                     ),
-                painter = painterResource(IconRes.CHECKMARK),
+                imageVector = Icons.CheckMark,
                 tint = colors.contentColor
             )
         }

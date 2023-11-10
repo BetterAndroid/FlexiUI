@@ -32,8 +32,6 @@ kotlin {
                 implementation(compose.foundation)
                 // TODO: We need to remove this and replace with "material-ripple"
                 implementation(compose.material)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
             }
         }
         val androidMain by getting

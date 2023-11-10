@@ -23,7 +23,4 @@
 
 package com.highcapable.flexiui.resources
 
-object IconRes {
-
-    const val CHECKMARK = "ic-checkmark.xml"
-}
+object Icons
