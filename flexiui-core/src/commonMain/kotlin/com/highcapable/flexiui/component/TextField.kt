@@ -222,6 +222,7 @@ private fun TextFieldDecorationBox(
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
+    val animatedPlaceholder by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
     val animatedBorderColor by animateColorAsState(when {
         focused || hovered -> style.borderActive.solidColor
         else -> style.borderInactive.solidColor
@@ -243,11 +244,10 @@ private fun TextFieldDecorationBox(
             interactionSource = interactionSource
         )
     ) {
-        val placeholderAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
         Row {
             header()
             Box {
-                Box(modifier = Modifier.alpha(placeholderAlpha)) {
+                Box(modifier = Modifier.alpha(animatedPlaceholder)) {
                     CompositionLocalProvider(
                         LocalTextStyle provides LocalTextStyle.current.default(LocalColors.current.textSecondary)
                     ) { placeholder() }
