@@ -58,25 +58,30 @@ data class ButtonColors(
     val backgroundColor: Color
 )
 
+@Immutable
+data class ButtonStyle(
+    val padding: Dp,
+    val topPadding: Dp,
+    val startPadding: Dp,
+    val bottomPadding: Dp,
+    val endPadding: Dp,
+    val shape: Shape,
+    val border: BorderStroke
+)
+
 @Composable
 fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    padding: Dp = Dp.Unspecified,
-    topPadding: Dp = Button.topPadding,
-    startPadding: Dp = Button.startPadding,
-    bottomPadding: Dp = Button.bottomPadding,
-    endPadding: Dp = Button.endPadding,
-    shape: Shape = Button.shape,
-    border: BorderStroke = Button.border,
     colors: ButtonColors = Button.colors,
+    style: ButtonStyle = Button.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable () -> Unit = {},
     footer: @Composable () -> Unit = {},
     content: @Composable RowScope.() -> Unit
 ) {
-    var sModifier = modifier.clip(shape = shape)
+    var sModifier = modifier.clip(style.shape)
     sModifier = if (enabled) sModifier.rippleClickable(
         enabled = enabled,
         role = Role.Button,
@@ -84,8 +89,8 @@ fun Button(
         interactionSource = interactionSource,
         onClick = onClick
     ) else sModifier.alpha(0.5f)
-    sModifier = sModifier.background(color = colors.backgroundColor, shape = shape)
-    sModifier = sModifier.borderOrNot(border = border, shape = shape)
+    sModifier = sModifier.background(colors.backgroundColor, style.shape)
+    sModifier = sModifier.borderOrNot(style.border, style.shape)
     val localTextStyle = LocalTextStyle.current.copy(color = colors.contentColor)
     val localProgressIndicatorColors = LocalProgressIndicatorColors.current.copy(
         foregroundColor = colors.contentColor,
@@ -98,10 +103,10 @@ fun Button(
         ) {
             Row(
                 Modifier.padding(
-                    top = topPadding.orElse() ?: padding,
-                    start = startPadding.orElse() ?: padding,
-                    bottom = bottomPadding.orElse() ?: padding,
-                    end = endPadding.orElse() ?: padding
+                    top = style.topPadding.orElse() ?: style.padding,
+                    start = style.startPadding.orElse() ?: style.padding,
+                    bottom = style.bottomPadding.orElse() ?: style.padding,
+                    end = style.endPadding.orElse() ?: style.padding
                 )
             ) {
                 header()
@@ -159,33 +164,6 @@ fun IconToggleButton(
 }
 
 object Button {
-    val topPadding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defalutButtonPaddings()[0]
-    val startPadding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defalutButtonPaddings()[1]
-    val bottomPadding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defalutButtonPaddings()[2]
-    val endPadding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defalutButtonPaddings()[3]
-    val shape: Shape
-        @Composable
-        @ReadOnlyComposable
-        get() = when (LocalInAreaBox.current) {
-            true -> LocalAreaBoxShape.current
-            else -> defaultButtonShape()
-        }
-    val border: BorderStroke
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultButtonBorder()
     val colors: ButtonColors
         @Composable
         @ReadOnlyComposable
@@ -193,24 +171,11 @@ object Button {
             true -> defaultButtonInBoxColors()
             else -> defaultButtonOutBoxColors()
         }
+    val style: ButtonStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultButtonStyle()
 }
-
-@Composable
-@ReadOnlyComposable
-private fun defalutButtonPaddings() = arrayOf(
-    LocalSizes.current.spacingSecondary,
-    LocalSizes.current.spacingPrimary,
-    LocalSizes.current.spacingSecondary,
-    LocalSizes.current.spacingPrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultButtonBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultButtonShape() = LocalShapes.current.tertiary
 
 @Composable
 @ReadOnlyComposable
@@ -227,3 +192,22 @@ private fun defaultButtonOutBoxColors() = ButtonColors(
     contentColor = Color.White,
     backgroundColor = LocalColors.current.themePrimary
 )
+
+@Composable
+@ReadOnlyComposable
+private fun defaultButtonStyle() = ButtonStyle(
+    padding = Dp.Unspecified,
+    topPadding = LocalSizes.current.spacingSecondary,
+    startPadding = LocalSizes.current.spacingPrimary,
+    bottomPadding = LocalSizes.current.spacingSecondary,
+    endPadding = LocalSizes.current.spacingPrimary,
+    shape = when (LocalInAreaBox.current) {
+        true -> LocalAreaBoxShape.current
+        else -> LocalShapes.current.tertiary
+    },
+    border = defaultButtonBorder()
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultButtonBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)

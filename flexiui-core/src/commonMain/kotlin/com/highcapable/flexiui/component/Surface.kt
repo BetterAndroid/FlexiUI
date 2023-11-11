@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,64 +40,68 @@ import com.highcapable.flexiui.utils.orElse
 
 // TODO: Linkage BetterAndroid SafeArea (SystemBarsController)
 
+@Immutable
+data class SurfaceColors(
+    val contentColor: Color,
+    val backgroundColor: Color
+)
+
+@Immutable
+data class SurfaceStyle(
+    val padding: Dp,
+    val topPadding: Dp,
+    val startPadding: Dp,
+    val bottomPadding: Dp,
+    val endPadding: Dp
+)
+
 @Composable
 fun Surface(
     modifier: Modifier = Modifier,
-    padding: Dp = Surface.padding,
-    topPadding: Dp = Dp.Unspecified,
-    startPadding: Dp = Dp.Unspecified,
-    bottomPadding: Dp = Dp.Unspecified,
-    endPadding: Dp = Dp.Unspecified,
-    color: Color = Surface.color,
-    contentColor: Color = Surface.contentColor,
+    colors: SurfaceColors = Surface.colors,
+    style: SurfaceStyle = Surface.style,
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
         LocalColors provides LocalColors.current.copy(
-            backgroundPrimary = color,
-            textPrimary = contentColor
+            backgroundPrimary = colors.backgroundColor,
+            textPrimary = colors.contentColor
         )
-    ) { Box(modifier.surface(padding, topPadding, startPadding, bottomPadding, endPadding, color), content = content) }
+    ) { Box(modifier.surface(colors, style), content = content) }
 }
 
-private fun Modifier.surface(
-    padding: Dp,
-    topPadding: Dp,
-    startPadding: Dp,
-    bottomPadding: Dp,
-    endPadding: Dp,
-    color: Color
-) = background(color = color)
-    .padding(
-        top = topPadding.orElse() ?: padding,
-        start = startPadding.orElse() ?: padding,
-        bottom = bottomPadding.orElse() ?: padding,
-        end = endPadding.orElse() ?: padding
+private fun Modifier.surface(colors: SurfaceColors, style: SurfaceStyle) =
+    background(colors.backgroundColor).padding(
+        top = style.topPadding.orElse() ?: style.padding,
+        start = style.startPadding.orElse() ?: style.padding,
+        bottom = style.bottomPadding.orElse() ?: style.padding,
+        end = style.endPadding.orElse() ?: style.padding
     )
 
 object Surface {
-    val color: Color
+    val colors: SurfaceColors
         @Composable
         @ReadOnlyComposable
-        get() = defaultSurfaceColor()
-    val contentColor: Color
+        get() = defaultSurfaceColors()
+    val style: SurfaceStyle
         @Composable
         @ReadOnlyComposable
-        get() = defaultSurfaceContentColor()
-    val padding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSurfacePadding()
+        get() = defaultSurfaceStyle()
 }
 
 @Composable
 @ReadOnlyComposable
-private fun defaultSurfacePadding() = LocalSizes.current.spacingPrimary
+private fun defaultSurfaceColors() = SurfaceColors(
+    contentColor = LocalColors.current.textPrimary,
+    backgroundColor = LocalColors.current.backgroundPrimary
+)
 
 @Composable
 @ReadOnlyComposable
-private fun defaultSurfaceColor() = LocalColors.current.backgroundPrimary
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSurfaceContentColor() = LocalColors.current.textPrimary
+private fun defaultSurfaceStyle() = SurfaceStyle(
+    padding = LocalSizes.current.spacingPrimary,
+    topPadding = Dp.Unspecified,
+    startPadding = Dp.Unspecified,
+    bottomPadding = Dp.Unspecified,
+    endPadding = Dp.Unspecified
+)

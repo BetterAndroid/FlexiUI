@@ -70,20 +70,25 @@ data class TextFieldColors(
     val backgroundColor: Color
 )
 
+@Immutable
+data class TextFieldStyle(
+    val padding: Dp,
+    val topPadding: Dp,
+    val startPadding: Dp,
+    val bottomPadding: Dp,
+    val endPadding: Dp,
+    val shape: Shape,
+    val borderInactive: BorderStroke,
+    val borderActive: BorderStroke
+)
+
 @Composable
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    padding: Dp = TextField.padding,
-    topPadding: Dp = Dp.Unspecified,
-    startPadding: Dp = Dp.Unspecified,
-    bottomPadding: Dp = Dp.Unspecified,
-    endPadding: Dp = Dp.Unspecified,
-    shape: Shape = TextField.shape,
-    borderInactive: BorderStroke = TextField.borderInactive,
-    borderActive: BorderStroke = TextField.borderActive,
     colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -97,7 +102,7 @@ fun TextField(
     header: @Composable () -> Unit = {},
     placeholder: @Composable () -> Unit = {},
     footer: @Composable () -> Unit = {},
-    style: TextStyle = TextField.style
+    textStyle: TextStyle = TextField.textStyle
 ) {
     TextFieldStyle(colors) {
         BasicTextField(
@@ -106,7 +111,7 @@ fun TextField(
             modifier = modifier,
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = style,
+            textStyle = textStyle,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             singleLine = singleLine,
@@ -120,15 +125,8 @@ fun TextField(
                 TextFieldDecorationBox(
                     value = value,
                     modifier = modifier,
-                    padding = padding,
-                    topPadding = topPadding,
-                    startPadding = startPadding,
-                    bottomPadding = bottomPadding,
-                    endPadding = endPadding,
-                    shape = shape,
-                    borderInactive = borderInactive,
-                    borderActive = borderActive,
                     colors = colors,
+                    style = style,
                     enabled = enabled,
                     interactionSource = interactionSource,
                     header = header,
@@ -146,15 +144,8 @@ fun TextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
-    padding: Dp = TextField.padding,
-    topPadding: Dp = Dp.Unspecified,
-    startPadding: Dp = Dp.Unspecified,
-    bottomPadding: Dp = Dp.Unspecified,
-    endPadding: Dp = Dp.Unspecified,
-    shape: Shape = TextField.shape,
-    borderInactive: BorderStroke = TextField.borderInactive,
-    borderActive: BorderStroke = TextField.borderActive,
     colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -168,7 +159,7 @@ fun TextField(
     header: @Composable () -> Unit = {},
     placeholder: @Composable () -> Unit = {},
     footer: @Composable () -> Unit = {},
-    style: TextStyle = TextField.style
+    textStyle: TextStyle = TextField.textStyle
 ) {
     TextFieldStyle(colors) {
         BasicTextField(
@@ -177,7 +168,7 @@ fun TextField(
             modifier = modifier,
             enabled = enabled,
             readOnly = readOnly,
-            textStyle = style,
+            textStyle = textStyle,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             singleLine = singleLine,
@@ -191,15 +182,8 @@ fun TextField(
                 TextFieldDecorationBox(
                     value = value.text,
                     modifier = modifier,
-                    padding = padding,
-                    topPadding = topPadding,
-                    startPadding = startPadding,
-                    bottomPadding = bottomPadding,
-                    endPadding = endPadding,
-                    shape = shape,
-                    borderInactive = borderInactive,
-                    borderActive = borderActive,
                     colors = colors,
+                    style = style,
                     enabled = enabled,
                     interactionSource = interactionSource,
                     header = header,
@@ -223,15 +207,8 @@ private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> U
 private fun TextFieldDecorationBox(
     value: String,
     modifier: Modifier,
-    padding: Dp,
-    topPadding: Dp,
-    startPadding: Dp,
-    bottomPadding: Dp,
-    endPadding: Dp,
-    shape: Shape,
-    borderInactive: BorderStroke,
-    borderActive: BorderStroke,
     colors: TextFieldColors,
+    style: TextFieldStyle,
     enabled: Boolean,
     interactionSource: MutableInteractionSource,
     header: @Composable () -> Unit,
@@ -240,17 +217,12 @@ private fun TextFieldDecorationBox(
     innerTextField: @Composable () -> Unit
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
-    val border = if (focused) borderActive else borderInactive
+    val border = if (focused) style.borderActive else style.borderInactive
     Box(
         modifier.textField(
-            padding = padding,
-            topPadding = topPadding,
-            startPadding = startPadding,
-            bottomPadding = bottomPadding,
-            endPadding = endPadding,
-            shape = shape,
-            border = border,
             colors = colors,
+            style = style,
+            border = border,
             enabled = enabled
         )
     ) {
@@ -271,54 +243,34 @@ private fun TextFieldDecorationBox(
 }
 
 private fun Modifier.textField(
-    padding: Dp,
-    topPadding: Dp,
-    startPadding: Dp,
-    bottomPadding: Dp,
-    endPadding: Dp,
-    shape: Shape,
-    border: BorderStroke,
     colors: TextFieldColors,
+    style: TextFieldStyle,
+    border: BorderStroke,
     enabled: Boolean
 ): Modifier {
-    var sModifier = clip(shape = shape)
-        .background(color = colors.backgroundColor, shape = shape)
-        .borderOrNot(border, shape)
+    var sModifier = clip(style.shape)
+        .background(colors.backgroundColor, style.shape)
+        .borderOrNot(border, style.shape)
         .padding(
-            top = topPadding.orElse() ?: padding,
-            start = startPadding.orElse() ?: padding,
-            bottom = bottomPadding.orElse() ?: padding,
-            end = endPadding.orElse() ?: padding
+            top = style.topPadding.orElse() ?: style.padding,
+            start = style.startPadding.orElse() ?: style.padding,
+            bottom = style.bottomPadding.orElse() ?: style.padding,
+            end = style.endPadding.orElse() ?: style.padding
         )
     if (!enabled) sModifier = sModifier.alpha(0.5f)
     return sModifier
 }
 
 object TextField {
-    val padding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalSizes.current.spacingSecondary
-    val shape: Shape
-        @Composable
-        @ReadOnlyComposable
-        get() = when (LocalInAreaBox.current) {
-            true -> LocalAreaBoxShape.current
-            else -> LocalShapes.current.primary
-        }
-    val borderInactive: BorderStroke
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTextFieldInActiveBorder()
-    val borderActive: BorderStroke
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTextFieldActiveBorder()
     val colors: TextFieldColors
         @Composable
         @ReadOnlyComposable
         get() = defaultTextFieldColors()
-    val style: TextStyle
+    val style: TextFieldStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultTextFieldStyle()
+    val textStyle: TextStyle
         @Composable
         @ReadOnlyComposable
         get() = LocalTextStyle.current.default(LocalColors.current.textPrimary)
@@ -339,7 +291,23 @@ private fun defaultTextFieldColors() = TextFieldColors(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultTextFieldInActiveBorder() = BorderStroke(LocalSizes.current.borderSizeSecondary, LocalColors.current.themeSecondary)
+private fun defaultTextFieldStyle() = TextFieldStyle(
+    padding = LocalSizes.current.spacingSecondary,
+    topPadding = Dp.Unspecified,
+    startPadding = Dp.Unspecified,
+    bottomPadding = Dp.Unspecified,
+    endPadding = Dp.Unspecified,
+    shape = when (LocalInAreaBox.current) {
+        true -> LocalAreaBoxShape.current
+        else -> LocalShapes.current.secondary
+    },
+    borderInactive = defaultTextFieldInactiveBorder(),
+    borderActive = defaultTextFieldActiveBorder()
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.borderSizeSecondary, LocalColors.current.themeSecondary)
 
 @Composable
 @ReadOnlyComposable

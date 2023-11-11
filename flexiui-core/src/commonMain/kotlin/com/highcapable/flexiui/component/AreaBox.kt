@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
@@ -50,27 +51,32 @@ import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
 
+@Immutable
+data class AreaBoxStyle(
+    val padding: Dp,
+    val topPadding: Dp,
+    val startPadding: Dp,
+    val bottomPadding: Dp,
+    val endPadding: Dp,
+    val shape: Shape,
+    val border: BorderStroke
+)
+
 @Composable
 fun AreaBox(
     modifier: Modifier = Modifier,
-    padding: Dp = AreaBox.padding,
-    topPadding: Dp = Dp.Unspecified,
-    startPadding: Dp = Dp.Unspecified,
-    bottomPadding: Dp = Dp.Unspecified,
-    endPadding: Dp = Dp.Unspecified,
-    shape: Shape = AreaBox.shape,
-    border: BorderStroke = AreaBox.border,
     color: Color = AreaBox.color,
+    style: AreaBoxStyle = AreaBox.style,
     contentAlignment: Alignment = Alignment.TopStart,
     propagateMinConstraints: Boolean = false,
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
         LocalInAreaBox provides true,
-        LocalAreaBoxShape provides shape
+        LocalAreaBoxShape provides style.shape
     ) {
         Box(
-            modifier = modifier.box(padding, topPadding, startPadding, bottomPadding, endPadding, shape, border, color),
+            modifier = modifier.box(style, color),
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
             content = content
@@ -81,24 +87,18 @@ fun AreaBox(
 @Composable
 fun AreaRow(
     modifier: Modifier = Modifier,
-    padding: Dp = AreaBox.padding,
-    topPadding: Dp = Dp.Unspecified,
-    startPadding: Dp = Dp.Unspecified,
-    bottomPadding: Dp = Dp.Unspecified,
-    endPadding: Dp = Dp.Unspecified,
-    shape: Shape = AreaBox.shape,
-    border: BorderStroke = AreaBox.border,
     color: Color = AreaBox.color,
+    style: AreaBoxStyle = AreaBox.style,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     content: @Composable RowScope.() -> Unit
 ) {
     CompositionLocalProvider(
         LocalInAreaBox provides true,
-        LocalAreaBoxShape provides shape
+        LocalAreaBoxShape provides style.shape
     ) {
         Row(
-            modifier = modifier.box(padding, topPadding, startPadding, bottomPadding, endPadding, shape, border, color),
+            modifier = modifier.box(style, color),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             content = content
@@ -109,24 +109,18 @@ fun AreaRow(
 @Composable
 fun AreaColumn(
     modifier: Modifier = Modifier,
-    padding: Dp = AreaBox.padding,
-    topPadding: Dp = Dp.Unspecified,
-    startPadding: Dp = Dp.Unspecified,
-    bottomPadding: Dp = Dp.Unspecified,
-    endPadding: Dp = Dp.Unspecified,
-    shape: Shape = AreaBox.shape,
-    border: BorderStroke = AreaBox.border,
     color: Color = AreaBox.color,
+    style: AreaBoxStyle = AreaBox.style,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable ColumnScope.() -> Unit
 ) {
     CompositionLocalProvider(
         LocalInAreaBox provides true,
-        LocalAreaBoxShape provides shape
+        LocalAreaBoxShape provides style.shape
     ) {
         Column(
-            modifier = modifier.box(padding, topPadding, startPadding, bottomPadding, endPadding, shape, border, color),
+            modifier = modifier.box(style, color),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             content = content
@@ -134,42 +128,26 @@ fun AreaColumn(
     }
 }
 
-private fun Modifier.box(
-    padding: Dp,
-    topPadding: Dp,
-    startPadding: Dp,
-    bottomPadding: Dp,
-    endPadding: Dp,
-    shape: Shape,
-    border: BorderStroke,
-    color: Color
-) = clip(shape = shape)
-    .background(color = color, shape = shape)
-    .borderOrNot(border, shape)
-    .padding(
-        top = topPadding.orElse() ?: padding,
-        start = startPadding.orElse() ?: padding,
-        bottom = bottomPadding.orElse() ?: padding,
-        end = endPadding.orElse() ?: padding
-    )
+private fun Modifier.box(style: AreaBoxStyle, color: Color) =
+    clip(style.shape)
+        .background(color, style.shape)
+        .borderOrNot(style.border, style.shape)
+        .padding(
+            top = style.topPadding.orElse() ?: style.padding,
+            start = style.startPadding.orElse() ?: style.padding,
+            bottom = style.bottomPadding.orElse() ?: style.padding,
+            end = style.endPadding.orElse() ?: style.padding
+        )
 
 object AreaBox {
-    val padding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAreaBoxPadding()
-    val shape: Shape
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAreaBoxShape()
-    val border: BorderStroke
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAreaBoxBorder()
     val color: Color
         @Composable
         @ReadOnlyComposable
         get() = defaultAreaBoxColor()
+    val style: AreaBoxStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultAreaBoxStyle()
 }
 
 internal val LocalInAreaBox = compositionLocalOf { false }
@@ -180,16 +158,20 @@ internal val DefaultAreaBoxShape: Shape = DefaultShapes.primary
 
 @Composable
 @ReadOnlyComposable
-private fun defaultAreaBoxPadding() = LocalSizes.current.spacingPrimary
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAreaBoxShape() = LocalShapes.current.primary
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
+private fun defaultAreaBoxStyle() = AreaBoxStyle(
+    padding = LocalSizes.current.spacingPrimary,
+    topPadding = Dp.Unspecified,
+    startPadding = Dp.Unspecified,
+    bottomPadding = Dp.Unspecified,
+    endPadding = Dp.Unspecified,
+    shape = LocalShapes.current.primary,
+    border = defaultAreaBoxBorder()
+)
 
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxColor() = LocalColors.current.foregroundPrimary
+
+@Composable
+@ReadOnlyComposable
+private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)

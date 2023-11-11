@@ -75,6 +75,7 @@ data class SwitchColors(
 
 @Immutable
 data class SwitchStyle(
+    val padding: Dp,
     val thumbDiameter: Dp,
     val thumbGain: Float,
     val thumbShadowSize: Dp,
@@ -91,7 +92,6 @@ fun Switch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    padding: Dp = Switch.padding,
     colors: SwitchColors = Switch.colors,
     style: SwitchStyle = Switch.style,
     enabled: Boolean = true,
@@ -99,7 +99,7 @@ fun Switch(
     contentSpacing: Dp = Switch.contentSpacing,
     content: @Composable () -> Unit = {}
 ) {
-    val maxOffset = with(LocalDensity.current) { (style.trackWidth - style.thumbDiameter - padding * 2).toPx() }
+    val maxOffset = with(LocalDensity.current) { (style.trackWidth - style.thumbDiameter - style.padding * 2).toPx() }
     val halfWidth = maxOffset / 2
     val hovered by interactionSource.collectIsHoveredAsState()
     var dragging by remember { mutableStateOf(false) }
@@ -131,7 +131,7 @@ fun Switch(
             }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrNot(style.trackBorder, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
-                .padding(start = padding, end = padding),
+                .padding(start = style.padding, end = style.padding),
             verticalAlignment = Alignment.CenterVertically,
             content = content
         )
@@ -180,10 +180,6 @@ fun Switch(
 }
 
 object Switch {
-    val padding: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = DefaultSwitchPadding
     val colors: SwitchColors
         @Composable
         @ReadOnlyComposable
@@ -209,6 +205,7 @@ private fun defaultSwitchColors() = SwitchColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultSwitchStyle() = SwitchStyle(
+    padding = DefaultSwitchPadding,
     thumbDiameter = DefaultThumbDiameter,
     thumbGain = DefaultThumbGain,
     thumbShadowSize = DefaultThumbShadowSize,
