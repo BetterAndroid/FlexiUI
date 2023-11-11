@@ -23,11 +23,15 @@
 
 package com.highcapable.flexiui.component
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -217,13 +221,26 @@ private fun TextFieldDecorationBox(
     innerTextField: @Composable () -> Unit
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
-    val border = if (focused) style.borderActive else style.borderInactive
+    val hovered by interactionSource.collectIsHoveredAsState()
+    val animatedBorderColor by animateColorAsState(when {
+        focused || hovered -> style.borderActive.solidColor
+        else -> style.borderInactive.solidColor
+    })
+    val animatedBorderWidth by animateDpAsState(when {
+        focused -> style.borderActive.width
+        else -> style.borderInactive.width
+    })
+    val border = when {
+        focused || hovered -> style.borderInactive
+        else -> style.borderInactive
+    }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     Box(
         modifier.textField(
             colors = colors,
             style = style,
             border = border,
-            enabled = enabled
+            enabled = enabled,
+            interactionSource = interactionSource
         )
     ) {
         val placeholderAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
@@ -246,9 +263,11 @@ private fun Modifier.textField(
     colors: TextFieldColors,
     style: TextFieldStyle,
     border: BorderStroke,
-    enabled: Boolean
+    enabled: Boolean,
+    interactionSource: MutableInteractionSource
 ): Modifier {
-    var sModifier = clip(style.shape)
+    var sModifier = hoverable(interactionSource)
+        .clip(style.shape)
         .background(colors.backgroundColor, style.shape)
         .borderOrNot(border, style.shape)
         .padding(
@@ -312,3 +331,5 @@ private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.b
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
+
+private val BorderStroke.solidColor get() = (brush as? SolidColor?)?.value ?: Color.Unspecified
