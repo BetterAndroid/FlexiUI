@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.vector.DefaultGroupName
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 
-internal fun buildImageVector(
+internal inline fun buildImageVector(
     name: String = DefaultGroupName,
     defaultWidth: Dp,
     defaultHeight: Dp,
