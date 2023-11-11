@@ -84,7 +84,8 @@ data class ContextMenuStyle(
     val textColor: Color,
     val padding: Dp,
     val shadowSize: Dp,
-    val shape: Shape?
+    val contentShape: Shape?,
+    val borderShape: Shape?
 )
 
 internal class DesktopContextMenuRepresentation(private val style: ContextMenuStyle) : ContextMenuRepresentation {
@@ -93,7 +94,8 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
         val status = state.status
         if (status is ContextMenuState.Status.Open) {
-            val shape = style.shape ?: return
+            val contentShape = style.contentShape ?: return
+            val borderShape = style.borderShape ?: return
             var focusManager: FocusManager? by mutableStateOf(null)
             var inputModeManager: InputModeManager? by mutableStateOf(null)
             Popup(
@@ -120,15 +122,15 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
                 inputModeManager = LocalInputModeManager.current
                 Column(
                     modifier = Modifier
-                        .shadow(elevation = style.shadowSize, shape = shape)
-                        .background(color = style.backgroundColor, shape = shape)
+                        .shadow(style.shadowSize, borderShape)
+                        .background(style.backgroundColor, borderShape)
                         .padding(style.padding)
                         .width(IntrinsicSize.Max)
                         .verticalScroll(rememberScrollState())
                 ) {
                     items().forEach { item ->
                         MenuItemContent(
-                            shape = shape,
+                            shape = contentShape,
                             onClick = {
                                 state.status = ContextMenuState.Status.Closed
                                 item.onClick()
@@ -198,7 +200,8 @@ val LocalContextMenuStyle = compositionLocalOf {
         textColor = Color.Unspecified,
         padding = Dp.Unspecified,
         shadowSize = Dp.Unspecified,
-        shape = null
+        contentShape = null,
+        borderShape = null
     )
 }
 
@@ -209,5 +212,6 @@ internal fun defaultContextMenuStyle() = ContextMenuStyle(
     textColor = LocalContextMenuStyle.current.textColor.orElse() ?: LocalColors.current.textPrimary,
     padding = LocalContextMenuStyle.current.padding.orElse() ?: LocalSizes.current.spacingTertiary,
     shadowSize = LocalContextMenuStyle.current.shadowSize.orElse() ?: LocalSizes.current.zoomSizeTertiary,
-    shape = LocalContextMenuStyle.current.shape ?: LocalShapes.current.primary
+    contentShape = LocalContextMenuStyle.current.contentShape ?: LocalShapes.current.secondary,
+    borderShape = LocalContextMenuStyle.current.borderShape ?: LocalShapes.current.primary
 )
