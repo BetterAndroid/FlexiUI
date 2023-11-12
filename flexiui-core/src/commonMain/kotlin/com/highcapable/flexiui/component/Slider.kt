@@ -23,4 +23,206 @@
 
 package com.highcapable.flexiui.component
 
-// TODO: To be implemented
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.LocalShapes
+import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.utils.borderOrNot
+import kotlin.math.roundToInt
+@Immutable
+data class SliderColors(
+    val trackInactiveColor: Color,
+    val trackActiveColor: Color,
+    val thumbColor: Color
+)
+
+@Immutable
+data class SliderStyle(
+    val thumbDiameter: Dp,
+    val thumbGain: Float,
+    val thumbShadowSize: Dp,
+    val thumbShape: Shape,
+    val trackShape: Shape,
+    val thumbBorder: BorderStroke,
+    val trackBorder: BorderStroke,
+    val trackWidth: Dp,
+    val trackHeight: Dp
+)
+
+@Composable
+fun Slider(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: SliderColors = Slider.colors,
+    style: SliderStyle = Slider.style,
+    enabled: Boolean = true,
+    min: Float = 0f,
+    max: Float = 100f,
+    /*@IntRange(from = 0)*/
+    steps: Int = 0, // TODO: Implement steps
+    onValueChangeFinished: (() -> Unit)? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+) {
+    val hovered by interactionSource.collectIsHoveredAsState()
+    var dragging by remember { mutableStateOf(false) }
+    val thumbRadius = style.thumbDiameter / 2
+    val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
+    val maxOffset = with(LocalDensity.current) { (style.trackWidth - style.thumbDiameter).toPx() }
+    val offsetXFromValue = (value.coerceIn(min, max) - min) / (max - min) * maxOffset
+    var absOffsetX by remember { mutableStateOf(0f) }
+    var offsetX by remember { mutableStateOf(offsetXFromValue) }
+    val draggedOffsetX = with(LocalDensity.current) { (offsetX.toDp() + thumbRadius).toPx() }
+    fun updateValue() {
+        val newValue = (offsetX / maxOffset) * (max - min) + min
+        onValueChange(newValue)
+    }
+
+    @Composable
+    fun Track() {
+        val cornerSize = (style.trackShape as? CornerBasedShape)?.topStart?.toPx(Size.Zero, LocalDensity.current) ?: 0f
+        Box(
+            modifier = Modifier.size(style.trackWidth, style.trackHeight)
+                .background(colors.trackInactiveColor, style.trackShape)
+                .borderOrNot(style.trackBorder, style.trackShape)
+                .drawWithContent {
+                    drawRoundRect(
+                        color = colors.trackActiveColor,
+                        size = Size(draggedOffsetX, size.height),
+                        cornerRadius = CornerRadius(cornerSize, cornerSize)
+                    )
+                }
+        )
+    }
+
+    @Composable
+    fun Thumb() {
+        Box(
+            modifier = Modifier.size(style.thumbDiameter)
+                .offset { IntOffset(offsetX.roundToInt(), 0) }
+                .scale(animatedScale)
+                .shadow(style.thumbShadowSize, style.thumbShape)
+                .background(colors.thumbColor, style.thumbShape)
+                .borderOrNot(style.thumbBorder, style.thumbShape)
+                .draggable(
+                    orientation = Orientation.Horizontal,
+                    state = rememberDraggableState { delta ->
+                        val absDelta = delta * animatedScale
+                        absOffsetX += absDelta
+                        when {
+                            absOffsetX in 0f..maxOffset -> offsetX += absDelta
+                            absOffsetX < 0f -> offsetX = 0f
+                            absOffsetX > maxOffset -> offsetX = maxOffset
+                        }
+                        updateValue()
+                    },
+                    interactionSource = interactionSource,
+                    enabled = enabled,
+                    onDragStarted = {
+                        dragging = true
+                        absOffsetX = offsetX
+                    },
+                    onDragStopped = {
+                        dragging = false
+                        onValueChangeFinished?.invoke()
+                    }
+                )
+        )
+    }
+    Box(
+        modifier = modifier.hoverable(interactionSource)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { offset ->
+                        val tapedOffsetX = offset.x - thumbRadius.toPx()
+                        offsetX = tapedOffsetX.coerceIn(0f, maxOffset)
+                        updateValue()
+                        onValueChangeFinished?.invoke()
+                    }
+                )
+            },
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Track()
+        Thumb()
+    }
+}
+
+object Slider {
+    val colors
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultSliderColors()
+    val style
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultSliderStyle()
+}
+
+@Composable
+@ReadOnlyComposable
+private fun defaultSliderColors() = SliderColors(
+    trackInactiveColor = LocalColors.current.themeTertiary,
+    trackActiveColor = LocalColors.current.themePrimary,
+    thumbColor = LocalColors.current.themePrimary
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultSliderStyle() = SliderStyle(
+    thumbDiameter = DefaultThumbDiameter,
+    thumbGain = DefaultThumbGain,
+    thumbShadowSize = DefaultThumbShadowSize,
+    thumbShape = CircleShape,
+    trackShape = LocalShapes.current.primary,
+    thumbBorder = defaultSliderBorder(),
+    trackBorder = defaultSliderBorder(),
+    trackWidth = DefaultTrackWidth,
+    trackHeight = DefaultTrackHeight
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultSliderBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
+
+private val DefaultThumbDiameter = 20.dp
+private const val DefaultThumbGain = 1.1f
+private val DefaultThumbShadowSize = 0.5.dp
+
+private val DefaultTrackWidth = 240.dp
+private val DefaultTrackHeight = 4.dp
