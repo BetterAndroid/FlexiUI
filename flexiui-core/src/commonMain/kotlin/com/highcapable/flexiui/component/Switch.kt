@@ -103,6 +103,7 @@ fun Switch(
     val halfWidth = maxOffset / 2
     val hovered by interactionSource.collectIsHoveredAsState()
     var dragging by remember { mutableStateOf(false) }
+    var absOffsetX by remember { mutableStateOf(0f) }
     var offsetX by remember { mutableStateOf(0f) }
     var distance by remember { mutableStateOf(0f) }
     if (!hovered && !dragging) offsetX = if (checked) maxOffset else 0f
@@ -110,7 +111,8 @@ fun Switch(
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
     var trackColor by remember { mutableStateOf(colors.trackInactive) }
     fun updateTrackColor() {
-        trackColor = lerp(colors.trackInactive, colors.trackActive, offsetX / maxOffset)
+        val fraction = (offsetX / maxOffset).coerceIn(0f, 1f)
+        trackColor = lerp(colors.trackInactive, colors.trackActive, fraction)
     }
     updateTrackColor()
     val animatedTrackColor by animateColorAsState(trackColor)
@@ -151,10 +153,18 @@ fun Switch(
                     orientation = Orientation.Horizontal,
                     interactionSource = interactionSource,
                     state = rememberDraggableState { delta ->
-                        offsetX = (offsetX + delta).coerceIn(0f, maxOffset)
+                        absOffsetX += delta
+                        when {
+                            absOffsetX in 0f..maxOffset -> offsetX += delta
+                            absOffsetX < 0f -> offsetX = 0f
+                            absOffsetX > maxOffset -> offsetX = maxOffset
+                        }
                         updateTrackColor()
                     },
-                    onDragStarted = { dragging = true },
+                    onDragStarted = {
+                        dragging = true
+                        absOffsetX = offsetX
+                    },
                     onDragStopped = {
                         dragging = false
                         if (offsetX >= halfWidth) {
