@@ -153,9 +153,10 @@ fun Switch(
                     orientation = Orientation.Horizontal,
                     interactionSource = interactionSource,
                     state = rememberDraggableState { delta ->
-                        absOffsetX += delta
+                        val absDelta = delta * animatedScale
+                        absOffsetX += absDelta
                         when {
-                            absOffsetX in 0f..maxOffset -> offsetX += delta
+                            absOffsetX in 0f..maxOffset -> offsetX += absDelta
                             absOffsetX < 0f -> offsetX = 0f
                             absOffsetX > maxOffset -> offsetX = maxOffset
                         }
