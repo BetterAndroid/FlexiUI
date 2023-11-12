@@ -43,6 +43,7 @@ import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.CheckBox
 import com.highcapable.flexiui.component.RadioButton
+import com.highcapable.flexiui.component.Slider
 import com.highcapable.flexiui.component.Surface
 import com.highcapable.flexiui.component.Switch
 import com.highcapable.flexiui.component.Text
@@ -54,6 +55,7 @@ import com.highcapable.flexiui.pinkColors
 import com.highcapable.flexiui.purpleColors
 import com.highcapable.flexiui.redColors
 import com.highcapable.flexiui.yellowColors
+import kotlin.math.roundToInt
 
 @Composable
 fun App() {
@@ -106,6 +108,11 @@ fun App() {
                                 Text(text = "Option 2")
                             }
                         }
+                        Spacer(Modifier.padding(15.dp))
+                        var value by remember { mutableStateOf(50f) }
+                        Text(text = "Current Value: ${value.roundToInt()}", modifier = Modifier.width(150.dp))
+                        Spacer(Modifier.padding(10.dp))
+                        Slider(value = value, onValueChange = { value = it })
                     }
                 }
                 Spacer(Modifier.padding(10.dp))
