@@ -21,11 +21,6 @@ kotlin {
     }
     jvmToolchain(17)
     sourceSets {
-        all {
-            languageSettings {
-                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-            }
-        }
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
