@@ -236,10 +236,10 @@ private fun defaultSwitchBorder() = BorderStroke(LocalSizes.current.borderSizeTe
 @ReadOnlyComposable
 private fun defaultSwitchContentSpacing() = LocalSizes.current.spacingSecondary
 
-private val DefaultSwitchPadding = 4.dp
+private val DefaultSwitchPadding = 3.dp
 
-private val DefaultThumbDiameter = 12.dp
-private const val DefaultThumbGain = 1.2f
+private val DefaultThumbDiameter = 15.dp
+private const val DefaultThumbGain = 1.1f
 private val DefaultThumbShadowSize = 0.5.dp
 
 private val DefaultTrackWidth = 40.dp
