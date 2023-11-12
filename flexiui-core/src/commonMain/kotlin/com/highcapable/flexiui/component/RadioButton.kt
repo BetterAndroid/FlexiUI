@@ -64,9 +64,9 @@ data class RadioButtonColors(
 
 @Immutable
 data class RadioButtonStyle(
-    val contentSize: Dp,
+    val contentDiameter: Dp,
     val contentShadowSize: Dp,
-    val strokeSize: Dp,
+    val strokeDiameter: Dp,
     val pressedGain: Float,
     val hoveredGain: Float,
     val shape: Shape,
@@ -100,13 +100,13 @@ fun RadioButton(
                 enabled = enabled,
                 role = Role.RadioButton,
                 onClick = onClick
-            ).size(style.strokeSize)
+            ).size(style.strokeDiameter)
                 .scale(animatedStrokeScale)
                 .background(animatedColor, style.shape),
             contentAlignment = Alignment.Center
         ) {
             Box(
-                modifier = Modifier.size(style.contentSize)
+                modifier = Modifier.size(style.contentDiameter)
                     .scale(animatedContentScale)
                     .shadow(animatedContentShadow, style.shape)
                     .alpha(animatedContentAlpha)
@@ -146,9 +146,9 @@ private fun defaultRadioButtonColors() = RadioButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultRadioButtonStyle() = RadioButtonStyle(
-    contentSize = DefaultContentSize,
+    contentDiameter = DefaultContentDiameter,
     contentShadowSize = DefaultContentShadowSize,
-    strokeSize = DefaultStrokeSize,
+    strokeDiameter = DefaultStrokeDiameter,
     pressedGain = DefaultPressedGain,
     hoveredGain = DefaultHoveredGain,
     shape = CircleShape,
@@ -163,8 +163,8 @@ private fun defaultRadioButtonBorder() = BorderStroke(LocalSizes.current.borderS
 @ReadOnlyComposable
 private fun defaultRadioButtonContentSpacing() = LocalSizes.current.spacingSecondary
 
-private val DefaultContentSize = 10.dp
-private val DefaultStrokeSize = 20.dp
+private val DefaultContentDiameter = 10.dp
+private val DefaultStrokeDiameter = 20.dp
 
 private const val DefaultPressedGain = 0.9f
 private const val DefaultHoveredGain = 1.2f
