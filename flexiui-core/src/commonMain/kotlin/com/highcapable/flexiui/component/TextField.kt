@@ -267,7 +267,7 @@ private fun Modifier.textField(
     enabled: Boolean,
     interactionSource: MutableInteractionSource
 ) = status(enabled)
-    .hoverable(interactionSource)
+    .hoverable(interactionSource, enabled)
     .clip(style.shape)
     .background(colors.backgroundColor, style.shape)
     .borderOrNot(border, style.shape)

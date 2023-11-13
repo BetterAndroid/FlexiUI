@@ -63,7 +63,9 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.utils.borderOrNot
+import com.highcapable.flexiui.utils.status
 import kotlin.math.roundToInt
+
 @Immutable
 data class SliderColors(
     val trackInactiveColor: Color,
@@ -165,9 +167,10 @@ fun Slider(
         )
     }
     Box(
-        modifier = modifier.hoverable(interactionSource)
+        modifier = modifier.status(enabled)
+            .hoverable(interactionSource, enabled)
             .pointerInput(Unit) {
-                detectTapGestures(
+                if (enabled) detectTapGestures(
                     onTap = { offset ->
                         val tapedOffsetX = offset.x - thumbRadius.toPx()
                         offsetX = tapedOffsetX.coerceIn(0f, maxOffset)
