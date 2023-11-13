@@ -33,7 +33,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 @Stable
-fun Modifier.status(enabled: Boolean) = if (enabled) this else alpha(0.5f)
+internal fun Modifier.status(enabled: Boolean) = if (enabled) this else alpha(0.5f)
 
 @Stable
-fun Modifier.borderOrNot(border: BorderStroke, shape: Shape = RectangleShape) = border.takeIf { it.width > 0.dp }?.let { border(it, shape) } ?: this
+internal fun Modifier.borderOrNot(border: BorderStroke, shape: Shape = RectangleShape) =
+    border.takeIf { it.width > 0.dp }?.let { border(it, shape) } ?: this

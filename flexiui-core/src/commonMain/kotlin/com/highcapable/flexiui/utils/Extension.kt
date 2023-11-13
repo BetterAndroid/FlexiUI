@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isSpecified
 
-inline fun Dp.orElse() = if (isSpecified) this else null
+internal inline fun Dp.orElse() = if (isSpecified) this else null
 
-inline fun Color.orElse() = if (isSpecified) this else null
+internal inline fun Color.orElse() = if (isSpecified) this else null
 
-inline fun TextUnit.orElse() = if (isSpecified) this else null
+internal inline fun TextUnit.orElse() = if (isSpecified) this else null
