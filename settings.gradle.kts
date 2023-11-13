@@ -10,6 +10,9 @@ plugins {
     id("com.highcapable.sweetdependency") version "1.0.4"
     id("com.highcapable.sweetproperty") version "1.0.5"
 }
+sweetDependency {
+    isUseDependencyResolutionManagement = false
+}
 sweetProperty {
     global { sourcesCode { className = "FlexiUI" } }
     rootProject { all { isEnable = false } }
