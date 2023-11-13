@@ -69,7 +69,7 @@ internal interface IProgressIndicatorStyle {
 data class CircularIndicatorStyle(
     override val strokeWidth: Dp,
     override val strokeCap: StrokeCap,
-    val diameter: Dp,
+    val radius: Dp,
     val rotationDuration: Int,
     val rotationsPerCycle: Int,
     val startAngleOffset: Float,
@@ -114,13 +114,14 @@ fun CircularProgressIndicator(
     colors: ProgressIndicatorColors = ProgressIndicator.circularColors,
     style: CircularIndicatorStyle = ProgressIndicator.circularStyle
 ) {
+    val diameter = style.radius * 2
     val stroke = with(LocalDensity.current) { Stroke(width = style.strokeWidth.toPx(), cap = style.strokeCap) }
 
     @Composable
     fun Determinate() {
         val coercedProgress = progress.coerceIn(min, max)
         val normalizedProgress = (coercedProgress - min) / (max - min)
-        Canvas(modifier.progressSemantics(normalizedProgress).size(style.diameter)) {
+        Canvas(modifier.progressSemantics(normalizedProgress).size(diameter)) {
             val startAngle = 270f
             val sweep = normalizedProgress * 360f
             drawCircularIndicatorBackground(colors.backgroundColor, stroke)
@@ -175,13 +176,13 @@ fun CircularProgressIndicator(
                 }
             )
         )
-        Canvas(modifier.progressSemantics().size(style.diameter)) {
+        Canvas(modifier.progressSemantics().size(diameter)) {
             drawCircularIndicatorBackground(colors.backgroundColor, stroke)
             val rotationAngleOffset = caleRotationAngleOffset(style.baseRotationAngle, style.jumpRotationAngle)
             val currentRotationAngleOffset = (currentRotation * rotationAngleOffset) % 360f
             val sweep = abs(endAngle - startAngle)
             val offset = style.startAngleOffset + currentRotationAngleOffset + baseRotation
-            drawIndeterminateCircularIndicator(startAngle + offset, style.strokeWidth, style.diameter, sweep, colors.foregroundColor, stroke)
+            drawIndeterminateCircularIndicator(startAngle + offset, style.strokeWidth, diameter, sweep, colors.foregroundColor, stroke)
         }
     }
     if (indeterminate) Indeterminate() else Determinate()
@@ -389,7 +390,7 @@ private fun defaultLinearIndicatorColors() = ProgressIndicatorColors(
 private fun defaultCircularIndicatorStyle() = CircularIndicatorStyle(
     strokeWidth = DefaultIndicatorStrokeWidth,
     strokeCap = StrokeCap.Round,
-    diameter = DefaultCircularIndicatorDiameter,
+    radius = DefaultCircularIndicatorRadius,
     rotationDuration = DefaultRotationDuration,
     rotationsPerCycle = DefaultRotationsPerCycle,
     startAngleOffset = DefaultStartAngleOffset,
@@ -425,7 +426,7 @@ private fun caleHeadAndTailAnimationDuration(rotationDuration: Int) = (rotationD
 
 private val DefaultIndicatorStrokeWidth = 4.dp
 private val DefaultLinearIndicatorWidth = 240.dp
-private val DefaultCircularIndicatorDiameter = 40.dp
+private val DefaultCircularIndicatorRadius = 20.dp
 private const val DefaultLinearAnimationDuration = 1800
 
 private const val DefaultFirstLineHeadDuration = 750

@@ -75,7 +75,7 @@ data class SliderColors(
 
 @Immutable
 data class SliderStyle(
-    val thumbDiameter: Dp,
+    val thumbRadius: Dp,
     val thumbGain: Float,
     val thumbShadowSize: Dp,
     val thumbShape: Shape,
@@ -101,15 +101,15 @@ fun Slider(
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
+    val thumbDiameter = style.thumbRadius * 2
     val hovered by interactionSource.collectIsHoveredAsState()
     var dragging by remember { mutableStateOf(false) }
-    val thumbRadius = style.thumbDiameter / 2
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
-    val maxOffset = with(LocalDensity.current) { (style.trackWidth - style.thumbDiameter).toPx() }
+    val maxOffset = with(LocalDensity.current) { (style.trackWidth - thumbDiameter).toPx() }
     val offsetXFromValue = (value.coerceIn(min, max) - min) / (max - min) * maxOffset
     var absOffsetX by remember { mutableStateOf(0f) }
     var offsetX by remember { mutableStateOf(offsetXFromValue) }
-    val draggedOffsetX = with(LocalDensity.current) { (offsetX.toDp() + thumbRadius).toPx() }
+    val draggedOffsetX = with(LocalDensity.current) { (offsetX.toDp() + style.thumbRadius).toPx() }
     fun updateValue() {
         val newValue = (offsetX / maxOffset) * (max - min) + min
         onValueChange(newValue)
@@ -135,7 +135,7 @@ fun Slider(
     @Composable
     fun Thumb() {
         Box(
-            modifier = Modifier.size(style.thumbDiameter)
+            modifier = Modifier.size(thumbDiameter)
                 .offset { IntOffset(offsetX.roundToInt(), 0) }
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
@@ -172,7 +172,7 @@ fun Slider(
             .pointerInput(Unit) {
                 if (enabled) detectTapGestures(
                     onTap = { offset ->
-                        val tapedOffsetX = offset.x - thumbRadius.toPx()
+                        val tapedOffsetX = offset.x - style.thumbRadius.toPx()
                         offsetX = tapedOffsetX.coerceIn(0f, maxOffset)
                         updateValue()
                         onValueChangeFinished?.invoke()
@@ -208,7 +208,7 @@ private fun defaultSliderColors() = SliderColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultSliderStyle() = SliderStyle(
-    thumbDiameter = DefaultThumbDiameter,
+    thumbRadius = DefaultThumbRadius,
     thumbGain = DefaultThumbGain,
     thumbShadowSize = DefaultThumbShadowSize,
     thumbShape = CircleShape,
@@ -223,7 +223,7 @@ private fun defaultSliderStyle() = SliderStyle(
 @ReadOnlyComposable
 private fun defaultSliderBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
 
-private val DefaultThumbDiameter = 20.dp
+private val DefaultThumbRadius = 10.dp
 private const val DefaultThumbGain = 1.1f
 private val DefaultThumbShadowSize = 0.5.dp
 
