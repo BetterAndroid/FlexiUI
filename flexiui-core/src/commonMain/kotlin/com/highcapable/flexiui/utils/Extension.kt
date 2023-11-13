@@ -21,17 +21,10 @@
  */
 package com.highcapable.flexiui.utils
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.runtime.Stable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 
 inline fun Dp.orElse() = if (isSpecified) this else null
@@ -39,6 +32,3 @@ inline fun Dp.orElse() = if (isSpecified) this else null
 inline fun Color.orElse() = if (isSpecified) this else null
 
 inline fun TextUnit.orElse() = if (isSpecified) this else null
-
-@Stable
-fun Modifier.borderOrNot(border: BorderStroke, shape: Shape = RectangleShape) = border.takeIf { it.width > 0.dp }?.let { border(it, shape) } ?: this
