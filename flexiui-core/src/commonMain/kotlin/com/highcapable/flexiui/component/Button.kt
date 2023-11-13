@@ -37,7 +37,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -50,6 +49,7 @@ import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.interaction.rippleToggleable
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
+import com.highcapable.flexiui.utils.status
 
 @Immutable
 data class ButtonColors(
@@ -81,22 +81,24 @@ fun Button(
     footer: @Composable () -> Unit = {},
     content: @Composable RowScope.() -> Unit
 ) {
-    var sModifier = modifier.clip(style.shape)
-    sModifier = if (enabled) sModifier.rippleClickable(
-        enabled = enabled,
-        role = Role.Button,
-        rippleColor = colors.rippleColor,
-        interactionSource = interactionSource,
-        onClick = onClick
-    ) else sModifier.alpha(0.5f)
-    sModifier = sModifier.background(colors.backgroundColor, style.shape)
-    sModifier = sModifier.borderOrNot(style.border, style.shape)
     val localTextStyle = LocalTextStyle.current.copy(color = colors.contentColor)
     val localProgressIndicatorColors = LocalProgressIndicatorColors.current.copy(
         foregroundColor = colors.contentColor,
         backgroundColor = Color.Transparent
     )
-    Box(modifier = sModifier) {
+    Box(
+        modifier = modifier.status(enabled)
+            .clip(style.shape)
+            .background(colors.backgroundColor, style.shape)
+            .borderOrNot(style.border, style.shape)
+            .rippleClickable(
+                enabled = enabled,
+                role = Role.Button,
+                rippleColor = colors.rippleColor,
+                interactionSource = interactionSource,
+                onClick = onClick
+            )
+    ) {
         CompositionLocalProvider(
             LocalTextStyle provides localTextStyle,
             LocalProgressIndicatorColors provides localProgressIndicatorColors

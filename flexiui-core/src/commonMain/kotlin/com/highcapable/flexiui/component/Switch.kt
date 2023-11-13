@@ -48,7 +48,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -64,6 +63,7 @@ import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.clickable
 import com.highcapable.flexiui.utils.borderOrNot
+import com.highcapable.flexiui.utils.status
 import kotlin.math.roundToInt
 
 @Immutable
@@ -117,7 +117,6 @@ fun Switch(
     updateTrackColor()
     val animatedTrackColor by animateColorAsState(trackColor)
     val efficientDragging = dragging && distance > 5
-    val sModifier = if (enabled) modifier else modifier.alpha(0.5f)
 
     @Composable
     fun Track(content: @Composable RowScope.() -> Unit) {
@@ -181,7 +180,7 @@ fun Switch(
                 )
         )
     }
-    Row(modifier = sModifier) {
+    Row(modifier = modifier.status(enabled)) {
         Box(
             modifier = Modifier.padding(end = contentSpacing)
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }

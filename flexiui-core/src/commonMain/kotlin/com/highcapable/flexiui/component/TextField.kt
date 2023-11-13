@@ -62,6 +62,7 @@ import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
+import com.highcapable.flexiui.utils.status
 
 // TODO: Preset text boxes (password text box, text box with delete button, etc.)
 
@@ -265,20 +266,17 @@ private fun Modifier.textField(
     border: BorderStroke,
     enabled: Boolean,
     interactionSource: MutableInteractionSource
-): Modifier {
-    var sModifier = hoverable(interactionSource)
-        .clip(style.shape)
-        .background(colors.backgroundColor, style.shape)
-        .borderOrNot(border, style.shape)
-        .padding(
-            top = style.topPadding.orElse() ?: style.padding,
-            start = style.startPadding.orElse() ?: style.padding,
-            bottom = style.bottomPadding.orElse() ?: style.padding,
-            end = style.endPadding.orElse() ?: style.padding
-        )
-    if (!enabled) sModifier = sModifier.alpha(0.5f)
-    return sModifier
-}
+) = status(enabled)
+    .hoverable(interactionSource)
+    .clip(style.shape)
+    .background(colors.backgroundColor, style.shape)
+    .borderOrNot(border, style.shape)
+    .padding(
+        top = style.topPadding.orElse() ?: style.padding,
+        start = style.startPadding.orElse() ?: style.padding,
+        bottom = style.bottomPadding.orElse() ?: style.padding,
+        end = style.endPadding.orElse() ?: style.padding
+    )
 
 object TextField {
     val colors: TextFieldColors

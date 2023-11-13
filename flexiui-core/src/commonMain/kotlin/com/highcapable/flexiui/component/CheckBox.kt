@@ -56,6 +56,7 @@ import com.highcapable.flexiui.interaction.clickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.CheckMark
 import com.highcapable.flexiui.utils.borderOrNot
+import com.highcapable.flexiui.utils.status
 
 @Immutable
 data class CheckBoxColors(
@@ -93,8 +94,7 @@ fun CheckBox(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentAlpha by animateFloatAsState(if (checked) 1f else 0f)
     val animatedContentLayer by animateFloatAsState(if (checked) 1f else 0f)
-    val sModifier = if (enabled) modifier else modifier.alpha(0.5f)
-    Row(modifier = sModifier, verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier.status(enabled), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier.clickable(
                 interactionSource = interactionSource,
