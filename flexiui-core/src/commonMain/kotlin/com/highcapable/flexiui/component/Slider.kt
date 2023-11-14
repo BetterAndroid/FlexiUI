@@ -36,6 +36,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
@@ -102,6 +103,7 @@ fun Slider(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val thumbDiameter = style.thumbRadius * 2
+    val trackAdoptWidth = style.trackWidth - thumbDiameter
     val hovered by interactionSource.collectIsHoveredAsState()
     var dragging by remember { mutableStateOf(false) }
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
@@ -109,27 +111,29 @@ fun Slider(
     val offsetXFromValue = (value.coerceIn(min, max) - min) / (max - min) * maxOffset
     var absOffsetX by remember { mutableStateOf(0f) }
     var offsetX by remember { mutableStateOf(offsetXFromValue) }
-    val draggedOffsetX = with(LocalDensity.current) { (offsetX.toDp() + style.thumbRadius).toPx() }
     fun updateValue() {
         val newValue = (offsetX / maxOffset) * (max - min) + min
         onValueChange(newValue)
     }
 
     @Composable
-    fun Track() {
+    fun Track(content: @Composable () -> Unit) {
         val cornerSize = (style.trackShape as? CornerBasedShape)?.topStart?.toPx(Size.Zero, LocalDensity.current) ?: 0f
-        Box(
-            modifier = Modifier.size(style.trackWidth, style.trackHeight)
-                .background(colors.trackInactiveColor, style.trackShape)
-                .borderOrNot(style.trackBorder, style.trackShape)
-                .drawWithContent {
-                    drawRoundRect(
-                        color = colors.trackActiveColor,
-                        size = Size(draggedOffsetX, size.height),
-                        cornerRadius = CornerRadius(cornerSize, cornerSize)
-                    )
-                }
-        )
+        Box(modifier = Modifier.width(style.trackWidth), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.size(trackAdoptWidth, style.trackHeight)
+                    .background(colors.trackInactiveColor, style.trackShape)
+                    .borderOrNot(style.trackBorder, style.trackShape)
+                    .drawWithContent {
+                        drawRoundRect(
+                            color = colors.trackActiveColor,
+                            size = Size(offsetX, size.height),
+                            cornerRadius = CornerRadius(cornerSize, cornerSize)
+                        )
+                    }
+            )
+            content()
+        }
     }
 
     @Composable
@@ -181,7 +185,7 @@ fun Slider(
             },
         contentAlignment = Alignment.CenterStart
     ) {
-        Track()
+        Track {}
         Thumb()
     }
 }
