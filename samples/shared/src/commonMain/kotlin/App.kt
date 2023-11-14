@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -62,68 +64,79 @@ fun App() {
     val themeColor = remember { mutableStateOf(greenColors()) }
     FlexiTheme(colors = themeColor.value) {
         Surface {
-            var greeting by remember { mutableStateOf("Hello World!") }
-            var input by remember { mutableStateOf("") }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                AreaBox(modifier = Modifier.weight(1f)) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = greeting)
-                        Spacer(Modifier.padding(15.dp))
-                        Button(onClick = { greeting = "Hello Jetpack Compose Multiplatform!" }) {
-                            Text(text = "Greeting")
-                        }
-                        Spacer(Modifier.padding(15.dp))
-                        TextField(
-                            value = input,
-                            placeholder = { Text(text = "Type something here...") },
-                            onValueChange = { input = it }
-                        )
-                        Spacer(Modifier.padding(15.dp))
-                        var switchChecked by remember { mutableStateOf(true) }
-                        Switch(checked = switchChecked, onCheckedChange = { switchChecked = it }) {
-                            Text(modifier = Modifier.width(200.dp), text = "Switch Status: ${if (switchChecked) "Checked" else "Unchecked"}")
-                        }
-                        Spacer(Modifier.padding(15.dp))
-                        var boxChecked by remember { mutableStateOf(true) }
-                        CheckBox(checked = boxChecked, onCheckedChange = { boxChecked = it }) {
-                            Text(modifier = Modifier.width(210.dp), text = "CheckBox Status: ${if (boxChecked) "Checked" else "Unchecked"}")
-                        }
-                        Spacer(Modifier.padding(15.dp))
-                        Row {
-                            var option1Seleted by remember { mutableStateOf(true) }
-                            var option2Seleted by remember { mutableStateOf(false) }
-                            fun switchOption(option1: Boolean) {
-                                option1Seleted = option1
-                                option2Seleted = !option1
-                            }
-                            RadioButton(option1Seleted, onClick = { switchOption(option1 = true) }) {
-                                Text(text = "Option 1")
-                            }
-                            Spacer(Modifier.padding(15.dp))
-                            RadioButton(option2Seleted, onClick = { switchOption(option1 = false) }) {
-                                Text(text = "Option 2")
-                            }
-                        }
-                        Spacer(Modifier.padding(15.dp))
-                        var value by remember { mutableStateOf(50f) }
-                        Text(text = "Current Value: ${value.roundToInt()}", modifier = Modifier.width(150.dp))
-                        Spacer(Modifier.padding(10.dp))
-                        Slider(value = value, onValueChange = { value = it })
-                    }
-                }
+                AreaBox(modifier = Modifier.weight(1f)) { ContentView() }
                 Spacer(Modifier.padding(10.dp))
-                ThemeTestLayout(themeColor)
+                ThemeColorsView(themeColor)
             }
         }
     }
 }
 
 @Composable
-private fun ThemeTestLayout(themeColor: MutableState<Colors>) {
+private fun ContentView() {
+    var greeting by remember { mutableStateOf("Hello World!") }
+    var input by remember { mutableStateOf("") }
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = greeting)
+        Spacer(Modifier.padding(15.dp))
+        Button(onClick = { greeting = "Hello Jetpack Compose Multiplatform!" }) {
+            Text(text = "Greeting")
+        }
+        Spacer(Modifier.padding(15.dp))
+        TextField(
+            value = input,
+            placeholder = { Text(text = "Type something here...") },
+            onValueChange = { input = it }
+        )
+        Spacer(Modifier.padding(15.dp))
+        var switchChecked by remember { mutableStateOf(true) }
+        Switch(checked = switchChecked, onCheckedChange = { switchChecked = it }) {
+            Text(modifier = Modifier.width(200.dp), text = "Switch Status: ${if (switchChecked) "Checked" else "Unchecked"}")
+        }
+        Spacer(Modifier.padding(15.dp))
+        var boxChecked by remember { mutableStateOf(true) }
+        CheckBox(checked = boxChecked, onCheckedChange = { boxChecked = it }) {
+            Text(modifier = Modifier.width(210.dp), text = "CheckBox Status: ${if (boxChecked) "Checked" else "Unchecked"}")
+        }
+        Spacer(Modifier.padding(15.dp))
+        Row {
+            var option1Seleted by remember { mutableStateOf(true) }
+            var option2Seleted by remember { mutableStateOf(false) }
+            fun switchOption(option1: Boolean) {
+                option1Seleted = option1
+                option2Seleted = !option1
+            }
+            RadioButton(option1Seleted, onClick = { switchOption(option1 = true) }) {
+                Text(text = "Option 1")
+            }
+            Spacer(Modifier.padding(15.dp))
+            RadioButton(option2Seleted, onClick = { switchOption(option1 = false) }) {
+                Text(text = "Option 2")
+            }
+        }
+        Spacer(Modifier.padding(15.dp))
+        var value by remember { mutableStateOf(50f) }
+        Text(text = "Current Value: ${value.roundToInt()}", modifier = Modifier.width(150.dp))
+        Spacer(Modifier.padding(10.dp))
+        Slider(value = value, onValueChange = { value = it })
+        Spacer(Modifier.padding(15.dp))
+        var stepValue by remember { mutableStateOf(25f) }
+        Text(text = "Current Value: ${stepValue.roundToInt()}", modifier = Modifier.width(150.dp))
+        Spacer(Modifier.padding(10.dp))
+        Slider(value = stepValue, onValueChange = { stepValue = it }, steps = 3)
+    }
+}
+
+@Composable
+private fun ThemeColorsView(themeColor: MutableState<Colors>) {
     Text(text = "Here are some theme color tests.")
     Spacer(Modifier.padding(10.dp))
     Row {
