@@ -100,19 +100,19 @@ fun Switch(
     content: @Composable () -> Unit = {}
 ) {
     val thumbDiameter = style.thumbRadius * 2
-    val maxOffset = with(LocalDensity.current) { (style.trackWidth - thumbDiameter - style.padding * 2).toPx() }
-    val halfWidth = maxOffset / 2
+    val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter - style.padding * 2).toPx() }
+    val halfWidth = maxOffsetX / 2
     val hovered by interactionSource.collectIsHoveredAsState()
     var dragging by remember { mutableStateOf(false) }
     var absOffsetX by remember { mutableStateOf(0f) }
     var offsetX by remember { mutableStateOf(0f) }
     var distance by remember { mutableStateOf(0f) }
-    if (!hovered && !dragging) offsetX = if (checked) maxOffset else 0f
+    if (!hovered && !dragging) offsetX = if (checked) maxOffsetX else 0f
     val animatedOffsetX by animateFloatAsState(offsetX)
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
     var trackColor by remember { mutableStateOf(colors.trackInactive) }
     fun updateTrackColor() {
-        val fraction = (offsetX / maxOffset).coerceIn(0f, 1f)
+        val fraction = (offsetX / maxOffsetX).coerceIn(0f, 1f)
         trackColor = lerp(colors.trackInactive, colors.trackActive, fraction)
     }
     updateTrackColor()
@@ -127,8 +127,8 @@ fun Switch(
                 enabled = enabled,
                 role = Role.Switch
             ) {
-                distance = maxOffset
-                offsetX = if (checked) 0f else maxOffset
+                distance = maxOffsetX
+                offsetX = if (checked) 0f else maxOffsetX
                 onCheckedChange(!checked)
             }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrNot(style.trackBorder, style.trackShape)
@@ -156,9 +156,9 @@ fun Switch(
                         val absDelta = delta * animatedScale
                         absOffsetX += absDelta
                         when {
-                            absOffsetX in 0f..maxOffset -> offsetX += absDelta
+                            absOffsetX in 0f..maxOffsetX -> offsetX += absDelta
                             absOffsetX < 0f -> offsetX = 0f
-                            absOffsetX > maxOffset -> offsetX = maxOffset
+                            absOffsetX > maxOffsetX -> offsetX = maxOffsetX
                         }
                         updateTrackColor()
                     },
@@ -169,8 +169,8 @@ fun Switch(
                     onDragStopped = {
                         dragging = false
                         if (offsetX >= halfWidth) {
-                            distance = maxOffset - offsetX
-                            offsetX = maxOffset
+                            distance = maxOffsetX - offsetX
+                            offsetX = maxOffsetX
                             onCheckedChange(true)
                         } else {
                             distance = offsetX
