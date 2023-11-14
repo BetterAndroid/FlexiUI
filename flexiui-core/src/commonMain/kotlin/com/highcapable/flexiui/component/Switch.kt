@@ -133,7 +133,7 @@ fun Switch(
             }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrNot(style.trackBorder, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
-                .padding(start = style.padding, end = style.padding),
+                .padding(horizontal = style.padding),
             verticalAlignment = Alignment.CenterVertically,
             content = content
         )
