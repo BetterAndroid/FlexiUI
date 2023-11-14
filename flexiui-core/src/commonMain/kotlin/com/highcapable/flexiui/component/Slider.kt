@@ -33,7 +33,9 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -65,13 +67,15 @@ import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.status
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @Immutable
 data class SliderColors(
     val trackInactiveColor: Color,
     val trackActiveColor: Color,
-    val thumbColor: Color
+    val thumbColor: Color,
+    val stepColor: Color
 )
 
 @Immutable
@@ -80,8 +84,10 @@ data class SliderStyle(
     val thumbGain: Float,
     val thumbShadowSize: Dp,
     val thumbShape: Shape,
+    val stepShape: Shape,
     val trackShape: Shape,
     val thumbBorder: BorderStroke,
+    val stepBorder: BorderStroke,
     val trackBorder: BorderStroke,
     val trackWidth: Dp,
     val trackHeight: Dp
@@ -97,22 +103,37 @@ fun Slider(
     enabled: Boolean = true,
     min: Float = 0f,
     max: Float = 100f,
-    /*@IntRange(from = 0)*/
-    steps: Int = 0, // TODO: Implement steps
+    steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val thumbDiameter = style.thumbRadius * 2
     val trackAdoptWidth = style.trackWidth - thumbDiameter
     val hovered by interactionSource.collectIsHoveredAsState()
+    var tapped by remember { mutableStateOf(false) }
     var dragging by remember { mutableStateOf(false) }
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
-    val maxOffset = with(LocalDensity.current) { (style.trackWidth - thumbDiameter).toPx() }
-    val offsetXFromValue = (value.coerceIn(min, max) - min) / (max - min) * maxOffset
+    val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter).toPx() }
+    var steppedOffsetXs by remember { mutableStateOf(listOf<Float>()) }
+    if (steps > 0) {
+        val pOffsetX = maxOffsetX / (steps + 1)
+        steppedOffsetXs = List(steps + 2) { index -> index * pOffsetX }
+    }
+
+    fun Float.withSteps() =
+        if (steps > 0)
+            steppedOffsetXs.minByOrNull { abs(it - this) } ?: this
+        else this
+
+    val offsetXFromValue = (value.coerceIn(min, max) - min) / (max - min) * maxOffsetX
+    val steppedOffsetXFromValue = offsetXFromValue.withSteps()
     var absOffsetX by remember { mutableStateOf(0f) }
-    var offsetX by remember { mutableStateOf(offsetXFromValue) }
-    fun updateValue() {
-        val newValue = (offsetX / maxOffset) * (max - min) + min
+    var offsetX by remember { mutableStateOf(steppedOffsetXFromValue) }
+    val animatedOffsetX by animateFloatAsState(offsetX)
+    val adoptedOffsetX = if (tapped && !dragging) animatedOffsetX else offsetX
+
+    fun updateValue(offsetX: Float) {
+        val newValue = (offsetX / maxOffsetX) * (max - min) + min
         onValueChange(newValue)
     }
 
@@ -127,7 +148,7 @@ fun Slider(
                     .drawWithContent {
                         drawRoundRect(
                             color = colors.trackActiveColor,
-                            size = Size(offsetX, size.height),
+                            size = Size(adoptedOffsetX, size.height),
                             cornerRadius = CornerRadius(cornerSize, cornerSize)
                         )
                     }
@@ -137,10 +158,26 @@ fun Slider(
     }
 
     @Composable
+    fun Step() {
+        if (steps > 0) Row(
+            modifier = Modifier.size(trackAdoptWidth, style.trackHeight),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            for (i in 0 until steps + 2)
+                Box(
+                    modifier = Modifier.size(style.trackHeight)
+                        .background(colors.stepColor, style.stepShape)
+                        .borderOrNot(style.stepBorder, style.stepShape)
+                )
+        }
+    }
+
+    @Composable
     fun Thumb() {
         Box(
             modifier = Modifier.size(thumbDiameter)
-                .offset { IntOffset(offsetX.roundToInt(), 0) }
+                .offset { IntOffset(adoptedOffsetX.roundToInt(), 0) }
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
                 .background(colors.thumbColor, style.thumbShape)
@@ -151,20 +188,23 @@ fun Slider(
                         val absDelta = delta * animatedScale
                         absOffsetX += absDelta
                         when {
-                            absOffsetX in 0f..maxOffset -> offsetX += absDelta
+                            absOffsetX in 0f..maxOffsetX -> offsetX += absDelta
                             absOffsetX < 0f -> offsetX = 0f
-                            absOffsetX > maxOffset -> offsetX = maxOffset
+                            absOffsetX > maxOffsetX -> offsetX = maxOffsetX
                         }
-                        updateValue()
+                        updateValue(offsetX.withSteps())
                     },
                     interactionSource = interactionSource,
                     enabled = enabled,
                     onDragStarted = {
+                        tapped = false
                         dragging = true
                         absOffsetX = offsetX
                     },
                     onDragStopped = {
                         dragging = false
+                        val steppedOffsetX = offsetX.withSteps()
+                        if (offsetX != steppedOffsetX) offsetX = steppedOffsetX
                         onValueChangeFinished?.invoke()
                     }
                 )
@@ -176,16 +216,17 @@ fun Slider(
             .pointerInput(Unit) {
                 if (enabled) detectTapGestures(
                     onTap = { offset ->
+                        tapped = true
                         val tapedOffsetX = offset.x - style.thumbRadius.toPx()
-                        offsetX = tapedOffsetX.coerceIn(0f, maxOffset)
-                        updateValue()
+                        offsetX = tapedOffsetX.withSteps().coerceIn(0f, maxOffsetX)
+                        updateValue(offsetX)
                         onValueChangeFinished?.invoke()
                     }
                 )
             },
         contentAlignment = Alignment.CenterStart
     ) {
-        Track {}
+        Track { Step() }
         Thumb()
     }
 }
@@ -206,7 +247,8 @@ object Slider {
 private fun defaultSliderColors() = SliderColors(
     trackInactiveColor = LocalColors.current.themeTertiary,
     trackActiveColor = LocalColors.current.themePrimary,
-    thumbColor = LocalColors.current.themePrimary
+    thumbColor = LocalColors.current.themePrimary,
+    stepColor = LocalColors.current.themeSecondary
 )
 
 @Composable
@@ -216,8 +258,10 @@ private fun defaultSliderStyle() = SliderStyle(
     thumbGain = DefaultThumbGain,
     thumbShadowSize = DefaultThumbShadowSize,
     thumbShape = CircleShape,
+    stepShape = CircleShape,
     trackShape = LocalShapes.current.primary,
     thumbBorder = defaultSliderBorder(),
+    stepBorder = defaultSliderBorder(),
     trackBorder = defaultSliderBorder(),
     trackWidth = DefaultTrackWidth,
     trackHeight = DefaultTrackHeight
