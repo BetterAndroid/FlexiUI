@@ -150,9 +150,9 @@ private fun MenuItemContent(
             .onHover { hovered = it }
             .fillMaxWidth()
             .sizeIn(
-                minWidth = DefaultDesktopContextMenuContentMinWidth,
-                maxWidth = DefaultDesktopContextMenuContentMaxWidth,
-                minHeight = DefaultDesktopContextMenuContentMinHeight
+                minWidth = DefaultMenuContentMinWidth,
+                maxWidth = DefaultMenuContentMaxWidth,
+                minHeight = DefaultMenuContentMinHeight
             ),
         color = Color.Transparent,
         style = style,
@@ -209,8 +209,8 @@ internal fun defaultContextMenuColors() = ContextMenuColors(
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
     contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
         padding = 0.dp,
-        startPadding = DefaultDesktopContextMenuContentPadding,
-        endPadding = DefaultDesktopContextMenuContentPadding,
+        startPadding = DefaultMenuContentPadding,
+        endPadding = DefaultMenuContentPadding,
         shape = LocalShapes.current.secondary
     ),
     borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBox.style.copy(
@@ -220,7 +220,7 @@ internal fun defaultContextMenuStyle() = ContextMenuStyle(
     )
 )
 
-private val DefaultDesktopContextMenuContentMinWidth = 112.dp
-private val DefaultDesktopContextMenuContentMaxWidth = 280.dp
-private val DefaultDesktopContextMenuContentMinHeight = 32.dp
-private val DefaultDesktopContextMenuContentPadding = 16.dp
+private val DefaultMenuContentMinWidth = 112.dp
+private val DefaultMenuContentMaxWidth = 280.dp
+private val DefaultMenuContentMinHeight = 32.dp
+private val DefaultMenuContentPadding = 16.dp
