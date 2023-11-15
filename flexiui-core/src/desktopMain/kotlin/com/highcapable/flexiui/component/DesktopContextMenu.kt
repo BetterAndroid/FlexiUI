@@ -26,15 +26,9 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.ContextMenuRepresentation
 import androidx.compose.foundation.ContextMenuState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -50,12 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.input.InputModeManager
 import androidx.compose.ui.input.key.KeyEventType
@@ -66,7 +57,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInputModeManager
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -80,12 +70,10 @@ import java.awt.event.KeyEvent
 
 @Immutable
 data class ContextMenuStyle(
-    val backgroundColor: Color,
-    val textColor: Color,
-    val padding: Dp,
-    val shadowSize: Dp,
-    val contentShape: Shape?,
-    val borderShape: Shape?
+    val contentColor: Color,
+    val borderColor: Color,
+    val contentStyle: AreaBoxStyle?,
+    val borderStyle: AreaBoxStyle?
 )
 
 internal class DesktopContextMenuRepresentation(private val style: ContextMenuStyle) : ContextMenuRepresentation {
@@ -94,8 +82,8 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
         val status = state.status
         if (status is ContextMenuState.Status.Open) {
-            val contentShape = style.contentShape ?: return
-            val borderShape = style.borderShape ?: return
+            val contentStyle = style.contentStyle ?: return
+            val borderStyle = style.borderStyle ?: return
             var focusManager: FocusManager? by mutableStateOf(null)
             var inputModeManager: InputModeManager? by mutableStateOf(null)
             Popup(
@@ -120,22 +108,21 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
                 }) {
                 focusManager = LocalFocusManager.current
                 inputModeManager = LocalInputModeManager.current
-                Column(
+                AreaColumn(
                     modifier = Modifier
-                        .shadow(style.shadowSize, borderShape)
-                        .background(style.backgroundColor, borderShape)
-                        .padding(style.padding)
                         .width(IntrinsicSize.Max)
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
+                    color = style.borderColor,
+                    style = borderStyle
                 ) {
                     items().forEach { item ->
                         MenuItemContent(
-                            shape = contentShape,
+                            style = contentStyle,
                             onClick = {
                                 state.status = ContextMenuState.Status.Closed
                                 item.onClick()
                             }
-                        ) { Text(text = item.label) }
+                        ) { Text(text = item.label, color = style.contentColor) }
                     }
                 }
             }
@@ -145,32 +132,23 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
 
 @Composable
 private fun MenuItemContent(
-    shape: Shape,
+    style: AreaBoxStyle,
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
 ) {
     var hovered by remember { mutableStateOf(false) }
-    Row(
+    AreaRow(
         modifier = Modifier
-            .clip(shape)
-            .rippleClickable(
-                onClick = onClick,
-                interactionSource = remember { MutableInteractionSource() }
-            )
+            .rippleClickable(onClick = onClick)
             .onHover { hovered = it }
             .fillMaxWidth()
-            // Preferred min and max width used during the intrinsic measurement.
             .sizeIn(
-                minWidth = 112.dp,
-                maxWidth = 280.dp,
-                minHeight = 32.dp
-            )
-            .padding(
-                PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 0.dp
-                )
+                minWidth = DefaultDesktopContextMenuContentMinWidth,
+                maxWidth = DefaultDesktopContextMenuContentMaxWidth,
+                minHeight = DefaultDesktopContextMenuContentMinHeight
             ),
+        color = Color.Transparent,
+        style = style,
         verticalAlignment = Alignment.CenterVertically
     ) { content() }
 }
@@ -196,22 +174,32 @@ object DesktopContextMenu {
 
 val LocalContextMenuStyle = compositionLocalOf {
     ContextMenuStyle(
-        backgroundColor = Color.Unspecified,
-        textColor = Color.Unspecified,
-        padding = Dp.Unspecified,
-        shadowSize = Dp.Unspecified,
-        contentShape = null,
-        borderShape = null
+        borderColor = Color.Unspecified,
+        contentColor = Color.Unspecified,
+        contentStyle = null,
+        borderStyle = null
     )
 }
 
 @Composable
 @ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
-    backgroundColor = LocalContextMenuStyle.current.backgroundColor.orElse() ?: LocalColors.current.foregroundPrimary,
-    textColor = LocalContextMenuStyle.current.textColor.orElse() ?: LocalColors.current.textPrimary,
-    padding = LocalContextMenuStyle.current.padding.orElse() ?: LocalSizes.current.spacingTertiary,
-    shadowSize = LocalContextMenuStyle.current.shadowSize.orElse() ?: LocalSizes.current.zoomSizeTertiary,
-    contentShape = LocalContextMenuStyle.current.contentShape ?: LocalShapes.current.secondary,
-    borderShape = LocalContextMenuStyle.current.borderShape ?: LocalShapes.current.primary
+    contentColor = LocalContextMenuStyle.current.contentColor.orElse() ?: LocalColors.current.textPrimary,
+    borderColor = LocalContextMenuStyle.current.borderColor.orElse() ?: AreaBox.color,
+    contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
+        padding = 0.dp,
+        startPadding = DefaultDesktopContextMenuContentPadding,
+        endPadding = DefaultDesktopContextMenuContentPadding,
+        shape = LocalShapes.current.secondary
+    ),
+    borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBox.style.copy(
+        padding = LocalSizes.current.spacingTertiary,
+        shadowSize = LocalSizes.current.zoomSizeTertiary,
+        shape = LocalShapes.current.primary
+    )
 )
+
+private val DefaultDesktopContextMenuContentMinWidth = 112.dp
+private val DefaultDesktopContextMenuContentMaxWidth = 280.dp
+private val DefaultDesktopContextMenuContentMinHeight = 32.dp
+private val DefaultDesktopContextMenuContentPadding = 16.dp
