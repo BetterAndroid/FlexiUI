@@ -68,6 +68,7 @@ data class AreaBoxStyle(
 @Composable
 fun AreaBox(
     modifier: Modifier = Modifier,
+    initializer: Modifier.() -> Modifier = { Modifier },
     color: Color = AreaBox.color,
     style: AreaBoxStyle = AreaBox.style,
     contentAlignment: Alignment = Alignment.TopStart,
@@ -79,7 +80,7 @@ fun AreaBox(
         LocalAreaBoxShape provides style.shape
     ) {
         Box(
-            modifier = Modifier.box(style, color, modifier),
+            modifier = Modifier.box(style, color, modifier, initializer),
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
             content = content
@@ -90,6 +91,7 @@ fun AreaBox(
 @Composable
 fun AreaRow(
     modifier: Modifier = Modifier,
+    initializer: Modifier.() -> Modifier = { Modifier },
     color: Color = AreaBox.color,
     style: AreaBoxStyle = AreaBox.style,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
@@ -101,7 +103,7 @@ fun AreaRow(
         LocalAreaBoxShape provides style.shape
     ) {
         Row(
-            modifier = Modifier.box(style, color, modifier),
+            modifier = Modifier.box(style, color, modifier, initializer),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             content = content
@@ -112,6 +114,7 @@ fun AreaRow(
 @Composable
 fun AreaColumn(
     modifier: Modifier = Modifier,
+    initializer: Modifier.() -> Modifier = { Modifier },
     color: Color = AreaBox.color,
     style: AreaBoxStyle = AreaBox.style,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
@@ -123,7 +126,7 @@ fun AreaColumn(
         LocalAreaBoxShape provides style.shape
     ) {
         Column(
-            modifier = Modifier.box(style, color, modifier),
+            modifier = Modifier.box(style, color, modifier, initializer),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             content = content
@@ -135,7 +138,9 @@ private fun Modifier.box(
     style: AreaBoxStyle,
     color: Color,
     modifier: Modifier,
-) = shadow(style.shadowSize, style.shape)
+    initializer: Modifier.() -> Modifier
+) = initializer()
+    .shadow(style.shadowSize, style.shape)
     .clip(style.shape)
     .background(color, style.shape)
     .borderOrNot(style.border, style.shape)

@@ -58,6 +58,7 @@ data class SurfaceStyle(
 @Composable
 fun Surface(
     modifier: Modifier = Modifier,
+    initializer: Modifier.() -> Modifier = { Modifier },
     colors: SurfaceColors = Surface.colors,
     style: SurfaceStyle = Surface.style,
     content: @Composable BoxScope.() -> Unit
@@ -67,14 +68,16 @@ fun Surface(
             backgroundPrimary = colors.backgroundColor,
             textPrimary = colors.contentColor
         )
-    ) { Box(Modifier.surface(colors, style, modifier), content = content) }
+    ) { Box(Modifier.surface(colors, style, modifier, initializer), content = content) }
 }
 
 private fun Modifier.surface(
     colors: SurfaceColors,
     style: SurfaceStyle,
-    modifier: Modifier
-) = background(colors.backgroundColor)
+    modifier: Modifier,
+    initializer: Modifier.() -> Modifier
+) = initializer()
+    .background(colors.backgroundColor)
     .then(modifier)
     .padding(
         top = style.topPadding.orElse() ?: style.padding,
