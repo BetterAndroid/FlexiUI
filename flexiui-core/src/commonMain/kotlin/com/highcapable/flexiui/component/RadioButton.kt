@@ -95,7 +95,7 @@ fun RadioButton(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentShadow by animateDpAsState(if (selected) style.contentShadowSize else 0.dp)
     val animatedContentAlpha by animateFloatAsState(if (selected) 1f else 0f)
-    Row(modifier = modifier.status(enabled), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.status(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier.clickable(
                 interactionSource = interactionSource,

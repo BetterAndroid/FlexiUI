@@ -211,7 +211,8 @@ fun Slider(
         )
     }
     Box(
-        modifier = modifier.status(enabled)
+        modifier = Modifier.status(enabled)
+            .then(modifier)
             .hoverable(interactionSource, enabled)
             .pointerInput(Unit) {
                 if (enabled) detectTapGestures(

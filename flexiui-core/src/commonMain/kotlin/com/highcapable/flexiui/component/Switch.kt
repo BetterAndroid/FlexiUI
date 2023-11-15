@@ -181,7 +181,7 @@ fun Switch(
                 )
         )
     }
-    Row(modifier = modifier.status(enabled)) {
+    Row(modifier = Modifier.status(enabled).then(modifier)) {
         Box(
             modifier = Modifier.padding(end = contentSpacing)
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }

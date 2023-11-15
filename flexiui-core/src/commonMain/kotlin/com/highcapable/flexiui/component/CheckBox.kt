@@ -94,7 +94,7 @@ fun CheckBox(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentAlpha by animateFloatAsState(if (checked) 1f else 0f)
     val animatedContentLayer by animateFloatAsState(if (checked) 1f else 0f)
-    Row(modifier = modifier.status(enabled), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.status(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier.clickable(
                 interactionSource = interactionSource,

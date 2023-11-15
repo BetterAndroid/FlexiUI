@@ -237,13 +237,13 @@ private fun TextFieldDecorationBox(
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     Box(
-        modifier.textField(
+        Modifier.textField(
             colors = colors,
             style = style,
             border = border,
             enabled = enabled,
             interactionSource = interactionSource
-        )
+        ).then(modifier)
     ) {
         Row {
             header()

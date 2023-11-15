@@ -87,10 +87,11 @@ fun Button(
         backgroundColor = Color.Transparent
     )
     Box(
-        modifier = modifier.status(enabled)
+        modifier = Modifier.status(enabled)
             .clip(style.shape)
             .background(colors.backgroundColor, style.shape)
             .borderOrNot(style.border, style.shape)
+            .then(modifier)
             .rippleClickable(
                 enabled = enabled,
                 role = Role.Button,
@@ -104,7 +105,7 @@ fun Button(
             LocalProgressIndicatorColors provides localProgressIndicatorColors
         ) {
             Row(
-                Modifier.padding(
+                modifier = Modifier.padding(
                     top = style.topPadding.orElse() ?: style.padding,
                     start = style.startPadding.orElse() ?: style.padding,
                     bottom = style.bottomPadding.orElse() ?: style.padding,
