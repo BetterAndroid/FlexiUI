@@ -44,6 +44,8 @@ import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.CheckBox
+import com.highcapable.flexiui.component.DropdownMenu
+import com.highcapable.flexiui.component.DropdownMenuItem
 import com.highcapable.flexiui.component.RadioButton
 import com.highcapable.flexiui.component.Slider
 import com.highcapable.flexiui.component.Surface
@@ -61,7 +63,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun App() {
-    val themeColor = remember { mutableStateOf(greenColors()) }
+    val themeColor = remember { mutableStateOf(ThemeColors.first().second) }
     FlexiTheme(colors = themeColor.value) {
         Surface {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -139,59 +141,53 @@ private fun ContentView() {
 private fun ThemeColorsView(themeColor: MutableState<Colors>) {
     Text(text = "Here are some theme color tests.")
     Spacer(Modifier.padding(10.dp))
-    Row {
-        Button(onClick = { themeColor.value = defaultColors() }) {
-            Text(text = "Default")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = defaultColors(darkMode = true) }) {
-            Text(text = "Default (Dark)")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = defaultColors(darkMode = true, blackDarkMode = true) }) {
-            Text(text = "Default (Black)")
-        }
-    }
-    Spacer(Modifier.padding(10.dp))
-    Row {
-        Button(onClick = { themeColor.value = redColors() }) {
-            Text(text = "Red")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = pinkColors() }) {
-            Text(text = "Pink")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = purpleColors() }) {
-            Text(text = "Purple")
-        }
-    }
-    Spacer(Modifier.padding(10.dp))
-    Row {
-        Button(onClick = { themeColor.value = greenColors() }) {
-            Text(text = "Green")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = orangeColors() }) {
-            Text(text = "Orange")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = yellowColors() }) {
-            Text(text = "Yellow")
-        }
-    }
-    Spacer(Modifier.padding(10.dp))
-    Row {
-        Button(onClick = { themeColor.value = blueColors() }) {
-            Text(text = "Blue")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = greenColors(darkMode = true) }) {
-            Text(text = "Green (Dark)")
-        }
-        Spacer(Modifier.padding(10.dp))
-        Button(onClick = { themeColor.value = greenColors(darkMode = true, blackDarkMode = true) }) {
-            Text(text = "Green (Black)")
+    var showChooser by remember { mutableStateOf(false) }
+    var choosedColorName by remember { mutableStateOf(ThemeColors.first().first) }
+    var choosedColor by remember { mutableStateOf(ThemeColors.first().second) }
+    themeColor.value = choosedColor
+    Button(onClick = { showChooser = !showChooser }) {
+        Text(text = "Choose a color: $choosedColorName")
+        DropdownMenu(
+            expanded = showChooser,
+            onDismissRequest = { showChooser = false }
+        ) {
+            ThemeColors.forEach { (name, color) ->
+                DropdownMenuItem(
+                    onClick = {
+                        showChooser = false
+                        choosedColorName = name
+                        choosedColor = color
+                    },
+                    actived = choosedColorName == name
+                ) { Text(text = name) }
+            }
         }
     }
 }
+
+private val ThemeColors = listOf(
+    "Default" to defaultColors(),
+    "Default (Dark)" to defaultColors(darkMode = true),
+    "Default (Black)" to defaultColors(darkMode = true, blackDarkMode = true),
+    "Red" to redColors(),
+    "Red (Dark)" to redColors(darkMode = true),
+    "Red (Black)" to redColors(darkMode = true, blackDarkMode = true),
+    "Pink" to pinkColors(),
+    "Pink (Dark)" to pinkColors(darkMode = true),
+    "Pink (Black)" to pinkColors(darkMode = true, blackDarkMode = true),
+    "Purple" to purpleColors(),
+    "Purple (Dark)" to purpleColors(darkMode = true),
+    "Purple (Black)" to purpleColors(darkMode = true, blackDarkMode = true),
+    "Green" to greenColors(),
+    "Green (Dark)" to greenColors(darkMode = true),
+    "Green (Black)" to greenColors(darkMode = true, blackDarkMode = true),
+    "Orange" to orangeColors(),
+    "Orange (Dark)" to orangeColors(darkMode = true),
+    "Orange (Black)" to orangeColors(darkMode = true, blackDarkMode = true),
+    "Yellow" to yellowColors(),
+    "Yellow (Dark)" to yellowColors(darkMode = true),
+    "Yellow (Black)" to yellowColors(darkMode = true, blackDarkMode = true),
+    "Blue" to blueColors(),
+    "Blue (Dark)" to blueColors(darkMode = true),
+    "Blue (Black)" to blueColors(darkMode = true, blackDarkMode = true)
+)
