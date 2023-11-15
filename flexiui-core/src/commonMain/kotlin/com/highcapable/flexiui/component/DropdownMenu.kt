@@ -88,6 +88,7 @@ import kotlin.math.min
 @Immutable
 data class DropdownMenuColors(
     val contentColor: Color,
+    val activeColor: Color,
     val borderColor: Color
 )
 
@@ -147,12 +148,15 @@ fun DropdownMenuItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentColor: Color = Color.Unspecified,
+    activeColor: Color = Color.Unspecified,
     contentStyle: AreaBoxStyle? = null,
     enabled: Boolean = true,
+    actived: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
     val currentColor = contentColor.orElse() ?: LocalDropdownMenuContentColor.current.orElse() ?: DropdownMenu.colors.contentColor
+    val currentActiveColor = activeColor.orElse() ?: LocalDropdownMenuActiveColor.current.orElse() ?: DropdownMenu.colors.activeColor
     val currentStyle = contentStyle ?: LocalDropdownMenuContentStyle.current ?: DropdownMenu.style.contentStyle
     AreaRow(
         modifier = Modifier.status(enabled)
@@ -169,7 +173,7 @@ fun DropdownMenuItem(
                 interactionSource = interactionSource,
                 onClick = onClick
             ),
-        color = Color.Transparent,
+        color = if (actived) currentActiveColor else Color.Transparent,
         style = currentStyle,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -222,6 +226,7 @@ private fun DropdownMenuContent(
     ) {
         CompositionLocalProvider(
             LocalDropdownMenuContentColor provides colors.contentColor,
+            LocalDropdownMenuActiveColor provides colors.activeColor,
             LocalDropdownMenuContentStyle provides style.contentStyle
         ) { content() }
     }
@@ -320,12 +325,15 @@ object DropdownMenu {
 
 private val LocalDropdownMenuContentColor = compositionLocalOf { Color.Unspecified }
 
+private val LocalDropdownMenuActiveColor = compositionLocalOf { Color.Unspecified }
+
 private val LocalDropdownMenuContentStyle = compositionLocalOf<AreaBoxStyle?> { null }
 
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownMenuColors() = DropdownMenuColors(
     contentColor = LocalColors.current.textPrimary,
+    activeColor = LocalColors.current.themePrimary.copy(alpha = 0.3f),
     borderColor = AreaBox.color
 )
 
