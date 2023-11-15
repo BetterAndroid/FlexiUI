@@ -177,7 +177,9 @@ fun DropdownMenuItem(
         style = currentStyle,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CompositionLocalProvider(LocalTextStyle provides LocalTextStyle.current.default(currentColor)) {
+        // Note: Since this is a popup menu, we don't want to propagate the content color.
+        //       So here we use copy NOT default.
+        CompositionLocalProvider(LocalTextStyle provides LocalTextStyle.current.copy(color = currentColor)) {
             content()
         }
     }
