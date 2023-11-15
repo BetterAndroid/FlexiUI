@@ -67,13 +67,15 @@ fun Surface(
             backgroundPrimary = colors.backgroundColor,
             textPrimary = colors.contentColor
         )
-    ) { Box(Modifier.surface(colors, style).then(modifier), content = content) }
+    ) { Box(Modifier.surface(colors, style, modifier), content = content) }
 }
 
 private fun Modifier.surface(
     colors: SurfaceColors,
-    style: SurfaceStyle
+    style: SurfaceStyle,
+    modifier: Modifier
 ) = background(colors.backgroundColor)
+    .then(modifier)
     .padding(
         top = style.topPadding.orElse() ?: style.padding,
         start = style.startPadding.orElse() ?: style.padding,
