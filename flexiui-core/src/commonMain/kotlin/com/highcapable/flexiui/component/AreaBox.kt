@@ -41,9 +41,11 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.DefaultShapes
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
@@ -59,7 +61,8 @@ data class AreaBoxStyle(
     val bottomPadding: Dp,
     val endPadding: Dp,
     val shape: Shape,
-    val border: BorderStroke
+    val border: BorderStroke,
+    val shadowSize: Dp
 )
 
 @Composable
@@ -76,7 +79,7 @@ fun AreaBox(
         LocalAreaBoxShape provides style.shape
     ) {
         Box(
-            modifier = modifier.box(style, color),
+            modifier = Modifier.box(style, color, modifier),
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
             content = content
@@ -98,7 +101,7 @@ fun AreaRow(
         LocalAreaBoxShape provides style.shape
     ) {
         Row(
-            modifier = modifier.box(style, color),
+            modifier = Modifier.box(style, color, modifier),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             content = content
@@ -120,7 +123,7 @@ fun AreaColumn(
         LocalAreaBoxShape provides style.shape
     ) {
         Column(
-            modifier = modifier.box(style, color),
+            modifier = Modifier.box(style, color, modifier),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             content = content
@@ -128,16 +131,21 @@ fun AreaColumn(
     }
 }
 
-private fun Modifier.box(style: AreaBoxStyle, color: Color) =
-    clip(style.shape)
-        .background(color, style.shape)
-        .borderOrNot(style.border, style.shape)
-        .padding(
-            top = style.topPadding.orElse() ?: style.padding,
-            start = style.startPadding.orElse() ?: style.padding,
-            bottom = style.bottomPadding.orElse() ?: style.padding,
-            end = style.endPadding.orElse() ?: style.padding
-        )
+private fun Modifier.box(
+    style: AreaBoxStyle,
+    color: Color,
+    modifier: Modifier,
+) = shadow(style.shadowSize, style.shape)
+    .clip(style.shape)
+    .background(color, style.shape)
+    .borderOrNot(style.border, style.shape)
+    .then(modifier)
+    .padding(
+        top = style.topPadding.orElse() ?: style.padding,
+        start = style.startPadding.orElse() ?: style.padding,
+        bottom = style.bottomPadding.orElse() ?: style.padding,
+        end = style.endPadding.orElse() ?: style.padding
+    )
 
 object AreaBox {
     val color: Color
@@ -165,7 +173,8 @@ private fun defaultAreaBoxStyle() = AreaBoxStyle(
     bottomPadding = Dp.Unspecified,
     endPadding = Dp.Unspecified,
     shape = LocalShapes.current.primary,
-    border = defaultAreaBoxBorder()
+    border = defaultAreaBoxBorder(),
+    shadowSize = DefaultAreaBoxShadowSize
 )
 
 @Composable
@@ -175,3 +184,5 @@ private fun defaultAreaBoxColor() = LocalColors.current.foregroundPrimary
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
+
+private val DefaultAreaBoxShadowSize = 0.dp
