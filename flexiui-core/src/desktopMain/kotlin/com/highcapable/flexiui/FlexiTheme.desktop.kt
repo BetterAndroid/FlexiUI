@@ -28,14 +28,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import com.highcapable.flexiui.component.DesktopContextMenu
 import com.highcapable.flexiui.component.DesktopContextMenuRepresentation
+import com.highcapable.flexiui.component.LocalContextMenuColors
 import com.highcapable.flexiui.component.LocalContextMenuStyle
+import com.highcapable.flexiui.component.defaultContextMenuColors
 import com.highcapable.flexiui.component.defaultContextMenuStyle
 
 @Composable
 internal actual fun FlexiThemeContent(content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalContextMenuStyle provides defaultContextMenuStyle()) {
+    CompositionLocalProvider(
+        LocalContextMenuColors provides defaultContextMenuColors(),
+        LocalContextMenuStyle provides defaultContextMenuStyle()
+    ) {
         CompositionLocalProvider(
-            LocalContextMenuRepresentation provides DesktopContextMenuRepresentation(DesktopContextMenu.style),
+            LocalContextMenuRepresentation provides
+                DesktopContextMenuRepresentation(
+                    colors = DesktopContextMenu.colors,
+                    style = DesktopContextMenu.style
+                ),
             content = content
         )
     }

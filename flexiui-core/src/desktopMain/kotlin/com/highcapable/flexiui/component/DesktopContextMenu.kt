@@ -69,14 +69,21 @@ import com.highcapable.flexiui.utils.orElse
 import java.awt.event.KeyEvent
 
 @Immutable
-data class ContextMenuStyle(
+data class ContextMenuColors(
     val contentColor: Color,
-    val borderColor: Color,
+    val borderColor: Color
+)
+
+@Immutable
+data class ContextMenuStyle(
     val contentStyle: AreaBoxStyle?,
     val borderStyle: AreaBoxStyle?
 )
 
-internal class DesktopContextMenuRepresentation(private val style: ContextMenuStyle) : ContextMenuRepresentation {
+internal class DesktopContextMenuRepresentation(
+    private val colors: ContextMenuColors,
+    private val style: ContextMenuStyle
+) : ContextMenuRepresentation {
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
@@ -112,7 +119,7 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
                     modifier = Modifier
                         .width(IntrinsicSize.Max)
                         .verticalScroll(rememberScrollState()),
-                    color = style.borderColor,
+                    color = colors.borderColor,
                     style = borderStyle
                 ) {
                     items().forEach { item ->
@@ -122,7 +129,7 @@ internal class DesktopContextMenuRepresentation(private val style: ContextMenuSt
                                 state.status = ContextMenuState.Status.Closed
                                 item.onClick()
                             }
-                        ) { Text(text = item.label, color = style.contentColor) }
+                        ) { Text(text = item.label, color = colors.contentColor) }
                     }
                 }
             }
@@ -166,16 +173,25 @@ private fun Modifier.onHover(onHover: (Boolean) -> Unit) = pointerInput(Unit) {
 }
 
 object DesktopContextMenu {
+    val colors: ContextMenuColors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalContextMenuColors.current
     val style: ContextMenuStyle
         @Composable
         @ReadOnlyComposable
         get() = LocalContextMenuStyle.current
 }
 
+val LocalContextMenuColors = compositionLocalOf {
+    ContextMenuColors(
+        borderColor = Color.Unspecified,
+        contentColor = Color.Unspecified
+    )
+}
+
 val LocalContextMenuStyle = compositionLocalOf {
     ContextMenuStyle(
-        borderColor = Color.Unspecified,
-        contentColor = Color.Unspecified,
         contentStyle = null,
         borderStyle = null
     )
@@ -183,9 +199,14 @@ val LocalContextMenuStyle = compositionLocalOf {
 
 @Composable
 @ReadOnlyComposable
+internal fun defaultContextMenuColors() = ContextMenuColors(
+    contentColor = LocalContextMenuColors.current.contentColor.orElse() ?: LocalColors.current.textPrimary,
+    borderColor = LocalContextMenuColors.current.borderColor.orElse() ?: AreaBox.color
+)
+
+@Composable
+@ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
-    contentColor = LocalContextMenuStyle.current.contentColor.orElse() ?: LocalColors.current.textPrimary,
-    borderColor = LocalContextMenuStyle.current.borderColor.orElse() ?: AreaBox.color,
     contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
         padding = 0.dp,
         startPadding = DefaultDesktopContextMenuContentPadding,
