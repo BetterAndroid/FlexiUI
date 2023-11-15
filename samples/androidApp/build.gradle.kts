@@ -23,6 +23,8 @@ android {
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         applicationId = property.project.sharedApp.packageName
@@ -41,5 +43,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+val composeAndroidVersion = dependencies.androidx.compose.android.version
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group.startsWith("androidx.compose."))
+            useVersion(composeAndroidVersion)
     }
 }
