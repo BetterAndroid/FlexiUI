@@ -23,17 +23,33 @@
 
 package com.highcapable.flexiui.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -50,9 +66,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiComposable
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.InputMode
@@ -67,6 +87,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
@@ -79,10 +100,22 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.icon.Dropdown
+import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
+import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
 import kotlin.math.max
 import kotlin.math.min
+
+@Immutable
+data class DropdownListColors(
+    val endIconTint: Color,
+    val borderInactiveColor: Color,
+    val borderActiveColor: Color,
+    val backgroundColor: Color
+)
 
 @Immutable
 data class DropdownMenuColors(
@@ -92,12 +125,96 @@ data class DropdownMenuColors(
 )
 
 @Immutable
+data class DropdownListStyle(
+    val padding: Dp,
+    val topPadding: Dp,
+    val startPadding: Dp,
+    val bottomPadding: Dp,
+    val endPadding: Dp,
+    val shape: Shape,
+    val endIconSize: Dp,
+    val borderInactive: BorderStroke,
+    val borderActive: BorderStroke
+)
+
+@Immutable
 data class DropdownMenuStyle(
     val inTransitionDuration: Int,
     val outTransitionDuration: Int,
     val contentStyle: AreaBoxStyle,
     val borderStyle: AreaBoxStyle
 )
+
+@Composable
+fun DropdownList(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: DropdownListColors = DropdownList.colors,
+    style: DropdownListStyle = DropdownList.style,
+    menuColors: DropdownMenuColors = DropdownMenu.colors,
+    menuStyle: DropdownMenuStyle = DropdownMenu.style,
+    enabled: Boolean = true,
+    scrollState: ScrollState = rememberScrollState(),
+    properties: PopupProperties = PopupProperties(focusable = true),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    text: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val focused by interactionSource.collectIsFocusedAsState()
+    val hovered by interactionSource.collectIsHoveredAsState()
+    var menuHeightPx by remember { mutableStateOf(0) }
+    val startPadding = style.startPadding.orElse() ?: style.padding
+    val endPadding = style.endPadding.orElse() ?: style.padding
+    val animatedBorderColor by animateColorAsState(when {
+        focused || hovered -> style.borderActive.solidColor
+        else -> style.borderInactive.solidColor
+    })
+    val animatedDirection by animateFloatAsState(if (expanded) 180f else 0f)
+    val animatedBorderWidth by animateDpAsState(when {
+        focused -> style.borderActive.width
+        else -> style.borderInactive.width
+    })
+    val border = when {
+        focused || hovered -> style.borderInactive
+        else -> style.borderInactive
+    }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
+    DropdownListBox(
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        modifier = modifier,
+        colors = colors,
+        style = style,
+        border = border,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        menuHeightPx = { menuHeightPx = it }
+    ) {
+        val menuWidth = maxWidth + startPadding + endPadding
+        val menuHeight = with(LocalDensity.current) { menuHeightPx.toDp() }
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Box(modifier = Modifier.weight(1f)) { text() }
+            Icon(
+                modifier = Modifier.graphicsLayer {
+                    rotationZ = animatedDirection
+                }.size(style.endIconSize),
+                imageVector = Icons.Dropdown,
+                tint = colors.endIconTint
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) },
+            offset = DefaultDropdownListMenuOffset,
+            modifier = Modifier.width(menuWidth).heightIn(max = menuHeight),
+            colors = menuColors,
+            style = menuStyle,
+            scrollState = scrollState,
+            properties = properties,
+            content = content
+        )
+    }
+}
 
 @Composable
 fun DropdownMenu(
@@ -233,6 +350,41 @@ private fun DropdownMenuContent(
     }
 }
 
+@Composable
+internal expect fun DropdownListBox(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    modifier: Modifier,
+    colors: DropdownListColors,
+    style: DropdownListStyle,
+    border: BorderStroke,
+    enabled: Boolean,
+    interactionSource: MutableInteractionSource,
+    menuHeightPx: (Int) -> Unit,
+    content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
+)
+
+internal fun Modifier.dropdownList(
+    colors: DropdownListColors,
+    style: DropdownListStyle,
+    border: BorderStroke,
+    enabled: Boolean,
+    interactionSource: MutableInteractionSource,
+    modifier: Modifier
+) = status(enabled)
+    .focusable(enabled, interactionSource)
+    .hoverable(interactionSource, enabled)
+    .clip(style.shape)
+    .background(colors.backgroundColor, style.shape)
+    .borderOrNot(border, style.shape)
+    .then(modifier)
+    .padding(
+        top = style.topPadding.orElse() ?: style.padding,
+        start = style.startPadding.orElse() ?: style.padding,
+        bottom = style.bottomPadding.orElse() ?: style.padding,
+        end = style.endPadding.orElse() ?: style.padding
+    )
+
 private fun calculateTransformOrigin(parentBounds: IntRect, menuBounds: IntRect): TransformOrigin {
     val pivotX = when {
         menuBounds.left >= parentBounds.right -> 0f
@@ -312,6 +464,17 @@ private data class DropdownMenuPositionProvider(
     }
 }
 
+object DropdownList {
+    val colors: DropdownListColors
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultDropdownListColors()
+    val style: DropdownListStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultDropdownListStyle()
+}
+
 object DropdownMenu {
     val colors: DropdownMenuColors
         @Composable
@@ -331,10 +494,36 @@ private val LocalDropdownMenuContentStyle = compositionLocalOf<AreaBoxStyle?> { 
 
 @Composable
 @ReadOnlyComposable
+private fun defaultDropdownListColors() = DropdownListColors(
+    endIconTint = LocalColors.current.themeSecondary,
+    borderInactiveColor = LocalColors.current.themeSecondary,
+    borderActiveColor = LocalColors.current.themePrimary,
+    backgroundColor = Color.Transparent
+)
+
+@Composable
+@ReadOnlyComposable
 private fun defaultDropdownMenuColors() = DropdownMenuColors(
     contentColor = LocalColors.current.textPrimary,
     activeColor = LocalColors.current.themePrimary.copy(alpha = 0.3f),
     borderColor = AreaBox.color
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultDropdownListStyle() = DropdownListStyle(
+    padding = LocalSizes.current.spacingSecondary,
+    topPadding = Dp.Unspecified,
+    startPadding = Dp.Unspecified,
+    bottomPadding = Dp.Unspecified,
+    endPadding = Dp.Unspecified,
+    shape = when (LocalInAreaBox.current) {
+        true -> LocalAreaBoxShape.current
+        else -> LocalShapes.current.secondary
+    },
+    endIconSize = LocalSizes.current.iconSizeTertiary,
+    borderInactive = defaultDropdownListInactiveBorder(),
+    borderActive = defaultDropdownListActiveBorder()
 )
 
 @Composable
@@ -354,6 +543,16 @@ private fun defaultDropdownMenuStyle() = DropdownMenuStyle(
         shape = LocalShapes.current.primary
     )
 )
+
+@Composable
+@ReadOnlyComposable
+private fun defaultDropdownListInactiveBorder() = BorderStroke(LocalSizes.current.borderSizeSecondary, LocalColors.current.themeSecondary)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultDropdownListActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
+
+private val DefaultDropdownListMenuOffset = DpOffset((-10).dp, 10.dp)
 
 private val DefaultMenuContentPadding = 16.dp
 
