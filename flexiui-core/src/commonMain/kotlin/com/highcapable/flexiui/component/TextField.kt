@@ -62,6 +62,7 @@ import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
+import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
 
 // TODO: Preset text boxes (password text box, text box with delete button, etc.)
@@ -329,5 +330,3 @@ private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.b
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
-
-private val BorderStroke.solidColor get() = (brush as? SolidColor?)?.value ?: Color.Unspecified
