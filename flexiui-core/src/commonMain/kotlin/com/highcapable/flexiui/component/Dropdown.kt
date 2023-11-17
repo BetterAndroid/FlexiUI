@@ -203,7 +203,10 @@ fun DropdownList(
     ) {
         val menuWidth = maxWidth + startPadding + endPadding
         val menuHeight = with(LocalDensity.current) { menuHeightPx.toDp() }
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Box(modifier = Modifier.weight(1f)) { text() }
             Icon(
                 modifier = Modifier.graphicsLayer {
