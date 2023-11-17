@@ -49,7 +49,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -258,7 +257,6 @@ private fun calculateTransformOrigin(parentBounds: IntRect, menuBounds: IntRect)
     return TransformOrigin(pivotX, pivotY)
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 private fun handlePopupOnKeyEvent(
     keyEvent: KeyEvent,
     focusManager: FocusManager?,

@@ -21,6 +21,11 @@ kotlin {
     }
     jvmToolchain(17)
     sourceSets {
+        all {
+            languageSettings {
+                optIn("androidx.compose.ui.ExperimentalComposeUiApi")
+            }
+        }
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)

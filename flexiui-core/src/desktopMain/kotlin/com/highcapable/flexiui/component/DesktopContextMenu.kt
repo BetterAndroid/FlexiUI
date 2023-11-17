@@ -42,7 +42,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -84,7 +83,7 @@ internal class DesktopContextMenuRepresentation(
     private val colors: ContextMenuColors,
     private val style: ContextMenuStyle
 ) : ContextMenuRepresentation {
-    @OptIn(ExperimentalComposeUiApi::class)
+
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
         val status = state.status
