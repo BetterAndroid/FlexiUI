@@ -19,7 +19,7 @@ plugins:
     version: 1.6.0-dev1276
   com.android.application:
     alias: android-application
-    version: 8.1.2
+    version: 8.1.4
   com.android.library:
     alias: android-library
     version-ref: android-application
@@ -34,9 +34,9 @@ libraries:
       version: 1.6.0-alpha08
   com.highcapable.betterandroid:
     ui-component:
-      version: 1.0.0
+      version: 1.0.1
     ui-extension:
-      version: 1.0.0
+      version: 1.0.1
     system-extension:
       version: 1.0.0
   androidx.activity:
