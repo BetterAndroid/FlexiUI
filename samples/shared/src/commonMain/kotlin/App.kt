@@ -31,6 +31,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,7 @@ import com.highcapable.flexiui.component.Switch
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
+import com.highcapable.flexiui.dynamicColors
 import com.highcapable.flexiui.greenColors
 import com.highcapable.flexiui.orangeColors
 import com.highcapable.flexiui.pinkColors
@@ -141,7 +143,7 @@ private fun ContentView() {
         Text(text = "Choose an item following.")
         Spacer(Modifier.padding(10.dp))
         DropdownList(
-            modifier = Modifier.width(150.dp),
+            modifier = Modifier.width(170.dp),
             expanded = expanded,
             onExpandedChange = { expanded = it },
             text = { Text(text = curentItem) }
@@ -169,20 +171,25 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
     themeColor.value = choosedColor
     Row {
         DropdownList(
-            modifier = Modifier.width(150.dp),
+            modifier = Modifier.width(170.dp),
             expanded = showChooser,
             onExpandedChange = { showChooser = it },
             text = { Text(text = choosedColorName) }
         ) {
-            ThemeColors.forEach { (name, color) ->
-                DropdownMenuItem(
-                    onClick = {
-                        showChooser = false
-                        choosedColorName = name
-                        choosedColor = color
-                    },
-                    actived = choosedColorName == name
-                ) { Text(text = name) }
+            ThemeColors.forEachIndexed { index, (name, colors) ->
+                @Composable
+                fun createItem(name: String, colors: Colors) =
+                    DropdownMenuItem(
+                        onClick = {
+                            showChooser = false
+                            choosedColorName = name
+                            choosedColor = colors
+                        },
+                        actived = choosedColorName == name
+                    ) { Text(text = name) }
+                if (isAndroidPlatform && index == 3)
+                    DynamicColors.forEach { (name, colors) -> createItem(name, colors) }
+                else createItem(name, colors)
             }
         }
         Spacer(modifier = Modifier.padding(5.dp))
@@ -192,6 +199,15 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
         }) { Text(text = "Reset") }
     }
 }
+
+private val DynamicColors
+    @Composable
+    @ReadOnlyComposable
+    get() = listOf(
+        "Dynamic" to dynamicColors(),
+        "Dynamic (Dark)" to dynamicColors(darkMode = true),
+        "Dynamic (Black)" to dynamicColors(darkMode = true, blackDarkMode = true)
+    )
 
 private val ThemeColors = listOf(
     "Default" to defaultColors(),
@@ -219,3 +235,5 @@ private val ThemeColors = listOf(
     "Blue (Dark)" to blueColors(darkMode = true),
     "Blue (Black)" to blueColors(darkMode = true, blackDarkMode = true)
 )
+
+expect val isAndroidPlatform: Boolean

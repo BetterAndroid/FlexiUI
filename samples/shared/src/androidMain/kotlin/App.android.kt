@@ -19,8 +19,9 @@
  *
  * This file is created by fankes on 2023/11/5.
  */
-
 import androidx.compose.runtime.Composable
 
 @Composable
 fun MainView() = App()
+
+actual val isAndroidPlatform = true

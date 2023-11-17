@@ -28,3 +28,5 @@ fun createUIViewController() = ComposeUIViewController { MainView() }
 
 @Composable
 fun MainView() = App()
+
+actual val isAndroidPlatform = false
