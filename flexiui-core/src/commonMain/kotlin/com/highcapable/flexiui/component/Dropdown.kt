@@ -183,21 +183,16 @@ fun DropdownList(
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     DropdownListBox(
-        modifier = modifier.dropdownList(
+        expanded = expanded,
+        onExpandedChange = onExpandedChange,
+        modifier = modifier,
+        properties = DropdownListProperties(
             colors = colors,
             style = style,
             border = border,
             enabled = enabled,
             focusRequester = focusRequester,
-            interactionSource = interactionSource,
-            modifier = modifier.rippleClickable(
-                enabled = enabled,
-                role = Role.DropdownList,
-                interactionSource = interactionSource
-            ) {
-                focusRequester.requestFocus()
-                onExpandedChange(!expanded)
-            }
+            interactionSource = interactionSource
         ),
         menuHeightPx = { menuHeightPx = it }
     ) {
@@ -366,33 +361,41 @@ private fun DropdownMenuContent(
 
 @Composable
 internal expect fun DropdownListBox(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier,
+    properties: DropdownListProperties,
     menuHeightPx: (Int) -> Unit,
     content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
 )
 
-private fun Modifier.dropdownList(
-    colors: DropdownListColors,
-    style: DropdownListStyle,
-    border: BorderStroke,
-    enabled: Boolean,
-    focusRequester: FocusRequester,
-    interactionSource: MutableInteractionSource,
+internal fun Modifier.dropdownList(
+    properties: DropdownListProperties,
     modifier: Modifier
-) = status(enabled)
-    .focusRequester(focusRequester)
-    .focusable(enabled, interactionSource)
-    .hoverable(interactionSource, enabled)
-    .clip(style.shape)
-    .background(colors.backgroundColor, style.shape)
-    .borderOrNot(border, style.shape)
+) = status(properties.enabled)
+    .focusRequester(properties.focusRequester)
+    .focusable(properties.enabled, properties.interactionSource)
+    .hoverable(properties.interactionSource, properties.enabled)
+    .clip(properties.style.shape)
+    .background(properties.colors.backgroundColor, properties.style.shape)
+    .borderOrNot(properties.border, properties.style.shape)
     .then(modifier)
     .padding(
-        top = style.topPadding.orElse() ?: style.padding,
-        start = style.startPadding.orElse() ?: style.padding,
-        bottom = style.bottomPadding.orElse() ?: style.padding,
-        end = style.endPadding.orElse() ?: style.padding
+        top = properties.style.topPadding.orElse() ?: properties.style.padding,
+        start = properties.style.startPadding.orElse() ?: properties.style.padding,
+        bottom = properties.style.bottomPadding.orElse() ?: properties.style.padding,
+        end = properties.style.endPadding.orElse() ?: properties.style.padding
     )
+
+@Immutable
+internal data class DropdownListProperties(
+    val colors: DropdownListColors,
+    val style: DropdownListStyle,
+    val border: BorderStroke,
+    val enabled: Boolean,
+    val focusRequester: FocusRequester,
+    val interactionSource: MutableInteractionSource
+)
 
 private fun calculateTransformOrigin(parentBounds: IntRect, menuBounds: IntRect): TransformOrigin {
     val pivotX = when {

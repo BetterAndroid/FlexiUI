@@ -38,21 +38,36 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.node.Ref
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.semantics.Role
+import com.highcapable.flexiui.interaction.rippleClickable
 import kotlin.math.max
 
 @Composable
 internal actual fun DropdownListBox(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier,
+    properties: DropdownListProperties,
     menuHeightPx: (Int) -> Unit,
     content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
 ) {
     val view = LocalView.current
     val coordinates = remember { Ref<LayoutCoordinates>() }
     BoxWithConstraints(
-        modifier = modifier.onGloballyPositioned {
-            coordinates.value = it
-            updateHeight(view.rootView, coordinates.value) { newHeight -> menuHeightPx(newHeight) }
-        },
+        modifier = Modifier.dropdownList(
+            properties = properties,
+            modifier = modifier.rippleClickable(
+                enabled = properties.enabled,
+                role = Role.DropdownList,
+                interactionSource = properties.interactionSource
+            ) {
+                properties.focusRequester.requestFocus()
+                onExpandedChange(!expanded)
+            }.onGloballyPositioned {
+                coordinates.value = it
+                updateHeight(view.rootView, coordinates.value) { newHeight -> menuHeightPx(newHeight) }
+            }
+        ),
         content = content
     )
     DisposableEffect(view) {

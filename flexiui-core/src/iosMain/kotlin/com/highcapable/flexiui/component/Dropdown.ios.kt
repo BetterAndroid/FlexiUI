@@ -31,24 +31,39 @@ import androidx.compose.ui.UiComposable
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.toIntRect
+import com.highcapable.flexiui.interaction.rippleClickable
 import kotlin.math.max
 
 @Composable
 internal actual fun DropdownListBox(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier,
+    properties: DropdownListProperties,
     menuHeightPx: (Int) -> Unit,
     content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
 ) {
     val windowInfo = LocalWindowInfo.current
     BoxWithConstraints(
-        modifier = modifier.onGloballyPositioned {
-            val boundsInWindow = it.boundsInWindow()
-            val visibleWindowBounds = windowInfo.containerSize.toIntRect()
-            val heightAbove = boundsInWindow.top - visibleWindowBounds.top
-            val heightBelow = visibleWindowBounds.height - boundsInWindow.bottom
-            menuHeightPx(max(heightAbove, heightBelow).toInt())
-        },
+        modifier = Modifier.dropdownList(
+            properties = properties,
+            modifier = modifier.rippleClickable(
+                enabled = properties.enabled,
+                role = Role.DropdownList,
+                interactionSource = properties.interactionSource
+            ) {
+                properties.focusRequester.requestFocus()
+                onExpandedChange(!expanded)
+            }.onGloballyPositioned {
+                val boundsInWindow = it.boundsInWindow()
+                val visibleWindowBounds = windowInfo.containerSize.toIntRect()
+                val heightAbove = boundsInWindow.top - visibleWindowBounds.top
+                val heightBelow = visibleWindowBounds.height - boundsInWindow.bottom
+                menuHeightPx(max(heightAbove, heightBelow).toInt())
+            }
+        ),
         content = content
     )
 }
