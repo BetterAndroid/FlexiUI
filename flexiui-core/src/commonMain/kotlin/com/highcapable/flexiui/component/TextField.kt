@@ -239,13 +239,14 @@ private fun TextFieldDecorationBox(
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     Box(
-        Modifier.textField(
+        modifier = Modifier.textField(
             colors = colors,
             style = style,
             border = border,
             enabled = enabled,
-            interactionSource = interactionSource
-        ).then(modifier)
+            interactionSource = interactionSource,
+            modifier = modifier
+        )
     ) {
         Row {
             header()
@@ -267,13 +268,15 @@ private fun Modifier.textField(
     style: TextFieldStyle,
     border: BorderStroke,
     enabled: Boolean,
-    interactionSource: MutableInteractionSource
+    interactionSource: MutableInteractionSource,
+    modifier: Modifier
 ) = status(enabled)
     .focusable(enabled, interactionSource)
     .hoverable(interactionSource, enabled)
     .clip(style.shape)
     .background(colors.backgroundColor, style.shape)
     .borderOrNot(border, style.shape)
+    .then(modifier)
     .padding(
         top = style.topPadding.orElse() ?: style.padding,
         start = style.startPadding.orElse() ?: style.padding,
