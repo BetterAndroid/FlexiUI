@@ -26,8 +26,6 @@ package com.highcapable.flexiui.component
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
@@ -40,41 +38,21 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.node.Ref
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.semantics.Role
-import com.highcapable.flexiui.interaction.rippleClickable
 import kotlin.math.max
 
 @Composable
 internal actual fun DropdownListBox(
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier,
-    colors: DropdownListColors,
-    style: DropdownListStyle,
-    border: BorderStroke,
-    enabled: Boolean,
-    interactionSource: MutableInteractionSource,
     menuHeightPx: (Int) -> Unit,
     content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
 ) {
     val view = LocalView.current
     val coordinates = remember { Ref<LayoutCoordinates>() }
     BoxWithConstraints(
-        modifier = modifier.dropdownList(
-            colors = colors,
-            style = style,
-            border = border,
-            enabled = enabled,
-            interactionSource = interactionSource,
-            modifier = modifier.rippleClickable(
-                enabled = enabled,
-                role = Role.DropdownList,
-                interactionSource = interactionSource
-            ) { onExpandedChange(!expanded) }.onGloballyPositioned {
-                coordinates.value = it
-                updateHeight(view.rootView, coordinates.value) { newHeight -> menuHeightPx(newHeight) }
-            }
-        ),
+        modifier = modifier.onGloballyPositioned {
+            coordinates.value = it
+            updateHeight(view.rootView, coordinates.value) { newHeight -> menuHeightPx(newHeight) }
+        },
         content = content
     )
     DisposableEffect(view) {

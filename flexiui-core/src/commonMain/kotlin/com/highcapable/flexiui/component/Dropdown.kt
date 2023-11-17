@@ -180,14 +180,18 @@ fun DropdownList(
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     DropdownListBox(
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
-        modifier = modifier,
-        colors = colors,
-        style = style,
-        border = border,
-        enabled = enabled,
-        interactionSource = interactionSource,
+        modifier = modifier.dropdownList(
+            colors = colors,
+            style = style,
+            border = border,
+            enabled = enabled,
+            interactionSource = interactionSource,
+            modifier = modifier.rippleClickable(
+                enabled = enabled,
+                role = Role.DropdownList,
+                interactionSource = interactionSource
+            ) { onExpandedChange(!expanded) }
+        ),
         menuHeightPx = { menuHeightPx = it }
     ) {
         val menuWidth = maxWidth + startPadding + endPadding
@@ -352,19 +356,12 @@ private fun DropdownMenuContent(
 
 @Composable
 internal expect fun DropdownListBox(
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier,
-    colors: DropdownListColors,
-    style: DropdownListStyle,
-    border: BorderStroke,
-    enabled: Boolean,
-    interactionSource: MutableInteractionSource,
     menuHeightPx: (Int) -> Unit,
     content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
 )
 
-internal fun Modifier.dropdownList(
+private fun Modifier.dropdownList(
     colors: DropdownListColors,
     style: DropdownListStyle,
     border: BorderStroke,
