@@ -66,7 +66,7 @@ import com.highcapable.flexiui.utils.orElse
 import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
 
-// TODO: Preset text boxes (password text box, text box with delete button, etc.)
+// TODO: Preset text boxes (password text box, text box with delete button, auto complete text box, etc.)
 
 @Immutable
 data class TextFieldColors(
