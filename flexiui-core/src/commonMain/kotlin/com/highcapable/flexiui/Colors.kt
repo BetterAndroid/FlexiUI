@@ -23,11 +23,11 @@
 
 package com.highcapable.flexiui
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-
-// TODO: Dynamic colors support
 
 @Stable
 data class Colors(
@@ -43,7 +43,19 @@ data class Colors(
     var isLight: Boolean
 )
 
-private val DefaultLightColors = Colors(
+@get:Composable
+@get:ReadOnlyComposable
+internal expect val DynamicLightColors: Colors
+
+@get:Composable
+@get:ReadOnlyComposable
+internal expect val DynamicDarkColors: Colors
+
+@get:Composable
+@get:ReadOnlyComposable
+internal expect val DynamicBlackColors: Colors
+
+internal val DefaultLightColors = Colors(
     backgroundPrimary = Color(0xFFF5F5F5),
     backgroundSecondary = Color(0xFFEDEDED),
     foregroundPrimary = Color(0xFFFFFFFF),
@@ -56,7 +68,7 @@ private val DefaultLightColors = Colors(
     isLight = true
 )
 
-private val DefaultDarkColors = Colors(
+internal val DefaultDarkColors = Colors(
     backgroundPrimary = Color(0xFF2D2D2D),
     backgroundSecondary = Color(0xFF484848),
     foregroundPrimary = Color(0xFF474747),
@@ -69,7 +81,7 @@ private val DefaultDarkColors = Colors(
     isLight = false
 )
 
-private val DefaultBlackColors = Colors(
+internal val DefaultBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
     backgroundSecondary = Color(0xFF1B1B1B),
     foregroundPrimary = Color(0xFF1A1A1A),
@@ -354,6 +366,13 @@ private val BlueBlackColors = Colors(
     textSecondary = DefaultBlackColors.textSecondary,
     isLight = false
 )
+
+@Composable
+@ReadOnlyComposable
+fun dynamicColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
+    darkMode -> if (blackDarkMode) DynamicBlackColors else DynamicDarkColors
+    else -> DynamicLightColors
+}
 
 fun defaultColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) DefaultBlackColors else DefaultDarkColors
