@@ -70,6 +70,8 @@ import androidx.compose.ui.UiComposable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
@@ -163,6 +165,7 @@ fun DropdownList(
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
+    val focusRequester = remember { FocusRequester() }
     var menuHeightPx by remember { mutableStateOf(0) }
     val startPadding = style.startPadding.orElse() ?: style.padding
     val endPadding = style.endPadding.orElse() ?: style.padding
@@ -185,12 +188,16 @@ fun DropdownList(
             style = style,
             border = border,
             enabled = enabled,
+            focusRequester = focusRequester,
             interactionSource = interactionSource,
             modifier = modifier.rippleClickable(
                 enabled = enabled,
                 role = Role.DropdownList,
                 interactionSource = interactionSource
-            ) { onExpandedChange(!expanded) }
+            ) {
+                focusRequester.requestFocus()
+                onExpandedChange(!expanded)
+            }
         ),
         menuHeightPx = { menuHeightPx = it }
     ) {
@@ -366,9 +373,11 @@ private fun Modifier.dropdownList(
     style: DropdownListStyle,
     border: BorderStroke,
     enabled: Boolean,
+    focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
     modifier: Modifier
 ) = status(enabled)
+    .focusRequester(focusRequester)
     .focusable(enabled, interactionSource)
     .hoverable(interactionSource, enabled)
     .clip(style.shape)
