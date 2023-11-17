@@ -369,6 +369,10 @@ private val BlueBlackColors = Colors(
 
 @Composable
 @ReadOnlyComposable
+expect fun isDynamicColorsAvailable(): Boolean
+
+@Composable
+@ReadOnlyComposable
 fun dynamicColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) DynamicBlackColors else DynamicDarkColors
     else -> DynamicLightColors

@@ -29,6 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.highcapable.betterandroid.ui.extension.component.feature.SystemColors
 
+@Composable
+@ReadOnlyComposable
+actual fun isDynamicColorsAvailable() = SystemColors.isAvailable
+
 internal actual val DynamicLightColors
     @Composable
     @ReadOnlyComposable
