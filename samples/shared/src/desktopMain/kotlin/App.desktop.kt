@@ -23,5 +23,3 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun MainView() = App()
-
-actual val isAndroidPlatform = false

@@ -56,6 +56,7 @@ import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
 import com.highcapable.flexiui.dynamicColors
 import com.highcapable.flexiui.greenColors
+import com.highcapable.flexiui.isDynamicColorsAvailable
 import com.highcapable.flexiui.orangeColors
 import com.highcapable.flexiui.pinkColors
 import com.highcapable.flexiui.purpleColors
@@ -187,7 +188,7 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
                         },
                         actived = choosedColorName == name
                     ) { Text(text = name) }
-                if (isAndroidPlatform && index == 3)
+                if (isDynamicColorsAvailable() && index == 3)
                     DynamicColors.forEach { (name, colors) -> createItem(name, colors) }
                 else createItem(name, colors)
             }
@@ -235,5 +236,3 @@ private val ThemeColors = listOf(
     "Blue (Dark)" to blueColors(darkMode = true),
     "Blue (Black)" to blueColors(darkMode = true, blackDarkMode = true)
 )
-
-expect val isAndroidPlatform: Boolean
