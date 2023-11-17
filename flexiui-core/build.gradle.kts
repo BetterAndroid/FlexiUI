@@ -34,7 +34,11 @@ kotlin {
                 implementation(compose.material)
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(com.highcapable.betterandroid.ui.extension)
+            }
+        }
         val desktopMain by getting
         val iosX64Main by getting
         val iosArm64Main by getting
