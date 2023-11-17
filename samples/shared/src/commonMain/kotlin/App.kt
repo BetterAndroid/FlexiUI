@@ -44,7 +44,7 @@ import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.CheckBox
-import com.highcapable.flexiui.component.DropdownMenu
+import com.highcapable.flexiui.component.DropdownList
 import com.highcapable.flexiui.component.DropdownMenuItem
 import com.highcapable.flexiui.component.RadioButton
 import com.highcapable.flexiui.component.Slider
@@ -134,6 +134,28 @@ private fun ContentView() {
         Text(text = "Current Value: ${stepValue.roundToInt()}", modifier = Modifier.width(150.dp))
         Spacer(Modifier.padding(10.dp))
         Slider(value = stepValue, onValueChange = { stepValue = it }, steps = 3)
+        Spacer(Modifier.padding(15.dp))
+        val items = listOf("Item 1", "Item 2", "Item 3")
+        var expanded by remember { mutableStateOf(false) }
+        var curentItem by remember { mutableStateOf(items.first()) }
+        Text(text = "Choose an item following.")
+        Spacer(Modifier.padding(10.dp))
+        DropdownList(
+            modifier = Modifier.width(150.dp),
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+            text = { Text(text = curentItem) }
+        ) {
+            items.forEach {
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        curentItem = it
+                    },
+                    actived = curentItem == it
+                ) { Text(text = it) }
+            }
+        }
     }
 }
 
@@ -145,11 +167,12 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
     var choosedColorName by remember { mutableStateOf(ThemeColors.first().first) }
     var choosedColor by remember { mutableStateOf(ThemeColors.first().second) }
     themeColor.value = choosedColor
-    Button(onClick = { showChooser = !showChooser }) {
-        Text(text = "Choose a color: $choosedColorName")
-        DropdownMenu(
+    Row {
+        DropdownList(
+            modifier = Modifier.width(150.dp),
             expanded = showChooser,
-            onDismissRequest = { showChooser = false }
+            onExpandedChange = { showChooser = it },
+            text = { Text(text = choosedColorName) }
         ) {
             ThemeColors.forEach { (name, color) ->
                 DropdownMenuItem(
@@ -162,6 +185,11 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
                 ) { Text(text = name) }
             }
         }
+        Spacer(modifier = Modifier.padding(5.dp))
+        Button(onClick = {
+            choosedColorName = ThemeColors.first().first
+            choosedColor = ThemeColors.first().second
+        }) { Text(text = "Reset") }
     }
 }
 
