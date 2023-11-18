@@ -221,6 +221,8 @@ fun PasswordTextField(
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    normalVisualTransformation: VisualTransformation = VisualTransformation.None,
+    secretVisualTransformation: VisualTransformation = PasswordVisualTransformation(),
     onTextLayout: (TextLayoutResult) -> Unit = {},
     focusRequester: FocusRequester = remember { FocusRequester() },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -244,8 +246,8 @@ fun PasswordTextField(
         maxLines = 1,
         minLines = 1,
         visualTransformation = if (passwordVisible)
-            VisualTransformation.None
-        else PasswordVisualTransformation(),
+            normalVisualTransformation
+        else secretVisualTransformation,
         onTextLayout = onTextLayout,
         focusRequester = focusRequester,
         interactionSource = interactionSource,
