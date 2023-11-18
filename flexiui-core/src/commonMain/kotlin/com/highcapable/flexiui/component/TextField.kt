@@ -38,6 +38,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -48,7 +50,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -60,18 +64,23 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.icon.Backspace
+import com.highcapable.flexiui.resources.icon.ViewerClose
+import com.highcapable.flexiui.resources.icon.ViewerOpen
 import com.highcapable.flexiui.utils.borderOrNot
 import com.highcapable.flexiui.utils.orElse
 import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
 
-// TODO: Preset text boxes (password text box, text box with delete button, auto complete text box, etc.)
+// TODO: Preset text boxes (auto complete text box, etc.)
 
 @Immutable
 data class TextFieldColors(
@@ -201,6 +210,134 @@ fun TextField(
 }
 
 @Composable
+fun PasswordTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    defaultPasswordVisible: Boolean = false,
+    modifier: Modifier = Modifier,
+    colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    header: @Composable (() -> Unit)? = null,
+    placeholder: @Composable () -> Unit = {},
+    textStyle: TextStyle = TextField.textStyle
+) {
+    var passwordVisible by remember { mutableStateOf(defaultPasswordVisible) }
+    if (value.isEmpty()) passwordVisible = defaultPasswordVisible
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        colors = colors,
+        style = style,
+        enabled = enabled,
+        readOnly = readOnly,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = true,
+        maxLines = 1,
+        minLines = 1,
+        visualTransformation = if (passwordVisible)
+            VisualTransformation.None
+        else PasswordVisualTransformation(),
+        onTextLayout = onTextLayout,
+        focusRequester = focusRequester,
+        interactionSource = interactionSource,
+        header = header,
+        placeholder = placeholder,
+        footer = {
+            Box(
+                modifier = Modifier.width(DefaultDecorIconSize),
+                contentAlignment = Alignment.Center
+            ) {
+                val animatedSize by animateDpAsState(if (value.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                IconToggleButton(
+                    modifier = Modifier.size(animatedSize),
+                    style = IconButton.style.copy(padding = DefaultDecorIconPadding),
+                    checked = passwordVisible,
+                    onCheckedChange = {
+                        passwordVisible = it
+                        focusRequester.requestFocus()
+                    },
+                    enabled = enabled,
+                    interactionSource = interactionSource
+                ) { Icon(imageVector = if (passwordVisible) Icons.ViewerOpen else Icons.ViewerClose) }
+            }
+        },
+        textStyle = textStyle
+    )
+}
+
+@Composable
+fun BackspaceTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    header: @Composable (() -> Unit)? = null,
+    placeholder: @Composable () -> Unit = {},
+    textStyle: TextStyle = TextField.textStyle
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        colors = colors,
+        style = style,
+        enabled = enabled,
+        readOnly = readOnly,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        visualTransformation = visualTransformation,
+        onTextLayout = onTextLayout,
+        focusRequester = focusRequester,
+        interactionSource = interactionSource,
+        header = header,
+        placeholder = placeholder,
+        footer = {
+            Box(
+                modifier = Modifier.width(DefaultDecorIconSize),
+                contentAlignment = Alignment.Center
+            ) {
+                val animatedSize by animateDpAsState(if (value.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                IconButton(
+                    onClick = {
+                        onValueChange.invoke(value.dropLast(1))
+                        focusRequester.requestFocus()
+                    },
+                    modifier = Modifier.width(animatedSize),
+                    style = IconButton.style.copy(padding = DefaultDecorIconPadding),
+                    enabled = enabled,
+                    interactionSource = interactionSource
+                ) { Icon(imageVector = Icons.Backspace) }
+            }
+        },
+        textStyle = textStyle
+    )
+}
+
+@Composable
 private fun InnerDecorationBox(
     decorTint: Color,
     style: TextFieldStyle,
@@ -321,3 +458,6 @@ private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.b
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
+
+private val DefaultDecorIconSize = 24.dp
+private val DefaultDecorIconPadding = 2.dp
