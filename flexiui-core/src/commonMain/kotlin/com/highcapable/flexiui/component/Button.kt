@@ -240,7 +240,7 @@ private fun defaultButtonOutBoxColors() = ButtonColors(
 @ReadOnlyComposable
 private fun defaultIconButtonColors() = ButtonColors(
     rippleColor = LocalColors.current.themeSecondary,
-    contentColor = LocalColors.current.themePrimary,
+    contentColor = LocalIconTint.current.orElse() ?: LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
 )
 
