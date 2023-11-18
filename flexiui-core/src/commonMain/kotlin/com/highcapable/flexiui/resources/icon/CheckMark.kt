@@ -35,7 +35,7 @@ import com.highcapable.flexiui.resources.builder.buildImageVector
 
 val Icons.CheckMark by lazy {
     buildImageVector(
-        name = "checkmark",
+        name = "check_mark",
         defaultWidth = 32.dp,
         defaultHeight = 32.dp,
         viewportWidth = 48f,
