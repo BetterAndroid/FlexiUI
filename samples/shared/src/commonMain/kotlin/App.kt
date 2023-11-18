@@ -43,10 +43,12 @@ import com.highcapable.flexiui.Colors
 import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
+import com.highcapable.flexiui.component.BackspaceTextField
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.CheckBox
 import com.highcapable.flexiui.component.DropdownList
 import com.highcapable.flexiui.component.DropdownMenuItem
+import com.highcapable.flexiui.component.PasswordTextField
 import com.highcapable.flexiui.component.RadioButton
 import com.highcapable.flexiui.component.Slider
 import com.highcapable.flexiui.component.Surface
@@ -80,8 +82,6 @@ fun App() {
 
 @Composable
 private fun ContentView() {
-    var greeting by remember { mutableStateOf("Hello World!") }
-    var input by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier.fillMaxSize()
@@ -90,16 +90,35 @@ private fun ContentView() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        var greeting by remember { mutableStateOf("Hello World!") }
         Text(text = greeting)
         Spacer(Modifier.padding(15.dp))
         Button(onClick = { greeting = "Hello Jetpack Compose Multiplatform!" }) {
             Text(text = "Greeting")
         }
         Spacer(Modifier.padding(15.dp))
+        var input by remember { mutableStateOf("") }
         TextField(
+            modifier = Modifier.width(TextFieldWidth),
             value = input,
-            placeholder = { Text(text = "Type something here...") },
-            onValueChange = { input = it }
+            onValueChange = { input = it },
+            placeholder = { Text(text = "Type something...") }
+        )
+        Spacer(Modifier.padding(10.dp))
+        var backspace by remember { mutableStateOf("") }
+        BackspaceTextField(
+            modifier = Modifier.width(TextFieldWidth),
+            value = backspace,
+            onValueChange = { backspace = it },
+            placeholder = { Text(text = "Type or delete...") }
+        )
+        Spacer(Modifier.padding(10.dp))
+        var password by remember { mutableStateOf("") }
+        PasswordTextField(
+            modifier = Modifier.width(TextFieldWidth),
+            value = password,
+            onValueChange = { password = it },
+            placeholder = { Text(text = "Enter password...") }
         )
         Spacer(Modifier.padding(15.dp))
         var switchChecked by remember { mutableStateOf(true) }
@@ -144,7 +163,7 @@ private fun ContentView() {
         Text(text = "Choose an item following.")
         Spacer(Modifier.padding(10.dp))
         DropdownList(
-            modifier = Modifier.width(170.dp),
+            modifier = Modifier.width(DropdownListWidth),
             expanded = expanded,
             onExpandedChange = { expanded = it },
             text = { Text(text = curentItem) }
@@ -172,7 +191,7 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
     themeColor.value = choosedColor
     Row {
         DropdownList(
-            modifier = Modifier.width(170.dp),
+            modifier = Modifier.width(DropdownListWidth),
             expanded = showChooser,
             onExpandedChange = { showChooser = it },
             text = { Text(text = choosedColorName) }
@@ -236,3 +255,6 @@ private val ThemeColors = listOf(
     "Blue (Dark)" to blueColors(darkMode = true),
     "Blue (Black)" to blueColors(darkMode = true, blackDarkMode = true)
 )
+
+private val TextFieldWidth = 180.dp
+private val DropdownListWidth = 170.dp

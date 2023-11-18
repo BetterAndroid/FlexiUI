@@ -31,6 +31,6 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "FlexiUI Demo",
-        state = rememberWindowState(width = 550.dp, height = 800.dp)
+        state = rememberWindowState(width = 550.dp, height = 950.dp)
     ) { MainView() }
 }
