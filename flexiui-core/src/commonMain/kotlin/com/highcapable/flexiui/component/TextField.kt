@@ -146,9 +146,12 @@ fun TextField(
         verticalAlignment = Alignment.CenterVertically
     ) {
         header?.also {
-            Box(modifier = Modifier.textFieldPadding(style, fitStart = true)) {
-                DecorationBoxStyle(animatedDecorTint) { it() }
-            }
+            InnerDecorationBox(
+                decorTint = animatedDecorTint,
+                style = style,
+                header = true,
+                content = it
+            )
         }
         Box(modifier = Modifier.weight(1f, fill = false).textFieldPadding(style)) {
             TextFieldStyle(colors) {
@@ -179,9 +182,27 @@ fun TextField(
             }
         }
         footer?.also {
-            Box(modifier = Modifier.textFieldPadding(style, fitEnd = true)) {
-                DecorationBoxStyle(animatedDecorTint) { it() }
-            }
+            InnerDecorationBox(
+                decorTint = animatedDecorTint,
+                style = style,
+                footer = true,
+                content = it
+            )
+        }
+    }
+}
+
+@Composable
+private fun InnerDecorationBox(
+    decorTint: Color,
+    style: TextFieldStyle,
+    header: Boolean = false,
+    footer: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    Box(modifier = Modifier.textFieldPadding(style, fitStart = header, fitEnd = footer)) {
+        CompositionLocalProvider(LocalIconTint provides decorTint) {
+            content()
         }
     }
 }
@@ -204,13 +225,6 @@ private fun TextFieldDecorationBox(
 @Composable
 private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalTextSelectionColors provides colors.selectionColors) {
-        content()
-    }
-}
-
-@Composable
-private fun DecorationBoxStyle(decorTint: Color, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalIconTint provides decorTint) {
         content()
     }
 }
