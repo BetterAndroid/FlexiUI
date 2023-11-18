@@ -285,7 +285,6 @@ fun PasswordTextField(
     textStyle: TextStyle = TextField.textStyle
 ) {
     var passwordVisible by remember { mutableStateOf(defaultPasswordVisible) }
-    if (value.text.isEmpty()) passwordVisible = defaultPasswordVisible
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -313,6 +312,7 @@ fun PasswordTextField(
                 contentAlignment = Alignment.Center
             ) {
                 val animatedSize by animateDpAsState(if (value.text.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
                     modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPoinerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
