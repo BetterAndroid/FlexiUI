@@ -47,6 +47,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -55,7 +56,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
@@ -106,126 +106,13 @@ fun TextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    header: @Composable () -> Unit = {},
+    header: @Composable (() -> Unit)? = null,
     placeholder: @Composable () -> Unit = {},
-    footer: @Composable () -> Unit = {},
+    footer: @Composable (() -> Unit)? = null,
     textStyle: TextStyle = TextField.textStyle
-) {
-    TextFieldStyle(colors) {
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier,
-            enabled = enabled,
-            readOnly = readOnly,
-            textStyle = textStyle,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            minLines = minLines,
-            visualTransformation = visualTransformation,
-            onTextLayout = onTextLayout,
-            interactionSource = interactionSource,
-            cursorBrush = SolidColor(colors.cursorColor),
-            decorationBox = {
-                TextFieldDecorationBox(
-                    value = value,
-                    modifier = modifier,
-                    colors = colors,
-                    style = style,
-                    enabled = enabled,
-                    interactionSource = interactionSource,
-                    header = header,
-                    placeholder = placeholder,
-                    footer = footer,
-                    innerTextField = it
-                )
-            }
-        )
-    }
-}
-
-@Composable
-fun TextField(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
-    enabled: Boolean = true,
-    readOnly: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    singleLine: Boolean = false,
-    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
-    minLines: Int = 1,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    header: @Composable () -> Unit = {},
-    placeholder: @Composable () -> Unit = {},
-    footer: @Composable () -> Unit = {},
-    textStyle: TextStyle = TextField.textStyle
-) {
-    TextFieldStyle(colors) {
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier,
-            enabled = enabled,
-            readOnly = readOnly,
-            textStyle = textStyle,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            minLines = minLines,
-            visualTransformation = visualTransformation,
-            onTextLayout = onTextLayout,
-            interactionSource = interactionSource,
-            cursorBrush = SolidColor(colors.cursorColor),
-            decorationBox = {
-                TextFieldDecorationBox(
-                    value = value.text,
-                    modifier = modifier,
-                    colors = colors,
-                    style = style,
-                    enabled = enabled,
-                    interactionSource = interactionSource,
-                    header = header,
-                    placeholder = placeholder,
-                    footer = footer,
-                    innerTextField = it
-                )
-            }
-        )
-    }
-}
-
-@Composable
-private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalTextSelectionColors provides colors.selectionColors) {
-        content()
-    }
-}
-
-@Composable
-private fun TextFieldDecorationBox(
-    value: String,
-    modifier: Modifier,
-    colors: TextFieldColors,
-    style: TextFieldStyle,
-    enabled: Boolean,
-    interactionSource: MutableInteractionSource,
-    header: @Composable () -> Unit,
-    placeholder: @Composable () -> Unit,
-    footer: @Composable () -> Unit,
-    innerTextField: @Composable () -> Unit
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
-    val animatedPlaceholder by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
     val animatedBorderColor by animateColorAsState(when {
         focused || hovered -> style.borderActive.solidColor
         else -> style.borderInactive.solidColor
@@ -238,7 +125,7 @@ private fun TextFieldDecorationBox(
         focused || hovered -> style.borderInactive
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
-    Box(
+    Row(
         modifier = Modifier.textField(
             colors = colors,
             style = style,
@@ -246,20 +133,61 @@ private fun TextFieldDecorationBox(
             enabled = enabled,
             interactionSource = interactionSource,
             modifier = modifier
-        )
+        ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row {
-            header()
-            Box {
-                Box(modifier = Modifier.alpha(animatedPlaceholder)) {
-                    CompositionLocalProvider(
-                        LocalTextStyle provides LocalTextStyle.current.default(LocalColors.current.textSecondary)
-                    ) { placeholder() }
-                }
-                innerTextField()
+        header?.invoke()
+        Box(modifier = Modifier.weight(1f, fill = false)) {
+            TextFieldStyle(colors) {
+                BasicTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    modifier = modifier,
+                    enabled = enabled,
+                    readOnly = readOnly,
+                    textStyle = textStyle,
+                    keyboardOptions = keyboardOptions,
+                    keyboardActions = keyboardActions,
+                    singleLine = singleLine,
+                    maxLines = maxLines,
+                    minLines = minLines,
+                    visualTransformation = visualTransformation,
+                    onTextLayout = onTextLayout,
+                    interactionSource = interactionSource,
+                    cursorBrush = SolidColor(colors.cursorColor),
+                    decorationBox = {
+                        TextFieldDecorationBox(
+                            value = value,
+                            placeholder = placeholder,
+                            innerTextField = it
+                        )
+                    }
+                )
             }
-            footer()
         }
+        footer?.invoke()
+    }
+}
+
+@Composable
+private fun TextFieldDecorationBox(
+    value: String,
+    placeholder: @Composable () -> Unit,
+    innerTextField: @Composable () -> Unit
+) {
+    val animatedPlaceholder by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
+    Box(modifier = Modifier.alpha(animatedPlaceholder)) {
+        CompositionLocalProvider(
+            LocalTextStyle provides LocalTextStyle.current.default(LocalColors.current.textSecondary)
+        ) { placeholder() }
+    }
+    innerTextField()
+}
+
+@Composable
+private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalTextSelectionColors provides colors.selectionColors) {
+        content()
     }
 }
 
