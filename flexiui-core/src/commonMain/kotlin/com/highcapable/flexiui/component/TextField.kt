@@ -221,8 +221,8 @@ private fun TextFieldDecorationBox(
     placeholder: @Composable () -> Unit,
     innerTextField: @Composable () -> Unit
 ) {
-    val animatedPlaceholder by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
-    Box(modifier = Modifier.alpha(animatedPlaceholder)) {
+    val animatedAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
+    Box(modifier = Modifier.alpha(animatedAlpha)) {
         CompositionLocalProvider(
             LocalTextStyle provides LocalTextStyle.current.default(LocalColors.current.textSecondary)
         ) { placeholder() }
