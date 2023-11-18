@@ -151,7 +151,7 @@ data class DropdownMenuStyle(
 fun DropdownList(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.width(DefaultDropdownListWidth),
     colors: DropdownListColors = DropdownList.colors,
     style: DropdownListStyle = DropdownList.style,
     menuColors: DropdownMenuColors = DropdownMenu.colors,
@@ -563,6 +563,8 @@ private fun defaultDropdownListInactiveBorder() = BorderStroke(LocalSizes.curren
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
+
+private val DefaultDropdownListWidth = 150.dp
 
 private val DefaultDropdownListMenuOffset = DpOffset((-10).dp, 10.dp)
 
