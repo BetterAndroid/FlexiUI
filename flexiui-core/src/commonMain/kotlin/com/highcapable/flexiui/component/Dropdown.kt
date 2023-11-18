@@ -113,7 +113,8 @@ import kotlin.math.min
 
 @Immutable
 data class DropdownListColors(
-    val endIconTint: Color,
+    val endIconInactiveTint: Color,
+    val endIconActiveTint: Color,
     val borderInactiveColor: Color,
     val borderActiveColor: Color,
     val backgroundColor: Color
@@ -169,6 +170,10 @@ fun DropdownList(
     var menuHeightPx by remember { mutableStateOf(0) }
     val startPadding = style.startPadding.orElse() ?: style.padding
     val endPadding = style.endPadding.orElse() ?: style.padding
+    val animatedEndIconTint by animateColorAsState(when {
+        focused || hovered -> colors.endIconActiveTint
+        else -> colors.endIconInactiveTint
+    })
     val animatedBorderColor by animateColorAsState(when {
         focused || hovered -> style.borderActive.solidColor
         else -> style.borderInactive.solidColor
@@ -208,7 +213,7 @@ fun DropdownList(
                     rotationZ = animatedDirection
                 }.size(style.endIconSize),
                 imageVector = Icons.Dropdown,
-                tint = colors.endIconTint
+                tint = animatedEndIconTint
             )
         }
         DropdownMenu(
@@ -507,7 +512,8 @@ private val LocalDropdownMenuContentStyle = compositionLocalOf<AreaBoxStyle?> { 
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListColors() = DropdownListColors(
-    endIconTint = LocalColors.current.themeSecondary,
+    endIconInactiveTint = LocalColors.current.themeSecondary,
+    endIconActiveTint = LocalColors.current.themePrimary,
     borderInactiveColor = LocalColors.current.themeSecondary,
     borderActiveColor = LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
