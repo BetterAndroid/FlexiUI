@@ -51,6 +51,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
@@ -72,6 +74,8 @@ import com.highcapable.flexiui.utils.status
 data class TextFieldColors(
     val cursorColor: Color,
     val selectionColors: TextSelectionColors,
+    val decorInactiveTint: Color,
+    val decorActiveTint: Color,
     val borderInactiveColor: Color,
     val borderActiveColor: Color,
     val backgroundColor: Color
@@ -105,6 +109,7 @@ fun TextField(
     minLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onTextLayout: (TextLayoutResult) -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
     placeholder: @Composable () -> Unit = {},
@@ -113,6 +118,10 @@ fun TextField(
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
+    val animatedDecorTint by animateColorAsState(when {
+        focused || hovered -> colors.decorActiveTint
+        else -> colors.decorInactiveTint
+    })
     val animatedBorderColor by animateColorAsState(when {
         focused || hovered -> style.borderActive.solidColor
         else -> style.borderInactive.solidColor
@@ -136,13 +145,17 @@ fun TextField(
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        header?.also { Box(modifier = Modifier.textFieldPadding(style, fitStart = true)) { it() } }
+        header?.also {
+            Box(modifier = Modifier.textFieldPadding(style, fitStart = true)) {
+                DecorationBoxStyle(animatedDecorTint) { it() }
+            }
+        }
         Box(modifier = Modifier.weight(1f, fill = false).textFieldPadding(style)) {
             TextFieldStyle(colors) {
                 BasicTextField(
                     value = value,
                     onValueChange = onValueChange,
-                    modifier = modifier,
+                    modifier = Modifier.focusRequester(focusRequester).then(modifier),
                     enabled = enabled,
                     readOnly = readOnly,
                     textStyle = textStyle,
@@ -165,7 +178,11 @@ fun TextField(
                 )
             }
         }
-        footer?.also { Box(modifier = Modifier.textFieldPadding(style, fitEnd = true)) { it() } }
+        footer?.also {
+            Box(modifier = Modifier.textFieldPadding(style, fitEnd = true)) {
+                DecorationBoxStyle(animatedDecorTint) { it() }
+            }
+        }
     }
 }
 
@@ -187,6 +204,13 @@ private fun TextFieldDecorationBox(
 @Composable
 private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalTextSelectionColors provides colors.selectionColors) {
+        content()
+    }
+}
+
+@Composable
+private fun DecorationBoxStyle(decorTint: Color, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalIconTint provides decorTint) {
         content()
     }
 }
@@ -245,6 +269,8 @@ private fun defaultTextFieldColors() = TextFieldColors(
         handleColor = LocalColors.current.themePrimary,
         backgroundColor = LocalColors.current.themeSecondary
     ),
+    decorInactiveTint = LocalColors.current.themeSecondary,
+    decorActiveTint = LocalColors.current.themePrimary,
     borderInactiveColor = LocalColors.current.themeSecondary,
     borderActiveColor = LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
