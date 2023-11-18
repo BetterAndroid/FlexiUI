@@ -152,7 +152,7 @@ data class DropdownMenuStyle(
 fun DropdownList(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier.width(DefaultDropdownListWidth),
+    modifier: Modifier = Modifier,
     colors: DropdownListColors = DropdownList.colors,
     style: DropdownListStyle = DropdownList.style,
     menuColors: DropdownMenuColors = DropdownMenu.colors,
@@ -203,11 +203,14 @@ fun DropdownList(
     ) {
         val menuWidth = maxWidth + startPadding + endPadding
         val menuHeight = with(LocalDensity.current) { menuHeightPx.toDp() }
+        // Note: If minWidth is not 0, a constant width is currently set.
+        //       At this time, the child layout must be completely filled into the parent layout.
+        val needInflatable = minWidth > 0.dp
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(modifier = Modifier.weight(1f)) { text() }
+            Box(modifier = Modifier.weight(1f, needInflatable)) { text() }
             Icon(
                 modifier = Modifier.graphicsLayer {
                     rotationZ = animatedDirection
@@ -569,8 +572,6 @@ private fun defaultDropdownListInactiveBorder() = BorderStroke(LocalSizes.curren
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
-
-private val DefaultDropdownListWidth = 150.dp
 
 private val DefaultDropdownListMenuOffset = DpOffset((-10).dp, 10.dp)
 

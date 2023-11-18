@@ -34,7 +34,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -60,6 +62,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
@@ -134,7 +137,7 @@ fun TextField(
         focused || hovered -> style.borderInactive
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
-    Row(
+    BoxWithConstraints(
         modifier = Modifier.textField(
             colors = colors,
             style = style,
@@ -142,52 +145,57 @@ fun TextField(
             enabled = enabled,
             interactionSource = interactionSource,
             modifier = modifier
-        ),
-        verticalAlignment = Alignment.CenterVertically
+        )
     ) {
-        header?.also {
-            InnerDecorationBox(
-                decorTint = animatedDecorTint,
-                style = style,
-                header = true,
-                content = it
-            )
-        }
-        Box(modifier = Modifier.weight(1f, fill = false).textFieldPadding(style)) {
-            TextFieldStyle(colors) {
-                BasicTextField(
-                    value = value,
-                    onValueChange = onValueChange,
-                    modifier = Modifier.focusRequester(focusRequester).then(modifier),
-                    enabled = enabled,
-                    readOnly = readOnly,
-                    textStyle = textStyle,
-                    keyboardOptions = keyboardOptions,
-                    keyboardActions = keyboardActions,
-                    singleLine = singleLine,
-                    maxLines = maxLines,
-                    minLines = minLines,
-                    visualTransformation = visualTransformation,
-                    onTextLayout = onTextLayout,
-                    interactionSource = interactionSource,
-                    cursorBrush = SolidColor(colors.cursorColor),
-                    decorationBox = {
-                        TextFieldDecorationBox(
-                            value = value,
-                            placeholder = placeholder,
-                            innerTextField = it
-                        )
-                    }
+        // Note: If minWidth is not 0, a constant width is currently set.
+        //       At this time, the child layout must be completely filled into the parent layout.
+        val needInflatable = minWidth > 0.dp
+        fun Modifier.inflatable() = if (needInflatable) fillMaxWidth() else this
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            header?.also {
+                InnerDecorationBox(
+                    decorTint = animatedDecorTint,
+                    style = style,
+                    header = true,
+                    content = it
                 )
             }
-        }
-        footer?.also {
-            InnerDecorationBox(
-                decorTint = animatedDecorTint,
-                style = style,
-                footer = true,
-                content = it
-            )
+            Box(modifier = Modifier.weight(1f, needInflatable).textFieldPadding(style)) {
+                TextFieldStyle(colors) {
+                    BasicTextField(
+                        value = value,
+                        onValueChange = onValueChange,
+                        modifier = Modifier.focusRequester(focusRequester).inflatable(),
+                        enabled = enabled,
+                        readOnly = readOnly,
+                        textStyle = textStyle,
+                        keyboardOptions = keyboardOptions,
+                        keyboardActions = keyboardActions,
+                        singleLine = singleLine,
+                        maxLines = maxLines,
+                        minLines = minLines,
+                        visualTransformation = visualTransformation,
+                        onTextLayout = onTextLayout,
+                        interactionSource = interactionSource,
+                        cursorBrush = SolidColor(colors.cursorColor),
+                        decorationBox = {
+                            TextFieldDecorationBox(
+                                value = value,
+                                placeholder = placeholder,
+                                innerTextField = it
+                            )
+                        }
+                    )
+                }
+            }
+            footer?.also {
+                InnerDecorationBox(
+                    decorTint = animatedDecorTint,
+                    style = style,
+                    footer = true,
+                    content = it
+                )
+            }
         }
     }
 }
