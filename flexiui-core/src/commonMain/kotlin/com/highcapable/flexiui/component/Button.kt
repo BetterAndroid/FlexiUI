@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
@@ -87,30 +89,27 @@ fun Button(
         backgroundColor = Color.Transparent
     )
     Box(
-        modifier = Modifier.status(enabled)
-            .clip(style.shape)
-            .background(colors.backgroundColor, style.shape)
-            .borderOrNot(style.border, style.shape)
-            .then(modifier)
-            .rippleClickable(
-                enabled = enabled,
-                role = Role.Button,
-                rippleColor = colors.rippleColor,
-                interactionSource = interactionSource,
-                onClick = onClick
-            )
+        modifier = Modifier.button(
+            enabled = enabled,
+            colors = colors,
+            style = style,
+            modifier = modifier
+        ).rippleClickable(
+            enabled = enabled,
+            role = Role.Button,
+            rippleColor = colors.rippleColor,
+            interactionSource = interactionSource,
+            onClick = onClick
+        )
     ) {
         CompositionLocalProvider(
+            LocalIconTint provides colors.contentColor,
             LocalTextStyle provides localTextStyle,
             LocalProgressIndicatorColors provides localProgressIndicatorColors
         ) {
             Row(
-                modifier = Modifier.padding(
-                    top = style.topPadding.orElse() ?: style.padding,
-                    start = style.startPadding.orElse() ?: style.padding,
-                    bottom = style.bottomPadding.orElse() ?: style.padding,
-                    end = style.endPadding.orElse() ?: style.padding
-                )
+                modifier = Modifier.buttonPadding(style),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 header()
                 content()
@@ -124,22 +123,28 @@ fun Button(
 fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    rippleColor: Color = Button.colors.rippleColor,
+    colors: ButtonColors = IconButton.colors,
+    style: ButtonStyle = IconButton.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier.rippleClickable(
-            rippleColor = rippleColor,
+        modifier = Modifier.button(
+            enabled = enabled,
+            colors = colors,
+            style = style,
+            modifier = modifier
+        ).rippleClickable(
+            rippleColor = colors.rippleColor,
             bounded = false,
             enabled = enabled,
             role = Role.Button,
             interactionSource = interactionSource,
             onClick = onClick
-        ),
+        ).buttonPadding(style),
         contentAlignment = Alignment.Center,
-    ) { content() }
+    ) { CompositionLocalProvider(LocalIconTint provides colors.contentColor, content = content) }
 }
 
 @Composable
@@ -147,24 +152,48 @@ fun IconToggleButton(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    rippleColor: Color = Button.colors.rippleColor,
+    colors: ButtonColors = IconButton.colors,
+    style: ButtonStyle = IconButton.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier.rippleToggleable(
+        modifier = Modifier.button(
+            enabled = enabled,
+            colors = colors,
+            style = style,
+            modifier = modifier
+        ).rippleToggleable(
             value = checked,
-            rippleColor = rippleColor,
+            rippleColor = colors.rippleColor,
             bounded = false,
             onValueChange = onCheckedChange,
             enabled = enabled,
             role = Role.Checkbox,
             interactionSource = interactionSource
-        ),
+        ).buttonPadding(style),
         contentAlignment = Alignment.Center
-    ) { content() }
+    ) { CompositionLocalProvider(LocalIconTint provides colors.contentColor, content = content) }
 }
+
+private fun Modifier.button(
+    enabled: Boolean,
+    colors: ButtonColors,
+    style: ButtonStyle,
+    modifier: Modifier
+) = status(enabled)
+    .clip(style.shape)
+    .background(colors.backgroundColor, style.shape)
+    .borderOrNot(style.border, style.shape)
+    .then(modifier)
+
+private fun Modifier.buttonPadding(style: ButtonStyle) = padding(
+    top = style.topPadding.orElse() ?: style.padding,
+    start = style.startPadding.orElse() ?: style.padding,
+    bottom = style.bottomPadding.orElse() ?: style.padding,
+    end = style.endPadding.orElse() ?: style.padding
+)
 
 object Button {
     val colors: ButtonColors
@@ -178,6 +207,17 @@ object Button {
         @Composable
         @ReadOnlyComposable
         get() = defaultButtonStyle()
+}
+
+object IconButton {
+    val colors: ButtonColors
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultIconButtonColors()
+    val style: ButtonStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultIconButtonStyle()
 }
 
 @Composable
@@ -198,6 +238,14 @@ private fun defaultButtonOutBoxColors() = ButtonColors(
 
 @Composable
 @ReadOnlyComposable
+private fun defaultIconButtonColors() = ButtonColors(
+    rippleColor = LocalColors.current.themeSecondary,
+    contentColor = LocalColors.current.themePrimary,
+    backgroundColor = Color.Transparent
+)
+
+@Composable
+@ReadOnlyComposable
 private fun defaultButtonStyle() = ButtonStyle(
     padding = Dp.Unspecified,
     topPadding = LocalSizes.current.spacingSecondary,
@@ -208,6 +256,18 @@ private fun defaultButtonStyle() = ButtonStyle(
         true -> LocalAreaBoxShape.current
         else -> LocalShapes.current.tertiary
     },
+    border = defaultButtonBorder()
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultIconButtonStyle() = ButtonStyle(
+    padding = 0.dp,
+    topPadding = Dp.Unspecified,
+    startPadding = Dp.Unspecified,
+    bottomPadding = Dp.Unspecified,
+    endPadding = Dp.Unspecified,
+    shape = CircleShape,
     border = defaultButtonBorder()
 )
 
