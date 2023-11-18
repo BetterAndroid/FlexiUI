@@ -125,6 +125,10 @@ fun TextField(
         focused || hovered -> style.borderInactive
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
+    val topPadding = style.topPadding.orElse() ?: style.padding
+    val startPadding = style.startPadding.orElse() ?: style.padding
+    val bottomPadding = style.bottomPadding.orElse() ?: style.padding
+    val endPadding = style.endPadding.orElse() ?: style.padding
     Row(
         modifier = Modifier.textField(
             colors = colors,
@@ -136,8 +140,16 @@ fun TextField(
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        header?.invoke()
-        Box(modifier = Modifier.weight(1f, fill = false)) {
+        header?.also { Box(modifier = Modifier.padding(start = startPadding)) { it() } }
+        Box(
+            modifier = Modifier.weight(1f, fill = false)
+                .padding(
+                    top = topPadding,
+                    start = startPadding,
+                    bottom = bottomPadding,
+                    end = endPadding
+                )
+        ) {
             TextFieldStyle(colors) {
                 BasicTextField(
                     value = value,
@@ -165,7 +177,7 @@ fun TextField(
                 )
             }
         }
-        footer?.invoke()
+        footer?.also { Box(modifier = Modifier.padding(end = endPadding)) { it() } }
     }
 }
 
@@ -205,12 +217,6 @@ private fun Modifier.textField(
     .background(colors.backgroundColor, style.shape)
     .borderOrNot(border, style.shape)
     .then(modifier)
-    .padding(
-        top = style.topPadding.orElse() ?: style.padding,
-        start = style.startPadding.orElse() ?: style.padding,
-        bottom = style.bottomPadding.orElse() ?: style.padding,
-        end = style.endPadding.orElse() ?: style.padding
-    )
 
 object TextField {
     val colors: TextFieldColors
