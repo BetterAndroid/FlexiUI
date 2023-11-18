@@ -49,6 +49,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,8 +64,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -107,8 +110,8 @@ data class TextFieldStyle(
 
 @Composable
 fun TextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
     style: TextFieldStyle = TextField.style,
@@ -154,7 +157,7 @@ fun TextField(
             enabled = enabled,
             interactionSource = interactionSource,
             modifier = modifier
-        )
+        ).pointerHoverState(TextFieldPoinerState.TEXT)
     ) {
         // Note: If minWidth is not 0, a constant width is currently set.
         //       At this time, the child layout must be completely filled into the parent layout.
@@ -189,7 +192,7 @@ fun TextField(
                         cursorBrush = SolidColor(colors.cursorColor),
                         decorationBox = {
                             TextFieldDecorationBox(
-                                value = value,
+                                value = value.text,
                                 placeholder = placeholder,
                                 innerTextField = it
                             )
@@ -210,9 +213,60 @@ fun TextField(
 }
 
 @Composable
-fun PasswordTextField(
+fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    header: @Composable (() -> Unit)? = null,
+    placeholder: @Composable () -> Unit = {},
+    footer: @Composable (() -> Unit)? = null,
+    textStyle: TextStyle = TextField.textStyle
+) {
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
+    TextField(
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            onValueChange(it.text)
+        },
+        modifier = modifier,
+        colors = colors,
+        style = style,
+        enabled = enabled,
+        readOnly = readOnly,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        visualTransformation = visualTransformation,
+        onTextLayout = onTextLayout,
+        focusRequester = focusRequester,
+        interactionSource = interactionSource,
+        header = header,
+        placeholder = placeholder,
+        footer = footer,
+        textStyle = textStyle
+    )
+}
+
+@Composable
+fun PasswordTextField(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     defaultPasswordVisible: Boolean = false,
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
@@ -231,7 +285,7 @@ fun PasswordTextField(
     textStyle: TextStyle = TextField.textStyle
 ) {
     var passwordVisible by remember { mutableStateOf(defaultPasswordVisible) }
-    if (value.isEmpty()) passwordVisible = defaultPasswordVisible
+    if (value.text.isEmpty()) passwordVisible = defaultPasswordVisible
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -258,9 +312,9 @@ fun PasswordTextField(
                 modifier = Modifier.width(DefaultDecorIconSize),
                 contentAlignment = Alignment.Center
             ) {
-                val animatedSize by animateDpAsState(if (value.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                val animatedSize by animateDpAsState(if (value.text.isNotEmpty()) DefaultDecorIconSize else 0.dp)
                 IconToggleButton(
-                    modifier = Modifier.size(animatedSize),
+                    modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPoinerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
                     checked = passwordVisible,
                     onCheckedChange = {
@@ -277,9 +331,56 @@ fun PasswordTextField(
 }
 
 @Composable
-fun BackspaceTextField(
+fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    defaultPasswordVisible: Boolean = false,
+    modifier: Modifier = Modifier,
+    colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    normalVisualTransformation: VisualTransformation = VisualTransformation.None,
+    secretVisualTransformation: VisualTransformation = PasswordVisualTransformation(),
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    header: @Composable (() -> Unit)? = null,
+    placeholder: @Composable () -> Unit = {},
+    textStyle: TextStyle = TextField.textStyle
+) {
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
+    PasswordTextField(
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            onValueChange(it.text)
+        },
+        defaultPasswordVisible = defaultPasswordVisible,
+        modifier = modifier,
+        colors = colors,
+        style = style,
+        enabled = enabled,
+        readOnly = readOnly,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        normalVisualTransformation = normalVisualTransformation,
+        secretVisualTransformation = secretVisualTransformation,
+        onTextLayout = onTextLayout,
+        focusRequester = focusRequester,
+        interactionSource = interactionSource,
+        header = header,
+        placeholder = placeholder,
+        textStyle = textStyle
+    )
+}
+
+@Composable
+fun BackspaceTextField(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
     style: TextFieldStyle = TextField.style,
@@ -322,19 +423,73 @@ fun BackspaceTextField(
                 modifier = Modifier.width(DefaultDecorIconSize),
                 contentAlignment = Alignment.Center
             ) {
-                val animatedSize by animateDpAsState(if (value.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                val animatedSize by animateDpAsState(if (value.text.isNotEmpty()) DefaultDecorIconSize else 0.dp)
                 IconButton(
                     onClick = {
-                        onValueChange.invoke(value.dropLast(1))
+                        val cursorPosition = value.selection.start
+                        if (cursorPosition > 0) {
+                            val newText = value.text.removeRange(cursorPosition - 1, cursorPosition)
+                            val newValue = TextFieldValue(newText, TextRange(cursorPosition - 1))
+                            onValueChange(newValue)
+                        }
                         focusRequester.requestFocus()
                     },
-                    modifier = Modifier.width(animatedSize),
+                    modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPoinerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
                     enabled = enabled,
                     interactionSource = interactionSource
                 ) { Icon(imageVector = Icons.Backspace) }
             }
         },
+        textStyle = textStyle
+    )
+}
+
+@Composable
+fun BackspaceTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: TextFieldColors = TextField.colors,
+    style: TextFieldStyle = TextField.style,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    header: @Composable (() -> Unit)? = null,
+    placeholder: @Composable () -> Unit = {},
+    textStyle: TextStyle = TextField.textStyle
+) {
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
+    BackspaceTextField(
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            onValueChange(it.text)
+        },
+        modifier = modifier,
+        colors = colors,
+        style = style,
+        enabled = enabled,
+        readOnly = readOnly,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        visualTransformation = visualTransformation,
+        onTextLayout = onTextLayout,
+        focusRequester = focusRequester,
+        interactionSource = interactionSource,
+        header = header,
+        placeholder = placeholder,
         textStyle = textStyle
     )
 }
@@ -375,6 +530,11 @@ private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> U
         content()
     }
 }
+
+internal expect fun Modifier.pointerHoverState(state: TextFieldPoinerState): Modifier
+
+@Stable
+internal enum class TextFieldPoinerState { NORMAL, TEXT }
 
 private fun Modifier.textField(
     colors: TextFieldColors,
