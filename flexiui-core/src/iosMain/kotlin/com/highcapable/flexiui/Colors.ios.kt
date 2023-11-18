@@ -26,12 +26,12 @@ package com.highcapable.flexiui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 
+@Composable
+@ReadOnlyComposable
+actual fun isDynamicColorsAvailable() = false
+
 internal actual val DynamicLightColors = DefaultLightColors
 
 internal actual val DynamicDarkColors = DefaultDarkColors
 
 internal actual val DynamicBlackColors = DefaultBlackColors
-
-@Composable
-@ReadOnlyComposable
-actual fun isDynamicColorsAvailable() = false
