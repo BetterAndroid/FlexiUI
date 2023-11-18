@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Size
@@ -48,7 +49,7 @@ fun Icon(
     imageVector: ImageVector,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
-    tint: Color = Color.Unspecified
+    tint: Color = LocalIconTint.current
 ) {
     val painter = rememberVectorPainter(imageVector)
     Icon(painter, contentDescription, modifier, tint)
@@ -59,7 +60,7 @@ fun Icon(
     painter: Painter,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
-    tint: Color = Color.Unspecified
+    tint: Color = LocalIconTint.current
 ) {
     // TODO: b/149735981 semantics for content description
     val colorFilter = if (tint == Color.Unspecified) null else ColorFilter.tint(tint)
@@ -80,6 +81,8 @@ fun Icon(
             .then(semantics)
     )
 }
+
+internal val LocalIconTint = compositionLocalOf { Color.Unspecified }
 
 @Composable
 private fun Modifier.defaultSizeFor(painter: Painter) = then(
