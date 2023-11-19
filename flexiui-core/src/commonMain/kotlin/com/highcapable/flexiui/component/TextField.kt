@@ -157,7 +157,7 @@ fun TextField(
             enabled = enabled,
             interactionSource = interactionSource,
             modifier = modifier
-        ).pointerHoverState(TextFieldPoinerState.TEXT)
+        ).pointerHoverState(TextFieldPointerState.TEXT)
     ) {
         // Note: If minWidth is not 0, a constant width is currently set.
         //       At this time, the child layout must be completely filled into the parent layout.
@@ -314,7 +314,7 @@ fun PasswordTextField(
                 val animatedSize by animateDpAsState(if (value.text.isNotEmpty()) DefaultDecorIconSize else 0.dp)
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
-                    modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPoinerState.NORMAL),
+                    modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
                     checked = passwordVisible,
                     onCheckedChange = {
@@ -434,7 +434,7 @@ fun BackspaceTextField(
                         }
                         focusRequester.requestFocus()
                     },
-                    modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPoinerState.NORMAL),
+                    modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
                     enabled = enabled,
                     interactionSource = interactionSource
@@ -531,10 +531,10 @@ private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> U
     }
 }
 
-internal expect fun Modifier.pointerHoverState(state: TextFieldPoinerState): Modifier
+internal expect fun Modifier.pointerHoverState(state: TextFieldPointerState): Modifier
 
 @Stable
-internal enum class TextFieldPoinerState { NORMAL, TEXT }
+internal enum class TextFieldPointerState { NORMAL, TEXT }
 
 private fun Modifier.textField(
     colors: TextFieldColors,

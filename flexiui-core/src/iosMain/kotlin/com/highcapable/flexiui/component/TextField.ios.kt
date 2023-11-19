@@ -25,4 +25,4 @@ package com.highcapable.flexiui.component
 
 import androidx.compose.ui.Modifier
 
-internal actual fun Modifier.pointerHoverState(state: TextFieldPoinerState) = this
+internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) = this
