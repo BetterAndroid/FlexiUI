@@ -33,6 +33,7 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -312,6 +313,9 @@ fun PasswordTextField(
                 contentAlignment = Alignment.Center
             ) {
                 val animatedSize by animateDpAsState(if (value.text.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                val cInteractionSource = remember { MutableInteractionSource() }
+                val pressed by cInteractionSource.collectIsPressedAsState()
+                if (pressed) focusRequester.requestFocus()
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
                     modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
@@ -321,7 +325,8 @@ fun PasswordTextField(
                         passwordVisible = it
                         focusRequester.requestFocus()
                     },
-                    enabled = enabled
+                    enabled = enabled,
+                    interactionSource = cInteractionSource
                 ) { Icon(imageVector = if (passwordVisible) Icons.ViewerOpen else Icons.ViewerClose) }
             }
         },
@@ -423,6 +428,9 @@ fun BackspaceTextField(
                 contentAlignment = Alignment.Center
             ) {
                 val animatedSize by animateDpAsState(if (value.text.isNotEmpty()) DefaultDecorIconSize else 0.dp)
+                val cInteractionSource = remember { MutableInteractionSource() }
+                val pressed by cInteractionSource.collectIsPressedAsState()
+                if (pressed) focusRequester.requestFocus()
                 IconButton(
                     onClick = {
                         val cursorPosition = value.selection.start
@@ -435,7 +443,8 @@ fun BackspaceTextField(
                     },
                     modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
-                    enabled = enabled
+                    enabled = enabled,
+                    interactionSource = cInteractionSource
                 ) { Icon(imageVector = Icons.Backspace) }
             }
         },
