@@ -528,7 +528,7 @@ private fun defaultDropdownListColors() = DropdownListColors(
 private fun defaultDropdownMenuColors() = DropdownMenuColors(
     contentColor = LocalColors.current.textPrimary,
     activeColor = LocalColors.current.themePrimary.copy(alpha = 0.3f),
-    borderColor = LocalColors.current.foregroundSecondary
+    borderColor = LocalColors.current.backgroundSecondary
 )
 
 @Composable
