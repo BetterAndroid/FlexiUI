@@ -321,8 +321,7 @@ fun PasswordTextField(
                         passwordVisible = it
                         focusRequester.requestFocus()
                     },
-                    enabled = enabled,
-                    interactionSource = interactionSource
+                    enabled = enabled
                 ) { Icon(imageVector = if (passwordVisible) Icons.ViewerOpen else Icons.ViewerClose) }
             }
         },
@@ -436,8 +435,7 @@ fun BackspaceTextField(
                     },
                     modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
                     style = IconButton.style.copy(padding = DefaultDecorIconPadding),
-                    enabled = enabled,
-                    interactionSource = interactionSource
+                    enabled = enabled
                 ) { Icon(imageVector = Icons.Backspace) }
             }
         },
