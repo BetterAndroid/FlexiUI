@@ -328,7 +328,7 @@ private fun DropdownMenuContent(
     style: DropdownMenuStyle,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val transition = updateTransition(expandedStates, label = "DropDownMenu")
+    val transition = updateTransition(expandedStates, label = "DropdownMenu")
     val scale by transition.animateFloat(
         transitionSpec = {
             if (false isTransitioningTo true) tween(
