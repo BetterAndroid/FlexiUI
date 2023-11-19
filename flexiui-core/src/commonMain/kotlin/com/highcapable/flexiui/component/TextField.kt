@@ -83,7 +83,7 @@ import com.highcapable.flexiui.utils.orElse
 import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
 
-// TODO: Preset text boxes (auto complete text box, etc.)
+// TODO: auto complete text box (possible a few long time later)
 
 @Immutable
 data class TextFieldColors(
