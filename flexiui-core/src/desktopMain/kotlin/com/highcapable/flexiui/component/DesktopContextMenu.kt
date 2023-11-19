@@ -200,7 +200,7 @@ val LocalContextMenuStyle = compositionLocalOf {
 @ReadOnlyComposable
 internal fun defaultContextMenuColors() = ContextMenuColors(
     contentColor = LocalContextMenuColors.current.contentColor.orElse() ?: LocalColors.current.textPrimary,
-    borderColor = LocalContextMenuColors.current.borderColor.orElse() ?: AreaBox.color
+    borderColor = LocalContextMenuColors.current.borderColor.orElse() ?: LocalColors.current.foregroundSecondary
 )
 
 @Composable
