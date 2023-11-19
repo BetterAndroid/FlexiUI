@@ -357,6 +357,7 @@ private fun DropdownMenuContent(
                 transformOrigin = transformOriginState.value
             }
         },
+        color = colors.borderColor,
         style = style.borderStyle
     ) {
         CompositionLocalProvider(
@@ -527,7 +528,7 @@ private fun defaultDropdownListColors() = DropdownListColors(
 private fun defaultDropdownMenuColors() = DropdownMenuColors(
     contentColor = LocalColors.current.textPrimary,
     activeColor = LocalColors.current.themePrimary.copy(alpha = 0.3f),
-    borderColor = AreaBox.color
+    borderColor = LocalColors.current.foregroundSecondary
 )
 
 @Composable
