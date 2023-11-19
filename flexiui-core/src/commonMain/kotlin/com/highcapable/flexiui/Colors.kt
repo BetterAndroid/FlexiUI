@@ -57,7 +57,7 @@ internal expect val DynamicBlackColors: Colors
 
 internal val DefaultLightColors = Colors(
     backgroundPrimary = Color(0xFFF5F5F5),
-    backgroundSecondary = Color(0xFFEDEDED),
+    backgroundSecondary = Color(0xFFFAFAFA),
     foregroundPrimary = Color(0xFFFFFFFF),
     foregroundSecondary = Color(0xFFF5F5F5),
     themePrimary = Color(0xFF777777),
@@ -70,7 +70,7 @@ internal val DefaultLightColors = Colors(
 
 internal val DefaultDarkColors = Colors(
     backgroundPrimary = Color(0xFF2D2D2D),
-    backgroundSecondary = Color(0xFF484848),
+    backgroundSecondary = Color(0xFF3A3A3A),
     foregroundPrimary = Color(0xFF474747),
     foregroundSecondary = Color(0xFF646464),
     themePrimary = Color(0xFF888888),
@@ -83,7 +83,7 @@ internal val DefaultDarkColors = Colors(
 
 internal val DefaultBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF1B1B1B),
+    backgroundSecondary = Color(0xFF0D0D0D),
     foregroundPrimary = Color(0xFF1A1A1A),
     foregroundSecondary = Color(0xFF373737),
     themePrimary = Color(0xFF5B5B5B),
@@ -96,7 +96,7 @@ internal val DefaultBlackColors = Colors(
 
 private val RedLightColors = Colors(
     backgroundPrimary = Color(0xFFFBEEEC),
-    backgroundSecondary = Color(0xFFEDE0DE),
+    backgroundSecondary = Color(0xFFFDF4F5),
     foregroundPrimary = Color(0xFFFFFBFF),
     foregroundSecondary = Color(0xFFFBEEEC),
     themePrimary = Color(0xFFFF5545),
@@ -109,7 +109,7 @@ private val RedLightColors = Colors(
 
 private val PinkLightColors = Colors(
     backgroundPrimary = Color(0xFFFBEEEE),
-    backgroundSecondary = Color(0xFFECE0E0),
+    backgroundSecondary = Color(0xFFFDF4F6),
     foregroundPrimary = Color(0xFFFFFBFF),
     foregroundSecondary = Color(0xFFFBEEEE),
     themePrimary = Color(0xFFFF4E7C),
@@ -122,7 +122,7 @@ private val PinkLightColors = Colors(
 
 private val PurpleLightColors = Colors(
     backgroundPrimary = Color(0xFFF5EFF4),
-    backgroundSecondary = Color(0xFFE6E1E6),
+    backgroundSecondary = Color(0xFFFAF5F9),
     foregroundPrimary = Color(0xFFFFFBFF),
     foregroundSecondary = Color(0xFFF5EFF4),
     themePrimary = Color(0xFFA476FF),
@@ -135,7 +135,7 @@ private val PurpleLightColors = Colors(
 
 private val OrangeLightColors = Colors(
     backgroundPrimary = Color(0xFFFAEFE7),
-    backgroundSecondary = Color(0xFFEBE0D9),
+    backgroundSecondary = Color(0xFFFCF5F3),
     foregroundPrimary = Color(0xFFFFFBFF),
     foregroundSecondary = Color(0xFFFAEFE7),
     themePrimary = Color(0xFFD27C00),
@@ -148,7 +148,7 @@ private val OrangeLightColors = Colors(
 
 private val YellowLightColors = Colors(
     backgroundPrimary = Color(0xFFF8EFE7),
-    backgroundSecondary = Color(0xFFE9E1D9),
+    backgroundSecondary = Color(0xFFFBF5F3),
     foregroundPrimary = Color(0xFFFFFBFF),
     foregroundSecondary = Color(0xFFF8EFE7),
     themePrimary = Color(0xFFBA8800),
@@ -161,7 +161,7 @@ private val YellowLightColors = Colors(
 
 private val GreenLightColors = Colors(
     backgroundPrimary = Color(0xFFEFF1ED),
-    backgroundSecondary = Color(0xFFE1E3DF),
+    backgroundSecondary = Color(0xFFF5F7F2),
     foregroundPrimary = Color(0xFFFBFDF8),
     foregroundSecondary = Color(0xFFEFF1ED),
     themePrimary = Color(0xFF5B9E7A),
@@ -174,7 +174,7 @@ private val GreenLightColors = Colors(
 
 private val BlueLightColors = Colors(
     backgroundPrimary = Color(0xFFF0F0F3),
-    backgroundSecondary = Color(0xFFE2E2E5),
+    backgroundSecondary = Color(0xFFF6F6F9),
     foregroundPrimary = Color(0xFFFCFCFF),
     foregroundSecondary = Color(0xFFF0F0F3),
     themePrimary = Color(0xFF0099DF),
@@ -187,7 +187,7 @@ private val BlueLightColors = Colors(
 
 private val RedDarkColors = Colors(
     backgroundPrimary = Color(0xFF271816),
-    backgroundSecondary = Color(0xFF3D2C2A),
+    backgroundSecondary = Color(0xFF322220),
     foregroundPrimary = Color(0xFF3D2C2A),
     foregroundSecondary = Color(0xFF554240),
     themePrimary = Color(0xFFB9856D),
@@ -200,7 +200,7 @@ private val RedDarkColors = Colors(
 
 private val PinkDarkColors = Colors(
     backgroundPrimary = Color(0xFF26181A),
-    backgroundSecondary = Color(0xFF3D2C2E),
+    backgroundSecondary = Color(0xFF312224),
     foregroundPrimary = Color(0xFF3D2C2E),
     foregroundSecondary = Color(0xFF544244),
     themePrimary = Color(0xFFBA837B),
@@ -213,7 +213,7 @@ private val PinkDarkColors = Colors(
 
 private val PurpleDarkColors = Colors(
     backgroundPrimary = Color(0xFF1E1A24),
-    backgroundSecondary = Color(0xFF332E3A),
+    backgroundSecondary = Color(0xFF28242F),
     foregroundPrimary = Color(0xFF332E3A),
     foregroundSecondary = Color(0xFF494550),
     themePrimary = Color(0xFF9F88AD),
@@ -226,7 +226,7 @@ private val PurpleDarkColors = Colors(
 
 private val OrangeDarkColors = Colors(
     backgroundPrimary = Color(0xFF25190E),
-    backgroundSecondary = Color(0xFF3B2E22),
+    backgroundSecondary = Color(0xFF302318),
     foregroundPrimary = Color(0xFF3B2E22),
     foregroundSecondary = Color(0xFF534437),
     themePrimary = Color(0xFFAE8B5D),
@@ -239,7 +239,7 @@ private val OrangeDarkColors = Colors(
 
 private val YellowDarkColors = Colors(
     backgroundPrimary = Color(0xFF221B0D),
-    backgroundSecondary = Color(0xFF382F20),
+    backgroundSecondary = Color(0xFF2D2516),
     foregroundPrimary = Color(0xFF382F20),
     foregroundSecondary = Color(0xFF4F4535),
     themePrimary = Color(0xFFA18F5C),
@@ -252,7 +252,7 @@ private val YellowDarkColors = Colors(
 
 private val GreenDarkColors = Colors(
     backgroundPrimary = Color(0xFF191C1A),
-    backgroundSecondary = Color(0xFF2E312E),
+    backgroundSecondary = Color(0xFF232624),
     foregroundPrimary = Color(0xFF2E312E),
     foregroundSecondary = Color(0xFF444844),
     themePrimary = Color(0xFF7F9687),
@@ -265,7 +265,7 @@ private val GreenDarkColors = Colors(
 
 private val BlueDarkColors = Colors(
     backgroundPrimary = Color(0xFF141C23),
-    backgroundSecondary = Color(0xFF293139),
+    backgroundSecondary = Color(0xFF1E262E),
     foregroundPrimary = Color(0xFF293139),
     foregroundSecondary = Color(0xFF3F484F),
     themePrimary = Color(0xFF8091B1),
@@ -278,7 +278,7 @@ private val BlueDarkColors = Colors(
 
 private val RedBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF130C0B),
     foregroundPrimary = Color(0xFF271816),
     foregroundSecondary = Color(0xFF3D2C2A),
     themePrimary = Color(0xFFB9856D),
@@ -291,7 +291,7 @@ private val RedBlackColors = Colors(
 
 private val PinkBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF130C0D),
     foregroundPrimary = Color(0xFF26181A),
     foregroundSecondary = Color(0xFF3D2C2E),
     themePrimary = Color(0xFFBA837B),
@@ -304,7 +304,7 @@ private val PinkBlackColors = Colors(
 
 private val PurpleBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF0F0D12),
     foregroundPrimary = Color(0xFF1E1A24),
     foregroundSecondary = Color(0xFF332E3A),
     themePrimary = Color(0xFF9F88AD),
@@ -317,7 +317,7 @@ private val PurpleBlackColors = Colors(
 
 private val OrangeBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF120C07),
     foregroundPrimary = Color(0xFF25190E),
     foregroundSecondary = Color(0xFF3B2E22),
     themePrimary = Color(0xFFAE8B5D),
@@ -330,7 +330,7 @@ private val OrangeBlackColors = Colors(
 
 private val YellowBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF110D06),
     foregroundPrimary = Color(0xFF221B0D),
     foregroundSecondary = Color(0xFF382F20),
     themePrimary = Color(0xFFA18F5C),
@@ -343,7 +343,7 @@ private val YellowBlackColors = Colors(
 
 private val GreenBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF0C0E0D),
     foregroundPrimary = Color(0xFF191C1A),
     foregroundSecondary = Color(0xFF2E312E),
     themePrimary = Color(0xFF7F9687),
@@ -356,7 +356,7 @@ private val GreenBlackColors = Colors(
 
 private val BlueBlackColors = Colors(
     backgroundPrimary = Color(0xFF000000),
-    backgroundSecondary = Color(0xFF000000),
+    backgroundSecondary = Color(0xFF0A0E11),
     foregroundPrimary = Color(0xFF141C23),
     foregroundSecondary = Color(0xFF293139),
     themePrimary = Color(0xFF8091B1),
