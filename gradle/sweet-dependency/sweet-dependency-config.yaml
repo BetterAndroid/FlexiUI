@@ -25,13 +25,13 @@ plugins:
     version-ref: android-application
 
 libraries:
-  # Use a placeholder for the alpha compose version
+  # Use a placeholder for the alpha / beta compose version
   # In the project to use "androidx.compose.android.version" to obtain the version
   # and use the "resolutionStrategy" to replace all the current "stable" versions
   androidx.compose.runtime:
     runtime-android:
       alias: androidx-compose-android
-      version: 1.6.0-alpha08
+      version: 1.6.0-beta01
   com.highcapable.betterandroid:
     ui-component:
       version: 1.0.1
