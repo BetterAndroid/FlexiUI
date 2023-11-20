@@ -41,6 +41,8 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -59,6 +61,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,7 +69,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.UiComposable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -167,7 +169,6 @@ fun DropdownList(
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
     val focusRequester = remember { FocusRequester() }
-    var menuHeightPx by remember { mutableStateOf(0) }
     val startPadding = style.startPadding.orElse() ?: style.padding
     val endPadding = style.endPadding.orElse() ?: style.padding
     val animatedEndIconTint by animateColorAsState(when {
@@ -187,22 +188,25 @@ fun DropdownList(
         focused || hovered -> style.borderInactive
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
-    DropdownListBox(
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
-        modifier = modifier,
-        properties = DropdownListProperties(
+    DropdownMenuBox(
+        modifier = Modifier.dropdownList(
             colors = colors,
             style = style,
             border = border,
             enabled = enabled,
             focusRequester = focusRequester,
-            interactionSource = interactionSource
-        ),
-        menuHeightPx = { menuHeightPx = it }
+            interactionSource = interactionSource,
+            modifier = modifier.rippleClickable(
+                enabled = enabled,
+                role = Role.DropdownList,
+                interactionSource = interactionSource
+            ) {
+                focusRequester.requestFocus()
+                onExpandedChange(!expanded)
+            }
+        )
     ) {
-        val menuWidth = maxWidth + startPadding + endPadding
-        val menuHeight = with(LocalDensity.current) { menuHeightPx.toDp() }
+        val menuMaxWidth = maxWidth + startPadding + endPadding
         // Note: If minWidth is not 0, a constant width is currently set.
         //       At this time, the child layout must be completely filled into the parent layout.
         val needInflatable = minWidth > 0.dp
@@ -223,7 +227,7 @@ fun DropdownList(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) },
             offset = DefaultDropdownListMenuOffset,
-            modifier = Modifier.width(menuWidth).heightIn(max = menuHeight),
+            modifier = Modifier.width(menuMaxWidth).heightIn(max = menuMaxHeight),
             colors = menuColors,
             style = menuStyle,
             scrollState = scrollState,
@@ -274,6 +278,46 @@ fun DropdownMenu(
             )
         }
     }
+}
+
+@Composable
+fun DropdownMenuBox(
+    modifier: Modifier = Modifier,
+    content: @Composable DropdownMenuBoxScope.() -> Unit
+) {
+    var menuMaxHeight by remember { mutableStateOf(Dp.Unspecified) }
+    DropdownMenuMeasureBox(menuMaxHeight = { menuMaxHeight = it }) {
+        BoxWithConstraints(modifier = modifier) {
+            val currentConstraints = constraints
+            val currentMaxHeight = maxHeight
+            val currentMaxWidth = maxWidth
+            val currentMinHeight = minHeight
+            val currentMinWidth = minWidth
+            fun Modifier.currentAlign(alignment: Alignment) = align(alignment).then(modifier)
+            fun Modifier.currentMatchParentSize() = matchParentSize().then(modifier)
+            object : DropdownMenuBoxScope {
+                override val menuMaxHeight = menuMaxHeight
+                override val constraints get() = currentConstraints
+                override val maxHeight get() = currentMaxHeight
+                override val maxWidth get() = currentMaxWidth
+                override val minHeight get() = currentMinHeight
+                override val minWidth get() = currentMinWidth
+                override fun Modifier.align(alignment: Alignment) = currentAlign(alignment)
+                override fun Modifier.matchParentSize() = currentMatchParentSize()
+            }.content()
+        }
+    }
+}
+
+@Composable
+internal expect fun DropdownMenuMeasureBox(
+    menuMaxHeight: (Dp) -> Unit,
+    content: @Composable BoxScope.() -> Unit
+)
+
+@Stable
+interface DropdownMenuBoxScope : BoxWithConstraintsScope {
+    val menuMaxHeight: Dp
 }
 
 @Composable
@@ -368,43 +412,28 @@ private fun DropdownMenuContent(
     }
 }
 
-@Composable
-internal expect fun DropdownListBox(
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    modifier: Modifier,
-    properties: DropdownListProperties,
-    menuHeightPx: (Int) -> Unit,
-    content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
-)
-
-internal fun Modifier.dropdownList(
-    properties: DropdownListProperties,
+private fun Modifier.dropdownList(
+    colors: DropdownListColors,
+    style: DropdownListStyle,
+    border: BorderStroke,
+    enabled: Boolean,
+    focusRequester: FocusRequester,
+    interactionSource: MutableInteractionSource,
     modifier: Modifier
-) = status(properties.enabled)
-    .focusRequester(properties.focusRequester)
-    .focusable(properties.enabled, properties.interactionSource)
-    .hoverable(properties.interactionSource, properties.enabled)
-    .clip(properties.style.shape)
-    .background(properties.colors.backgroundColor, properties.style.shape)
-    .borderOrNot(properties.border, properties.style.shape)
+) = status(enabled)
+    .focusRequester(focusRequester)
+    .focusable(enabled, interactionSource)
+    .hoverable(interactionSource, enabled)
+    .clip(style.shape)
+    .background(colors.backgroundColor, style.shape)
+    .borderOrNot(border, style.shape)
     .then(modifier)
     .padding(
-        top = properties.style.topPadding.orElse() ?: properties.style.padding,
-        start = properties.style.startPadding.orElse() ?: properties.style.padding,
-        bottom = properties.style.bottomPadding.orElse() ?: properties.style.padding,
-        end = properties.style.endPadding.orElse() ?: properties.style.padding
+        top = style.topPadding.orElse() ?: style.padding,
+        start = style.startPadding.orElse() ?: style.padding,
+        bottom = style.bottomPadding.orElse() ?: style.padding,
+        end = style.endPadding.orElse() ?: style.padding
     )
-
-@Immutable
-internal data class DropdownListProperties(
-    val colors: DropdownListColors,
-    val style: DropdownListStyle,
-    val border: BorderStroke,
-    val enabled: Boolean,
-    val focusRequester: FocusRequester,
-    val interactionSource: MutableInteractionSource
-)
 
 private fun calculateTransformOrigin(parentBounds: IntRect, menuBounds: IntRect): TransformOrigin {
     val pivotX = when {

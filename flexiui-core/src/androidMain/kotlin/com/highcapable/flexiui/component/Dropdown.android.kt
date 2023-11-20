@@ -26,53 +26,39 @@ package com.highcapable.flexiui.component
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.UiComposable
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.node.Ref
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.semantics.Role
-import com.highcapable.flexiui.interaction.rippleClickable
+import androidx.compose.ui.unit.Dp
 import kotlin.math.max
 
 @Composable
-internal actual fun DropdownListBox(
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    modifier: Modifier,
-    properties: DropdownListProperties,
-    menuHeightPx: (Int) -> Unit,
-    content: @Composable @UiComposable BoxWithConstraintsScope.() -> Unit
+internal actual fun DropdownMenuMeasureBox(
+    menuMaxHeight: (Dp) -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
+    val density = LocalDensity.current
     val view = LocalView.current
     val coordinates = remember { Ref<LayoutCoordinates>() }
     BoxWithConstraints(
-        modifier = Modifier.dropdownList(
-            properties = properties,
-            modifier = modifier.rippleClickable(
-                enabled = properties.enabled,
-                role = Role.DropdownList,
-                interactionSource = properties.interactionSource
-            ) {
-                properties.focusRequester.requestFocus()
-                onExpandedChange(!expanded)
-            }.onGloballyPositioned {
-                coordinates.value = it
-                updateHeight(view.rootView, coordinates.value) { newHeight -> menuHeightPx(newHeight) }
-            }
-        ),
+        modifier = Modifier.onGloballyPositioned {
+            coordinates.value = it
+            updateHeight(view.rootView, coordinates.value) { newHeight -> menuMaxHeight(with(density) { newHeight.toDp() }) }
+        },
         content = content
     )
     DisposableEffect(view) {
         val listener = OnGlobalLayoutListener(view) {
-            updateHeight(view.rootView, coordinates.value) { newHeight -> menuHeightPx(newHeight) }
+            updateHeight(view.rootView, coordinates.value) { newHeight -> menuMaxHeight(with(density) { newHeight.toDp() }) }
         }
         onDispose { listener.dispose() }
     }
