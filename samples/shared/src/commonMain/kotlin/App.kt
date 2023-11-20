@@ -43,6 +43,7 @@ import com.highcapable.flexiui.Colors
 import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
+import com.highcapable.flexiui.component.AutoCompleteOptions
 import com.highcapable.flexiui.component.BackspaceTextField
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.CheckBox
@@ -102,7 +103,17 @@ private fun ContentView() {
             modifier = Modifier.width(TextFieldWidth),
             value = input,
             onValueChange = { input = it },
-            placeholder = { Text(text = "Type something...") }
+            placeholder = { Text(text = "Type something...") },
+            completionValues = listOf(
+                "Compose",
+                "Compose World",
+                "Composable",
+                "Android",
+                "Jetpack",
+                "Jetpack Compose",
+                "Jetpack Compose Multiplatform"
+            ),
+            completionOptions = AutoCompleteOptions(checkCase = false, threshold = 1)
         )
         Spacer(Modifier.padding(10.dp))
         var backspace by remember { mutableStateOf("") }
