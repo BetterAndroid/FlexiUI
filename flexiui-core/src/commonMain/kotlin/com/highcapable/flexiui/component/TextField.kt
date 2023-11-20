@@ -36,6 +36,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,14 +65,18 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
@@ -84,17 +89,22 @@ import com.highcapable.flexiui.utils.orElse
 import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
 
-// TODO: auto complete text box (possible a few long time later)
-
 @Immutable
 data class TextFieldColors(
     val cursorColor: Color,
     val selectionColors: TextSelectionColors,
+    val completionColors: AutoCompleteBoxColors,
     val decorInactiveTint: Color,
     val decorActiveTint: Color,
     val borderInactiveColor: Color,
     val borderActiveColor: Color,
     val backgroundColor: Color
+)
+
+@Immutable
+data class AutoCompleteBoxColors(
+    val highlightContentColor: Color,
+    val menuColors: DropdownMenuColors
 )
 
 @Immutable
@@ -106,18 +116,29 @@ data class TextFieldStyle(
     val endPadding: Dp,
     val shape: Shape,
     val borderInactive: BorderStroke,
-    val borderActive: BorderStroke
+    val borderActive: BorderStroke,
+    val completionStyle: DropdownMenuStyle
+)
+
+@Immutable
+data class AutoCompleteOptions(
+    val checkCase: Boolean = true,
+    val checkStartSpace: Boolean = true,
+    val checkEndSpace: Boolean = true,
+    val threshold: Int = 2
 )
 
 @Composable
 fun TextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
     style: TextFieldStyle = TextField.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
@@ -210,6 +231,17 @@ fun TextField(
                 )
             }
         }
+        AutoCompleteTextFieldBox(
+            value = value,
+            onValueChange = onValueChange,
+            completionValues = completionValues,
+            completionOptions = completionOptions,
+            completionColors = colors.completionColors,
+            completionStyle = style.completionStyle,
+            focusRequester = focusRequester,
+            dropdownMenuWidth = if (needInflatable) maxWidth else Dp.Unspecified,
+            textFieldAvailable = enabled && !readOnly && focused
+        )
     }
 }
 
@@ -217,11 +249,13 @@ fun TextField(
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
+    completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
     style: TextFieldStyle = TextField.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
@@ -243,11 +277,13 @@ fun TextField(
             textFieldValue = it
             onValueChange(it.text)
         },
+        completionValues = completionValues,
         modifier = modifier,
         colors = colors,
         style = style,
         enabled = enabled,
         readOnly = readOnly,
+        completionOptions = completionOptions,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = singleLine,
@@ -385,11 +421,13 @@ fun PasswordTextField(
 fun BackspaceTextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
     style: TextFieldStyle = TextField.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
@@ -406,11 +444,13 @@ fun BackspaceTextField(
     TextField(
         value = value,
         onValueChange = onValueChange,
+        completionValues = completionValues,
         modifier = modifier,
         colors = colors,
         style = style,
         enabled = enabled,
         readOnly = readOnly,
+        completionOptions = completionOptions,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = singleLine,
@@ -456,11 +496,13 @@ fun BackspaceTextField(
 fun BackspaceTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextField.colors,
     style: TextFieldStyle = TextField.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
@@ -481,11 +523,13 @@ fun BackspaceTextField(
             textFieldValue = it
             onValueChange(it.text)
         },
+        completionValues = completionValues,
         modifier = modifier,
         colors = colors,
         style = style,
         enabled = enabled,
         readOnly = readOnly,
+        completionOptions = completionOptions,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = singleLine,
@@ -499,6 +543,88 @@ fun BackspaceTextField(
         placeholder = placeholder,
         textStyle = textStyle
     )
+}
+
+@Composable
+private fun AutoCompleteTextFieldBox(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    completionValues: List<String>,
+    completionOptions: AutoCompleteOptions,
+    completionColors: AutoCompleteBoxColors,
+    completionStyle: DropdownMenuStyle,
+    focusRequester: FocusRequester,
+    dropdownMenuWidth: Dp,
+    textFieldAvailable: Boolean
+) {
+    if (completionValues.isEmpty()) return
+    // We need to use some "last" to remember the last using data,
+    // because we need to mantain the animation state of the dropdown menu.
+    // This allows the animation to finish playing due to the next composable event.
+    var lastHandingModified by remember { mutableStateOf(false) }
+    var lastMatchedValue by remember { mutableStateOf("") }
+    var lastInputLength by remember { mutableStateOf(0) }
+    var lastMatchedValues by remember { mutableStateOf(listOf<String>()) }
+    val inputText = value.text.let {
+        var currentText = it
+        when {
+            !completionOptions.checkStartSpace -> currentText = currentText.trimStart()
+            !completionOptions.checkEndSpace -> currentText = currentText.trimEnd()
+        }; currentText
+    }
+    val hasInput = inputText.isNotEmpty()
+    val matchedValues = completionValues.filter {
+        if (inputText.length >= completionOptions.threshold)
+            if (completionOptions.checkCase)
+                it.startsWith(inputText)
+            else it.lowercase().startsWith(inputText.lowercase())
+        else false
+    }.sortedBy { it.length }
+    if (matchedValues.isNotEmpty() && !lastHandingModified) {
+        lastMatchedValues = matchedValues
+        lastInputLength = inputText.length
+    }
+    val matchText = if (completionOptions.checkCase)
+        lastMatchedValue != inputText
+    else lastMatchedValue.lowercase() != inputText.lowercase()
+    val expanded = hasInput && matchedValues.isNotEmpty() && matchText
+    // As long as it is expanded, reset the lastHandingModified, lastMatchedValue.
+    if (expanded) {
+        lastHandingModified = false
+        lastMatchedValue = ""
+    }
+    // Clearly, if the text field is not available,
+    // the dropdown menu should not be displayed when reavailable.
+    if (!textFieldAvailable && matchedValues.isNotEmpty()) lastMatchedValue = inputText
+    DropdownMenu(
+        expanded = expanded && textFieldAvailable,
+        onDismissRequest = {},
+        modifier = dropdownMenuWidth.orElse()?.let { Modifier.width(it) } ?: Modifier.width(IntrinsicSize.Max),
+        colors = completionColors.menuColors,
+        style = completionStyle,
+        properties = PopupProperties(focusable = false)
+    ) {
+        lastMatchedValues.forEach { matchedValue ->
+            DropdownMenuItem(
+                onClick = {
+                    val newValue = TextFieldValue(matchedValue, TextRange(matchedValue.length))
+                    lastHandingModified = true
+                    lastMatchedValue = matchedValue
+                    onValueChange(newValue)
+                    focusRequester.requestFocus()
+                }
+            ) {
+                Text(buildAnnotatedString {
+                    append(matchedValue)
+                    addStyle(
+                        style = SpanStyle(color = completionColors.highlightContentColor, fontWeight = FontWeight.Bold),
+                        start = 0,
+                        end = lastInputLength
+                    )
+                })
+            }
+        }
+    }
 }
 
 @Composable
@@ -597,6 +723,10 @@ private fun defaultTextFieldColors() = TextFieldColors(
         handleColor = LocalColors.current.themePrimary,
         backgroundColor = LocalColors.current.themeSecondary
     ),
+    completionColors = AutoCompleteBoxColors(
+        highlightContentColor = LocalColors.current.themePrimary,
+        menuColors = DropdownMenu.colors
+    ),
     decorInactiveTint = LocalColors.current.themeSecondary,
     decorActiveTint = LocalColors.current.themePrimary,
     borderInactiveColor = LocalColors.current.themeSecondary,
@@ -617,7 +747,8 @@ private fun defaultTextFieldStyle() = TextFieldStyle(
         else -> LocalShapes.current.secondary
     },
     borderInactive = defaultTextFieldInactiveBorder(),
-    borderActive = defaultTextFieldActiveBorder()
+    borderActive = defaultTextFieldActiveBorder(),
+    completionStyle = DropdownMenu.style
 )
 
 @Composable
