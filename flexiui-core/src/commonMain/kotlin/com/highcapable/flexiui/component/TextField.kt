@@ -65,6 +65,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
@@ -155,6 +161,7 @@ fun TextField(
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
+    val keyEventFactory = TextFieldKeyEventFactory()
     val animatedDecorTint by animateColorAsState(when {
         focused || hovered -> colors.decorActiveTint
         else -> colors.decorInactiveTint
@@ -199,7 +206,9 @@ fun TextField(
                     BasicTextField(
                         value = value,
                         onValueChange = onValueChange,
-                        modifier = Modifier.focusRequester(focusRequester).inflatable(),
+                        modifier = Modifier.inflatable()
+                            .focusRequester(focusRequester)
+                            .onKeyEvent { keyEventFactory.onKeyEvent?.invoke(it) ?: false },
                         enabled = enabled,
                         readOnly = readOnly,
                         textStyle = textStyle,
@@ -239,6 +248,7 @@ fun TextField(
             completionColors = colors.completionColors,
             completionStyle = style.completionStyle,
             focusRequester = focusRequester,
+            keyEventFactory = keyEventFactory,
             dropdownMenuWidth = if (needInflatable) maxWidth else Dp.Unspecified,
             textFieldAvailable = enabled && !readOnly && focused
         )
@@ -554,6 +564,7 @@ private fun AutoCompleteTextFieldBox(
     completionColors: AutoCompleteBoxColors,
     completionStyle: DropdownMenuStyle,
     focusRequester: FocusRequester,
+    keyEventFactory: TextFieldKeyEventFactory,
     dropdownMenuWidth: Dp,
     textFieldAvailable: Boolean
 ) {
@@ -565,6 +576,7 @@ private fun AutoCompleteTextFieldBox(
     var lastMatchedValue by remember { mutableStateOf("") }
     var lastInputLength by remember { mutableStateOf(0) }
     var lastMatchedValues by remember { mutableStateOf(listOf<String>()) }
+    var selection by remember { mutableStateOf(-1) }
     val inputText = value.text.let {
         var currentText = it
         when {
@@ -592,10 +604,40 @@ private fun AutoCompleteTextFieldBox(
     if (expanded) {
         lastHandingModified = false
         lastMatchedValue = ""
+    } else selection = -1
+    fun collapse() {
+        lastMatchedValue = inputText
+    }
+    fun selectAndCollapse(position: Int) {
+        if (position < 0) return
+        val newValue = TextFieldValue(matchedValues[position], TextRange(matchedValues[position].length))
+        lastHandingModified = true
+        lastMatchedValue = matchedValues[position]
+        onValueChange(newValue)
+        focusRequester.requestFocus()
+    }
+    keyEventFactory.onKeyEvent = {
+        var release = true
+        if (it.type == KeyEventType.KeyUp) when (it.key) {
+            Key.Escape -> collapse()
+            Key.DirectionUp -> {
+                if (selection > 0)
+                    selection--
+                else selection = matchedValues.lastIndex
+            }
+            Key.DirectionDown -> {
+                if (selection < matchedValues.lastIndex)
+                    selection++
+                else selection = 0
+            }
+            Key.DirectionRight, Key.Enter -> selectAndCollapse(selection)
+            else -> release = false
+        } else release = false
+        release
     }
     // Clearly, if the text field is not available,
     // the dropdown menu should not be displayed when reavailable.
-    if (!textFieldAvailable && matchedValues.isNotEmpty()) lastMatchedValue = inputText
+    if (!textFieldAvailable && matchedValues.isNotEmpty()) collapse()
     DropdownMenu(
         expanded = expanded && textFieldAvailable,
         onDismissRequest = {},
@@ -604,15 +646,10 @@ private fun AutoCompleteTextFieldBox(
         style = completionStyle,
         properties = PopupProperties(focusable = false)
     ) {
-        lastMatchedValues.forEach { matchedValue ->
+        lastMatchedValues.forEachIndexed { index, matchedValue ->
             DropdownMenuItem(
-                onClick = {
-                    val newValue = TextFieldValue(matchedValue, TextRange(matchedValue.length))
-                    lastHandingModified = true
-                    lastMatchedValue = matchedValue
-                    onValueChange(newValue)
-                    focusRequester.requestFocus()
-                }
+                onClick = { selectAndCollapse(index) },
+                actived = selection == index
             ) {
                 Text(buildAnnotatedString {
                     append(matchedValue)
@@ -668,6 +705,11 @@ internal expect fun Modifier.pointerHoverState(state: TextFieldPointerState): Mo
 
 @Stable
 internal enum class TextFieldPointerState { NORMAL, TEXT }
+
+@Stable
+private class TextFieldKeyEventFactory {
+    var onKeyEvent: ((KeyEvent) -> Boolean)? = null
+}
 
 private fun Modifier.textField(
     colors: TextFieldColors,
