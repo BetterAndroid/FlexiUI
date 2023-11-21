@@ -103,7 +103,16 @@ private fun ContentView() {
             modifier = Modifier.width(TextFieldWidth),
             value = input,
             onValueChange = { input = it },
-            placeholder = { Text(text = "Type something...") },
+            placeholder = { Text(text = "Type something...") }
+        )
+        Spacer(Modifier.padding(10.dp))
+        var completion by remember { mutableStateOf("") }
+        TextField(
+            modifier = Modifier.width(TextFieldWidth),
+            value = completion,
+            onValueChange = { completion = it },
+            placeholder = { Text(text = "Auto completion...") },
+            singleLine = true,
             completionValues = listOf(
                 "Compose",
                 "Compose World",
