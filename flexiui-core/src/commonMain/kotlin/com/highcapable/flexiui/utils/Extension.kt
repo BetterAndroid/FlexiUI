@@ -22,6 +22,7 @@
 package com.highcapable.flexiui.utils
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.isSpecified
@@ -29,10 +30,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isSpecified
 
+@Stable
 internal fun Dp.orElse() = if (isSpecified) this else null
 
+@Stable
 internal fun Color.orElse() = if (isSpecified) this else null
 
+@Stable
 internal fun TextUnit.orElse() = if (isSpecified) this else null
 
+@Stable
 internal val BorderStroke.solidColor get() = (brush as? SolidColor?)?.value ?: Color.Unspecified
