@@ -30,7 +30,7 @@ import androidx.compose.ui.window.rememberWindowState
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "FlexiUI Demo",
+        title = "Flexi UI Demo",
         state = rememberWindowState(width = 550.dp, height = 1000.dp)
     ) { MainView() }
 }
