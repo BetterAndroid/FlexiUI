@@ -15,31 +15,19 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = projects.flexiuiCore.name
+            baseName = projects.flexiuiResources.name
             isStatic = true
         }
     }
     jvmToolchain(17)
     sourceSets {
-        all {
-            languageSettings {
-                optIn("androidx.compose.ui.ExperimentalComposeUiApi")
-            }
-        }
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                // TODO: We need to remove this and replace with "material-ripple"
-                implementation(compose.material)
-                implementation(projects.flexiuiResources)
             }
         }
-        val androidMain by getting {
-            dependencies {
-                implementation(com.highcapable.betterandroid.ui.extension)
-            }
-        }
+        val androidMain by getting
         val desktopMain by getting
         val iosX64Main by getting
         val iosArm64Main by getting

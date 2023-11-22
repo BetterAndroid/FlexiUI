@@ -20,4 +20,4 @@ sweetProperty {
 }
 rootProject.name = "FlexiUI"
 include(":samples:androidApp", ":samples:desktopApp", ":samples:shared")
-include(":flexiui-core")
+include(":flexiui-core", "flexiui-resources")

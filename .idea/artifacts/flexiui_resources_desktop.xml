@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="flexiui-resources-desktop">
+    <output-path>$PROJECT_DIR$/flexiui-resources/build/libs</output-path>
+    <root id="archive" name="flexiui-resources-desktop.jar">
+      <element id="module-output" name="FlexiUI.flexiui-resources.desktopMain" />
+    </root>
+  </artifact>
+</component>
