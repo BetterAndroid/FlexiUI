@@ -25,12 +25,11 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(projects.flexiuiCore)
+                api(projects.flexiuiCore)
             }
         }
         val androidMain by getting {
             dependencies {
-                api(compose.foundation)
                 api(com.highcapable.betterandroid.ui.component)
                 api(com.highcapable.betterandroid.ui.extension)
                 api(com.highcapable.betterandroid.system.extension)
@@ -43,8 +42,6 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(compose.desktop.currentOs)
-                api(compose.runtime)
-                api(compose.foundation)
             }
         }
         val iosX64Main by getting
