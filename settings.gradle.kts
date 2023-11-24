@@ -16,8 +16,14 @@ sweetDependency {
 sweetProperty {
     global { sourcesCode { className = "FlexiUI" } }
     rootProject { all { isEnable = false } }
-    project(":samples", ":samples:androidApp", ":samples:desktopApp", ":samples:shared") { sourcesCode { isEnable = false } }
+    project(
+        ":samples",
+        ":samples:androidApp",
+        ":samples:desktopApp",
+        ":samples:shared",
+        ":flexiui-resources"
+    ) { sourcesCode { isEnable = false } }
 }
 rootProject.name = "FlexiUI"
 include(":samples:androidApp", ":samples:desktopApp", ":samples:shared")
-include(":flexiui-core", "flexiui-resources")
+include(":flexiui-core", ":flexiui-resources")
