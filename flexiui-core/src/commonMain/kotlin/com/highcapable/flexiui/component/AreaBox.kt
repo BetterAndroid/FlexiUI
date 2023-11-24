@@ -51,19 +51,17 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.utils.borderOrNot
-import com.highcapable.flexiui.utils.orElse
 
 @Immutable
 data class AreaBoxStyle(
-    val padding: Dp,
-    val topPadding: Dp,
-    val startPadding: Dp,
-    val bottomPadding: Dp,
-    val endPadding: Dp,
+    val paddings: AreaBoxPaddings,
     val shape: Shape,
     val border: BorderStroke,
     val shadowSize: Dp
 )
+
+@Immutable
+data class AreaBoxPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun AreaBox(
@@ -146,10 +144,10 @@ private fun Modifier.box(
     .borderOrNot(style.border, style.shape)
     .then(modifier)
     .padding(
-        top = style.topPadding.orElse() ?: style.padding,
-        start = style.startPadding.orElse() ?: style.padding,
-        bottom = style.bottomPadding.orElse() ?: style.padding,
-        end = style.endPadding.orElse() ?: style.padding
+        start = style.paddings.start,
+        top = style.paddings.top,
+        end = style.paddings.end,
+        bottom = style.paddings.bottom
     )
 
 object AreaBox {
@@ -172,11 +170,12 @@ internal val DefaultAreaBoxShape: Shape = DefaultShapes.primary
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxStyle() = AreaBoxStyle(
-    padding = LocalSizes.current.spacingPrimary,
-    topPadding = Dp.Unspecified,
-    startPadding = Dp.Unspecified,
-    bottomPadding = Dp.Unspecified,
-    endPadding = Dp.Unspecified,
+    paddings = AreaBoxPaddings(
+        start = defaultAreaBoxPadding(),
+        top = defaultAreaBoxPadding(),
+        end = defaultAreaBoxPadding(),
+        bottom = defaultAreaBoxPadding()
+    ),
     shape = LocalShapes.current.primary,
     border = defaultAreaBoxBorder(),
     shadowSize = DefaultAreaBoxShadowSize
@@ -189,5 +188,9 @@ private fun defaultAreaBoxColor() = LocalColors.current.foregroundPrimary
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultAreaBoxPadding() = LocalSizes.current.spacingPrimary
 
 private val DefaultAreaBoxShadowSize = 0.dp

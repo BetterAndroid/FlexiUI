@@ -62,14 +62,13 @@ data class ButtonColors(
 
 @Immutable
 data class ButtonStyle(
-    val padding: Dp,
-    val topPadding: Dp,
-    val startPadding: Dp,
-    val bottomPadding: Dp,
-    val endPadding: Dp,
+    val paddings: ButtonPaddings,
     val shape: Shape,
     val border: BorderStroke
 )
+
+@Immutable
+data class ButtonPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun Button(
@@ -189,10 +188,10 @@ private fun Modifier.button(
     .then(modifier)
 
 private fun Modifier.buttonPadding(style: ButtonStyle) = padding(
-    top = style.topPadding.orElse() ?: style.padding,
-    start = style.startPadding.orElse() ?: style.padding,
-    bottom = style.bottomPadding.orElse() ?: style.padding,
-    end = style.endPadding.orElse() ?: style.padding
+    start = style.paddings.start,
+    top = style.paddings.top,
+    end = style.paddings.end,
+    bottom = style.paddings.bottom
 )
 
 object Button {
@@ -247,11 +246,12 @@ private fun defaultIconButtonColors() = ButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultButtonStyle() = ButtonStyle(
-    padding = Dp.Unspecified,
-    topPadding = LocalSizes.current.spacingSecondary,
-    startPadding = LocalSizes.current.spacingPrimary,
-    bottomPadding = LocalSizes.current.spacingSecondary,
-    endPadding = LocalSizes.current.spacingPrimary,
+    paddings = ButtonPaddings(
+        start = LocalSizes.current.spacingPrimary,
+        top = LocalSizes.current.spacingSecondary,
+        end = LocalSizes.current.spacingPrimary,
+        bottom = LocalSizes.current.spacingSecondary
+    ),
     shape = when (LocalInAreaBox.current) {
         true -> LocalAreaBoxShape.current
         else -> LocalShapes.current.tertiary
@@ -262,11 +262,7 @@ private fun defaultButtonStyle() = ButtonStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultIconButtonStyle() = ButtonStyle(
-    padding = 0.dp,
-    topPadding = Dp.Unspecified,
-    startPadding = Dp.Unspecified,
-    bottomPadding = Dp.Unspecified,
-    endPadding = Dp.Unspecified,
+    paddings = ButtonPaddings(0.dp, 0.dp, 0.dp, 0.dp),
     shape = CircleShape,
     border = defaultButtonBorder()
 )

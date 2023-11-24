@@ -207,17 +207,29 @@ internal fun defaultContextMenuColors() = ContextMenuColors(
 @ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
     contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
-        padding = 0.dp,
-        startPadding = DefaultMenuContentPadding,
-        endPadding = DefaultMenuContentPadding,
+        paddings = AreaBoxPaddings(
+            start = DefaultMenuContentPadding,
+            top = 0.dp,
+            end = DefaultMenuContentPadding,
+            bottom = 0.dp
+        ),
         shape = LocalShapes.current.secondary
     ),
     borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBox.style.copy(
-        padding = LocalSizes.current.spacingTertiary,
+        paddings = AreaBoxPaddings(
+            start = defaultContextMenuBorderPadding(),
+            top = defaultContextMenuBorderPadding(),
+            end = defaultContextMenuBorderPadding(),
+            bottom = defaultContextMenuBorderPadding()
+        ),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary
     )
 )
+
+@Composable
+@ReadOnlyComposable
+private fun defaultContextMenuBorderPadding() = LocalSizes.current.spacingTertiary
 
 private val DefaultMenuContentMinWidth = 112.dp
 private val DefaultMenuContentMaxWidth = 280.dp

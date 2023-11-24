@@ -115,11 +115,7 @@ data class AutoCompleteBoxColors(
 
 @Immutable
 data class TextFieldStyle(
-    val padding: Dp,
-    val topPadding: Dp,
-    val startPadding: Dp,
-    val bottomPadding: Dp,
-    val endPadding: Dp,
+    val paddings: TextFieldPaddings,
     val shape: Shape,
     val borderInactive: BorderStroke,
     val borderActive: BorderStroke,
@@ -133,6 +129,9 @@ data class AutoCompleteOptions(
     val checkEndSpace: Boolean = true,
     val threshold: Int = 2
 )
+
+@Immutable
+data class TextFieldPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun TextField(
@@ -365,7 +364,7 @@ fun PasswordTextField(
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
                     modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
-                    style = IconButton.style.copy(padding = DefaultDecorIconPadding),
+                    style = IconButton.style.copy(paddings = DefaultDecorIconPaddings),
                     checked = passwordVisible,
                     onCheckedChange = {
                         passwordVisible = it
@@ -492,7 +491,7 @@ fun BackspaceTextField(
                         focusRequester.requestFocus()
                     },
                     modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
-                    style = IconButton.style.copy(padding = DefaultDecorIconPadding),
+                    style = IconButton.style.copy(paddings = DefaultDecorIconPaddings),
                     enabled = enabled,
                     interactionSource = cInteractionSource
                 ) { Icon(imageVector = Icons.Backspace) }
@@ -732,13 +731,13 @@ private fun Modifier.textFieldPadding(
     fitEnd: Boolean = false
 ) = when {
     !fitStart && !fitEnd -> padding(
-        top = style.topPadding.orElse() ?: style.padding,
-        start = style.startPadding.orElse() ?: style.padding,
-        bottom = style.bottomPadding.orElse() ?: style.padding,
-        end = style.endPadding.orElse() ?: style.padding
+        start = style.paddings.start,
+        top = style.paddings.top,
+        end = style.paddings.end,
+        bottom = style.paddings.bottom
     )
-    fitStart -> padding(start = style.startPadding.orElse() ?: style.padding)
-    fitEnd -> padding(end = style.endPadding.orElse() ?: style.padding)
+    fitStart -> padding(start = style.paddings.start)
+    fitEnd -> padding(end = style.paddings.end)
     else -> this
 }
 
@@ -779,11 +778,12 @@ private fun defaultTextFieldColors() = TextFieldColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldStyle() = TextFieldStyle(
-    padding = LocalSizes.current.spacingSecondary,
-    topPadding = Dp.Unspecified,
-    startPadding = Dp.Unspecified,
-    bottomPadding = Dp.Unspecified,
-    endPadding = Dp.Unspecified,
+    paddings = TextFieldPaddings(
+        start = defaultTextFieldPadding(),
+        top = defaultTextFieldPadding(),
+        end = defaultTextFieldPadding(),
+        bottom = defaultTextFieldPadding()
+    ),
     shape = when (LocalInAreaBox.current) {
         true -> LocalAreaBoxShape.current
         else -> LocalShapes.current.secondary
@@ -801,5 +801,9 @@ private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.b
 @ReadOnlyComposable
 private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
 
+@Composable
+@ReadOnlyComposable
+private fun defaultTextFieldPadding() = LocalSizes.current.spacingSecondary
+
 private val DefaultDecorIconSize = 24.dp
-private val DefaultDecorIconPadding = 2.dp
+private val DefaultDecorIconPaddings = ButtonPaddings(2.dp, 2.dp, 2.dp, 2.dp)

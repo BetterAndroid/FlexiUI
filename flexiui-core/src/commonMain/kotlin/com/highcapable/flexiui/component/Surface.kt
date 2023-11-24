@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.utils.orElse
 
 // TODO: Linkage BetterAndroid SafeArea (SystemBarsController)
 
@@ -48,12 +47,11 @@ data class SurfaceColors(
 
 @Immutable
 data class SurfaceStyle(
-    val padding: Dp,
-    val topPadding: Dp,
-    val startPadding: Dp,
-    val bottomPadding: Dp,
-    val endPadding: Dp
+    val paddings: SurfacePaddings
 )
+
+@Immutable
+data class SurfacePaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun Surface(
@@ -80,10 +78,10 @@ private fun Modifier.surface(
     .background(colors.backgroundColor)
     .then(modifier)
     .padding(
-        top = style.topPadding.orElse() ?: style.padding,
-        start = style.startPadding.orElse() ?: style.padding,
-        bottom = style.bottomPadding.orElse() ?: style.padding,
-        end = style.endPadding.orElse() ?: style.padding
+        start = style.paddings.start,
+        top = style.paddings.top,
+        end = style.paddings.end,
+        bottom = style.paddings.bottom
     )
 
 object Surface {
@@ -107,9 +105,14 @@ private fun defaultSurfaceColors() = SurfaceColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultSurfaceStyle() = SurfaceStyle(
-    padding = LocalSizes.current.spacingPrimary,
-    topPadding = Dp.Unspecified,
-    startPadding = Dp.Unspecified,
-    bottomPadding = Dp.Unspecified,
-    endPadding = Dp.Unspecified
+    paddings = SurfacePaddings(
+        start = defaultSurfacePaddings(),
+        top = defaultSurfacePaddings(),
+        end = defaultSurfacePaddings(),
+        bottom = defaultSurfacePaddings()
+    )
 )
+
+@Composable
+@ReadOnlyComposable
+private fun defaultSurfacePaddings() = LocalSizes.current.spacingPrimary
