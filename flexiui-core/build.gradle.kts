@@ -24,6 +24,7 @@ kotlin {
         all {
             languageSettings {
                 optIn("androidx.compose.ui.ExperimentalComposeUiApi")
+                optIn("androidx.compose.foundation.ExperimentalFoundationApi")
             }
         }
         val commonMain by getting {
