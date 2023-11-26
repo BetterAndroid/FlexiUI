@@ -23,6 +23,7 @@
 
 package com.highcapable.flexiui
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Immutable
@@ -41,5 +42,5 @@ internal val LocalShapes = staticCompositionLocalOf { DefaultShapes }
 internal val DefaultShapes = Shapes(
     primary = RoundedCornerShape(15.dp),
     secondary = RoundedCornerShape(10.dp),
-    tertiary = RoundedCornerShape(50.dp)
+    tertiary = CircleShape
 )
