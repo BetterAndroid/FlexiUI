@@ -27,6 +27,7 @@ import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.ContextMenuRepresentation
 import androidx.compose.foundation.ContextMenuState
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.sizeIn
@@ -207,29 +208,15 @@ internal fun defaultContextMenuColors() = ContextMenuColors(
 @ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
     contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
-        paddings = AreaBoxPaddings(
-            start = DefaultMenuContentPadding,
-            top = 0.dp,
-            end = DefaultMenuContentPadding,
-            bottom = 0.dp
-        ),
+        padding = PaddingValues(horizontal = DefaultMenuContentPadding),
         shape = LocalShapes.current.secondary
     ),
     borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBox.style.copy(
-        paddings = AreaBoxPaddings(
-            start = defaultContextMenuBorderPadding(),
-            top = defaultContextMenuBorderPadding(),
-            end = defaultContextMenuBorderPadding(),
-            bottom = defaultContextMenuBorderPadding()
-        ),
+        padding = PaddingValues(LocalSizes.current.spacingTertiary),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary
     )
 )
-
-@Composable
-@ReadOnlyComposable
-private fun defaultContextMenuBorderPadding() = LocalSizes.current.spacingTertiary
 
 private val DefaultMenuContentMinWidth = 112.dp
 private val DefaultMenuContentMaxWidth = 280.dp

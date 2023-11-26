@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -55,14 +56,11 @@ import com.highcapable.flexiui.utils.borderOrNot
 
 @Immutable
 data class AreaBoxStyle(
-    val paddings: AreaBoxPaddings,
+    val padding: PaddingValues,
     val shape: Shape,
     val border: BorderStroke,
     val shadowSize: Dp
 )
-
-@Immutable
-data class AreaBoxPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun AreaBox(
@@ -145,12 +143,7 @@ private fun Modifier.areaBox(
         .background(color, style.shape)
         .borderOrNot(style.border, style.shape)
         .then(then)
-        .padding(
-            start = style.paddings.start,
-            top = style.paddings.top,
-            end = style.paddings.end,
-            bottom = style.paddings.bottom
-        )
+        .padding(style.padding)
 }
 
 object AreaBox {
@@ -173,12 +166,7 @@ internal val DefaultAreaBoxShape: Shape = DefaultShapes.primary
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxStyle() = AreaBoxStyle(
-    paddings = AreaBoxPaddings(
-        start = defaultAreaBoxPadding(),
-        top = defaultAreaBoxPadding(),
-        end = defaultAreaBoxPadding(),
-        bottom = defaultAreaBoxPadding()
-    ),
+    padding = PaddingValues(LocalSizes.current.spacingPrimary),
     shape = LocalShapes.current.primary,
     border = defaultAreaBoxBorder(),
     shadowSize = DefaultAreaBoxShadowSize
@@ -191,9 +179,5 @@ private fun defaultAreaBoxColor() = LocalColors.current.foregroundPrimary
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAreaBoxPadding() = LocalSizes.current.spacingPrimary
 
 private val DefaultAreaBoxShadowSize = 0.dp

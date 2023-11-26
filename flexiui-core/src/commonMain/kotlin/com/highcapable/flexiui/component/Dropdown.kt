@@ -46,6 +46,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,6 +109,7 @@ import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.Dropdown
 import com.highcapable.flexiui.utils.borderOrNot
+import com.highcapable.flexiui.utils.horizontal
 import com.highcapable.flexiui.utils.orElse
 import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
@@ -132,7 +134,7 @@ data class DropdownMenuColors(
 
 @Immutable
 data class DropdownListStyle(
-    val paddings: DropdownListPaddings,
+    val padding: PaddingValues,
     val shape: Shape,
     val endIconSize: Dp,
     val borderInactive: BorderStroke,
@@ -146,9 +148,6 @@ data class DropdownMenuStyle(
     val contentStyle: AreaBoxStyle,
     val borderStyle: AreaBoxStyle
 )
-
-@Immutable
-data class DropdownListPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun DropdownList(
@@ -204,7 +203,7 @@ fun DropdownList(
             }
         )
     ) {
-        val menuMaxWidth = maxWidth + style.paddings.start + style.paddings.end
+        val menuMaxWidth = maxWidth + style.padding.horizontal
         // Note: If minWidth is not 0, a constant width is currently set.
         //       At this time, the child layout must be completely filled into the parent layout.
         val needInflatable = minWidth > 0.dp
@@ -427,12 +426,7 @@ private fun Modifier.dropdownList(
         .background(colors.backgroundColor, style.shape)
         .borderOrNot(border, style.shape)
         .then(then)
-        .padding(
-            start = style.paddings.start,
-            top = style.paddings.top,
-            end = style.paddings.end,
-            bottom = style.paddings.bottom
-        )
+        .padding(style.padding)
 }
 
 private fun calculateTransformOrigin(parentBounds: IntRect, menuBounds: IntRect): TransformOrigin {
@@ -563,12 +557,7 @@ private fun defaultDropdownMenuColors() = DropdownMenuColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListStyle() = DropdownListStyle(
-    paddings = DropdownListPaddings(
-        start = defaultDropdownListPadding(),
-        top = defaultDropdownListPadding(),
-        end = defaultDropdownListPadding(),
-        bottom = defaultDropdownListPadding()
-    ),
+    padding = PaddingValues(LocalSizes.current.spacingSecondary),
     shape = when (LocalInAreaBox.current) {
         true -> LocalAreaBoxShape.current
         else -> LocalShapes.current.secondary
@@ -584,21 +573,11 @@ private fun defaultDropdownMenuStyle() = DropdownMenuStyle(
     inTransitionDuration = DefaultInTransitionDuration,
     outTransitionDuration = DefaultOutTransitionDuration,
     contentStyle = AreaBox.style.copy(
-        paddings = AreaBoxPaddings(
-            start = DefaultMenuContentPadding,
-            top = 0.dp,
-            end = DefaultMenuContentPadding,
-            bottom = 0.dp
-        ),
+        padding = PaddingValues(horizontal = DefaultMenuContentPadding),
         shape = LocalShapes.current.secondary
     ),
     borderStyle = AreaBox.style.copy(
-        paddings = AreaBoxPaddings(
-            start = defaultDropdownListBorderPadding(),
-            top = defaultDropdownListBorderPadding(),
-            end = defaultDropdownListBorderPadding(),
-            bottom = defaultDropdownListBorderPadding()
-        ),
+        padding = PaddingValues(LocalSizes.current.spacingTertiary),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary
     )
@@ -611,14 +590,6 @@ private fun defaultDropdownListInactiveBorder() = BorderStroke(LocalSizes.curren
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownListPadding() = LocalSizes.current.spacingSecondary
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownListBorderPadding() = LocalSizes.current.spacingTertiary
 
 private val DefaultDropdownListMenuOffset = DpOffset((-10).dp, 10.dp)
 

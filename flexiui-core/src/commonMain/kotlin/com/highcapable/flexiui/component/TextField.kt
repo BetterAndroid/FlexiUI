@@ -37,6 +37,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -92,6 +93,8 @@ import com.highcapable.flexiui.resources.icon.Backspace
 import com.highcapable.flexiui.resources.icon.ViewerClose
 import com.highcapable.flexiui.resources.icon.ViewerOpen
 import com.highcapable.flexiui.utils.borderOrNot
+import com.highcapable.flexiui.utils.calculateEnd
+import com.highcapable.flexiui.utils.calculateStart
 import com.highcapable.flexiui.utils.orElse
 import com.highcapable.flexiui.utils.solidColor
 import com.highcapable.flexiui.utils.status
@@ -116,7 +119,7 @@ data class AutoCompleteBoxColors(
 
 @Immutable
 data class TextFieldStyle(
-    val paddings: TextFieldPaddings,
+    val padding: PaddingValues,
     val shape: Shape,
     val borderInactive: BorderStroke,
     val borderActive: BorderStroke,
@@ -130,9 +133,6 @@ data class AutoCompleteOptions(
     val checkEndSpace: Boolean = true,
     val threshold: Int = 2
 )
-
-@Immutable
-data class TextFieldPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun TextField(
@@ -365,7 +365,7 @@ fun PasswordTextField(
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
                     modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.Common),
-                    style = IconButton.style.copy(paddings = DefaultDecorIconPaddings),
+                    style = IconButton.style.copy(padding = DefaultDecorIconPadding),
                     checked = passwordVisible,
                     onCheckedChange = {
                         passwordVisible = it
@@ -492,7 +492,7 @@ fun BackspaceTextField(
                         focusRequester.requestFocus()
                     },
                     modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.Common),
-                    style = IconButton.style.copy(paddings = DefaultDecorIconPaddings),
+                    style = IconButton.style.copy(padding = DefaultDecorIconPadding),
                     enabled = enabled,
                     interactionSource = cInteractionSource
                 ) { Icon(imageVector = Icons.Backspace) }
@@ -734,14 +734,9 @@ private fun Modifier.textFieldPadding(
     fitEnd: Boolean = false
 ) = composed {
     when {
-        !fitStart && !fitEnd -> padding(
-            start = style.paddings.start,
-            top = style.paddings.top,
-            end = style.paddings.end,
-            bottom = style.paddings.bottom
-        )
-        fitStart -> padding(start = style.paddings.start)
-        fitEnd -> padding(end = style.paddings.end)
+        !fitStart && !fitEnd -> padding(style.padding)
+        fitStart -> padding(start = style.padding.calculateStart())
+        fitEnd -> padding(end = style.padding.calculateEnd())
         else -> this
     }
 }
@@ -783,12 +778,7 @@ private fun defaultTextFieldColors() = TextFieldColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldStyle() = TextFieldStyle(
-    paddings = TextFieldPaddings(
-        start = defaultTextFieldPadding(),
-        top = defaultTextFieldPadding(),
-        end = defaultTextFieldPadding(),
-        bottom = defaultTextFieldPadding()
-    ),
+    padding = PaddingValues(LocalSizes.current.spacingSecondary),
     shape = when (LocalInAreaBox.current) {
         true -> LocalAreaBoxShape.current
         else -> LocalShapes.current.secondary
@@ -806,9 +796,5 @@ private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.b
 @ReadOnlyComposable
 private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
 
-@Composable
-@ReadOnlyComposable
-private fun defaultTextFieldPadding() = LocalSizes.current.spacingSecondary
-
 private val DefaultDecorIconSize = 24.dp
-private val DefaultDecorIconPaddings = ButtonPaddings(2.dp, 2.dp, 2.dp, 2.dp)
+private val DefaultDecorIconPadding = PaddingValues(2.dp)

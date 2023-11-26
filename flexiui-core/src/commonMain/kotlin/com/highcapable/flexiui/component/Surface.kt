@@ -26,6 +26,7 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -34,7 +35,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 
@@ -46,20 +46,12 @@ data class SurfaceColors(
     val backgroundColor: Color
 )
 
-@Immutable
-data class SurfaceStyle(
-    val paddings: SurfacePaddings
-)
-
-@Immutable
-data class SurfacePaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
-
 @Composable
 fun Surface(
     modifier: Modifier = Modifier,
     initializer: Modifier.() -> Modifier = { Modifier },
     colors: SurfaceColors = Surface.colors,
-    style: SurfaceStyle = Surface.style,
+    padding: PaddingValues = Surface.padding,
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
@@ -67,24 +59,19 @@ fun Surface(
             backgroundPrimary = colors.backgroundColor,
             textPrimary = colors.contentColor
         )
-    ) { Box(Modifier.surface(colors, style, modifier, initializer), content = content) }
+    ) { Box(Modifier.surface(colors, padding, modifier, initializer), content = content) }
 }
 
 private fun Modifier.surface(
     colors: SurfaceColors,
-    style: SurfaceStyle,
+    padding: PaddingValues,
     then: Modifier,
     initializer: Modifier.() -> Modifier
 ) = composed {
     initializer()
         .background(colors.backgroundColor)
         .then(then)
-        .padding(
-            start = style.paddings.start,
-            top = style.paddings.top,
-            end = style.paddings.end,
-            bottom = style.paddings.bottom
-        )
+        .padding(padding)
 }
 
 object Surface {
@@ -92,10 +79,10 @@ object Surface {
         @Composable
         @ReadOnlyComposable
         get() = defaultSurfaceColors()
-    val style: SurfaceStyle
+    val padding: PaddingValues
         @Composable
         @ReadOnlyComposable
-        get() = defaultSurfaceStyle()
+        get() = defaultSurfacePadding()
 }
 
 @Composable
@@ -107,15 +94,4 @@ private fun defaultSurfaceColors() = SurfaceColors(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultSurfaceStyle() = SurfaceStyle(
-    paddings = SurfacePaddings(
-        start = defaultSurfacePaddings(),
-        top = defaultSurfacePaddings(),
-        end = defaultSurfacePaddings(),
-        bottom = defaultSurfacePaddings()
-    )
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSurfacePaddings() = LocalSizes.current.spacingPrimary
+private fun defaultSurfacePadding() = PaddingValues(LocalSizes.current.spacingPrimary)

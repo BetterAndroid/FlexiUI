@@ -27,6 +27,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -43,8 +44,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
@@ -63,13 +62,10 @@ data class ButtonColors(
 
 @Immutable
 data class ButtonStyle(
-    val paddings: ButtonPaddings,
+    val padding: PaddingValues,
     val shape: Shape,
     val border: BorderStroke
 )
-
-@Immutable
-data class ButtonPaddings(val start: Dp, val top: Dp, val end: Dp, val bottom: Dp)
 
 @Composable
 fun Button(
@@ -108,7 +104,7 @@ fun Button(
             LocalProgressIndicatorColors provides localProgressIndicatorColors
         ) {
             Row(
-                modifier = Modifier.buttonPadding(style),
+                modifier = Modifier.padding(style.padding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 header()
@@ -142,7 +138,7 @@ fun IconButton(
             role = Role.Button,
             interactionSource = interactionSource,
             onClick = onClick
-        ).buttonPadding(style),
+        ).padding(style.padding),
         contentAlignment = Alignment.Center,
     ) { CompositionLocalProvider(LocalIconTint provides colors.contentColor, content = content) }
 }
@@ -172,7 +168,7 @@ fun IconToggleButton(
             enabled = enabled,
             role = Role.Checkbox,
             interactionSource = interactionSource
-        ).buttonPadding(style),
+        ).padding(style.padding),
         contentAlignment = Alignment.Center
     ) { CompositionLocalProvider(LocalIconTint provides colors.contentColor, content = content) }
 }
@@ -189,13 +185,6 @@ private fun Modifier.button(
         .borderOrNot(style.border, style.shape)
         .then(then)
 }
-
-private fun Modifier.buttonPadding(style: ButtonStyle) = padding(
-    start = style.paddings.start,
-    top = style.paddings.top,
-    end = style.paddings.end,
-    bottom = style.paddings.bottom
-)
 
 object Button {
     val colors: ButtonColors
@@ -249,11 +238,9 @@ private fun defaultIconButtonColors() = ButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultButtonStyle() = ButtonStyle(
-    paddings = ButtonPaddings(
-        start = LocalSizes.current.spacingPrimary,
-        top = LocalSizes.current.spacingSecondary,
-        end = LocalSizes.current.spacingPrimary,
-        bottom = LocalSizes.current.spacingSecondary
+    padding = PaddingValues(
+        horizontal = LocalSizes.current.spacingPrimary,
+        vertical = LocalSizes.current.spacingSecondary
     ),
     shape = when (LocalInAreaBox.current) {
         true -> LocalAreaBoxShape.current
@@ -265,7 +252,7 @@ private fun defaultButtonStyle() = ButtonStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultIconButtonStyle() = ButtonStyle(
-    paddings = ButtonPaddings(0.dp, 0.dp, 0.dp, 0.dp),
+    padding = PaddingValues(),
     shape = CircleShape,
     border = defaultButtonBorder()
 )
