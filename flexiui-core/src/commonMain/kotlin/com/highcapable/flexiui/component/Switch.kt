@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -220,7 +219,7 @@ private fun defaultSwitchStyle() = SwitchStyle(
     thumbRadius = DefaultThumbRadius,
     thumbGain = DefaultThumbGain,
     thumbShadowSize = DefaultThumbShadowSize,
-    thumbShape = CircleShape,
+    thumbShape = LocalShapes.current.tertiary,
     trackShape = LocalShapes.current.tertiary,
     thumbBorder = defaultSwitchBorder(),
     trackBorder = defaultSwitchBorder(),

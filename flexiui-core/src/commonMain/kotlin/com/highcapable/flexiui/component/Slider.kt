@@ -39,7 +39,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -258,8 +257,8 @@ private fun defaultSliderStyle() = SliderStyle(
     thumbRadius = DefaultThumbRadius,
     thumbGain = DefaultThumbGain,
     thumbShadowSize = DefaultThumbShadowSize,
-    thumbShape = CircleShape,
-    stepShape = CircleShape,
+    thumbShape = LocalShapes.current.tertiary,
+    stepShape = LocalShapes.current.tertiary,
     trackShape = LocalShapes.current.primary,
     thumbBorder = defaultSliderBorder(),
     stepBorder = defaultSliderBorder(),

@@ -35,7 +35,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -52,6 +51,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.clickable
@@ -153,7 +153,7 @@ private fun defaultRadioButtonStyle() = RadioButtonStyle(
     strokeRadius = DefaultStrokeRadius,
     pressedGain = DefaultPressedGain,
     hoveredGain = DefaultHoveredGain,
-    shape = CircleShape,
+    shape = LocalShapes.current.tertiary,
     border = defaultRadioButtonBorder()
 )
 

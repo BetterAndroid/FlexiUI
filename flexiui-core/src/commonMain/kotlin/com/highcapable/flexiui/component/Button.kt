@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -261,7 +260,7 @@ private fun defaultButtonStyle() = ButtonStyle(
 @ReadOnlyComposable
 private fun defaultIconButtonStyle() = ButtonStyle(
     padding = PaddingValues(),
-    shape = CircleShape,
+    shape = LocalShapes.current.tertiary,
     border = defaultButtonBorder()
 )
 
