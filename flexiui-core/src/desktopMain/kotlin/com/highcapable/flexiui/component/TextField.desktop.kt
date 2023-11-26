@@ -33,8 +33,8 @@ internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) = c
     pointerHoverIcon(
         PointerIcon(
             Cursor.getPredefinedCursor(when (state) {
-                TextFieldPointerState.NORMAL -> Cursor.DEFAULT_CURSOR
-                TextFieldPointerState.TEXT -> Cursor.TEXT_CURSOR
+                TextFieldPointerState.Common -> Cursor.DEFAULT_CURSOR
+                TextFieldPointerState.Text -> Cursor.TEXT_CURSOR
             })
         )
     )

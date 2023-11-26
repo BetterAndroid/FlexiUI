@@ -186,7 +186,7 @@ fun TextField(
             enabled = enabled,
             interactionSource = interactionSource,
             then = modifier
-        ).pointerHoverState(TextFieldPointerState.TEXT)
+        ).pointerHoverState(TextFieldPointerState.Text)
     ) {
         // Note: If minWidth is not 0, a constant width is currently set.
         //       At this time, the child layout must be completely filled into the parent layout.
@@ -364,7 +364,7 @@ fun PasswordTextField(
                 if (pressed) focusRequester.requestFocus()
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
-                    modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
+                    modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.Common),
                     style = IconButton.style.copy(paddings = DefaultDecorIconPaddings),
                     checked = passwordVisible,
                     onCheckedChange = {
@@ -491,7 +491,7 @@ fun BackspaceTextField(
                         }
                         focusRequester.requestFocus()
                     },
-                    modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.NORMAL),
+                    modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.Common),
                     style = IconButton.style.copy(paddings = DefaultDecorIconPaddings),
                     enabled = enabled,
                     interactionSource = cInteractionSource
@@ -704,7 +704,7 @@ private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> U
 internal expect fun Modifier.pointerHoverState(state: TextFieldPointerState): Modifier
 
 @Stable
-internal enum class TextFieldPointerState { NORMAL, TEXT }
+internal enum class TextFieldPointerState { Common, Text }
 
 @Stable
 private class TextFieldKeyEventFactory {
