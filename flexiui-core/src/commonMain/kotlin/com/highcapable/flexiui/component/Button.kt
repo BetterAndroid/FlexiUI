@@ -43,15 +43,16 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.rippleClickable
-import com.highcapable.flexiui.interaction.rippleToggleable
 import com.highcapable.flexiui.extension.borderOrNot
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
+import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.interaction.rippleToggleable
 
 @Immutable
 data class ButtonColors(
@@ -178,7 +179,14 @@ private fun Modifier.button(
     colors: ButtonColors,
     style: ButtonStyle,
     then: Modifier
-) = composed {
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "button"
+        properties["enabled"] = enabled
+        properties["colors"] = colors
+        properties["style"] = style
+    }
+) {
     status(enabled)
         .clip(style.shape)
         .background(colors.backgroundColor, style.shape)

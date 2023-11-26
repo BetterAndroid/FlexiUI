@@ -27,9 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.platform.debugInspectorInfo
 import java.awt.Cursor
 
-internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) = composed {
+internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "pointerHoverState"
+        value = state
+    }
+) {
     pointerHoverIcon(
         PointerIcon(
             Cursor.getPredefinedCursor(when (state) {

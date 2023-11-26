@@ -91,6 +91,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInputModeManager
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -105,14 +106,14 @@ import androidx.compose.ui.window.PopupProperties
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.rippleClickable
-import com.highcapable.flexiui.resources.Icons
-import com.highcapable.flexiui.resources.icon.Dropdown
 import com.highcapable.flexiui.extension.borderOrNot
 import com.highcapable.flexiui.extension.horizontal
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.solidColor
 import com.highcapable.flexiui.extension.status
+import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.icon.Dropdown
 import kotlin.math.max
 import kotlin.math.min
 
@@ -187,10 +188,10 @@ fun DropdownList(
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     DropdownMenuBox(
         modifier = Modifier.dropdownList(
+            enabled = enabled,
             colors = colors,
             style = style,
             border = border,
-            enabled = enabled,
             focusRequester = focusRequester,
             interactionSource = interactionSource,
             then = modifier.rippleClickable(
@@ -410,14 +411,22 @@ private fun DropdownMenuContent(
 }
 
 private fun Modifier.dropdownList(
+    enabled: Boolean,
     colors: DropdownListColors,
     style: DropdownListStyle,
     border: BorderStroke,
-    enabled: Boolean,
     focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
     then: Modifier
-) = composed {
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "dropdownList"
+        properties["enabled"] = enabled
+        properties["colors"] = colors
+        properties["style"] = style
+        properties["border"] = border
+    }
+) {
     status(enabled)
         .focusRequester(focusRequester)
         .focusable(enabled, interactionSource)

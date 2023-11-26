@@ -35,6 +35,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.debugInspectorInfo
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 
@@ -67,7 +68,13 @@ private fun Modifier.surface(
     padding: PaddingValues,
     then: Modifier,
     initializer: Modifier.() -> Modifier
-) = composed {
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "surface"
+        properties["colors"] = colors
+        properties["padding"] = padding
+    }
+) {
     initializer()
         .background(colors.backgroundColor)
         .then(then)

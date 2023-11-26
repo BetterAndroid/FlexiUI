@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.DefaultShapes
@@ -136,7 +137,13 @@ private fun Modifier.areaBox(
     style: AreaBoxStyle,
     then: Modifier,
     initializer: Modifier.() -> Modifier
-) = composed {
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "areaBox"
+        properties["color"] = color
+        properties["style"] = style
+    }
+) {
     initializer()
         .shadow(style.shadowSize, style.shape)
         .clip(style.shape)

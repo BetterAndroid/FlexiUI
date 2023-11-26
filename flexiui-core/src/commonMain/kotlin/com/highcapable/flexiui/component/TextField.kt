@@ -73,6 +73,7 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
@@ -88,16 +89,16 @@ import androidx.compose.ui.window.PopupProperties
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.resources.Icons
-import com.highcapable.flexiui.resources.icon.Backspace
-import com.highcapable.flexiui.resources.icon.ViewerClose
-import com.highcapable.flexiui.resources.icon.ViewerOpen
 import com.highcapable.flexiui.extension.borderOrNot
 import com.highcapable.flexiui.extension.calculateEnd
 import com.highcapable.flexiui.extension.calculateStart
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.solidColor
 import com.highcapable.flexiui.extension.status
+import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.icon.Backspace
+import com.highcapable.flexiui.resources.icon.ViewerClose
+import com.highcapable.flexiui.resources.icon.ViewerOpen
 
 @Immutable
 data class TextFieldColors(
@@ -180,10 +181,10 @@ fun TextField(
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     BoxWithConstraints(
         modifier = Modifier.textField(
+            enabled = enabled,
             colors = colors,
             style = style,
             border = border,
-            enabled = enabled,
             interactionSource = interactionSource,
             then = modifier
         ).pointerHoverState(TextFieldPointerState.Text)
@@ -712,13 +713,21 @@ private class TextFieldKeyEventFactory {
 }
 
 private fun Modifier.textField(
+    enabled: Boolean,
     colors: TextFieldColors,
     style: TextFieldStyle,
     border: BorderStroke,
-    enabled: Boolean,
     interactionSource: MutableInteractionSource,
     then: Modifier
-) = composed {
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "textField"
+        properties["enabled"] = enabled
+        properties["colors"] = colors
+        properties["style"] = style
+        properties["border"] = border
+    }
+) {
     status(enabled)
         .focusable(enabled, interactionSource)
         .hoverable(interactionSource, enabled)
