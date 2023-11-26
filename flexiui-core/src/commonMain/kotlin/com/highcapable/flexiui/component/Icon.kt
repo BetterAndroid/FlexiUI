@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -84,12 +85,13 @@ fun Icon(
 
 internal val LocalIconTint = compositionLocalOf { Color.Unspecified }
 
-@Composable
-private fun Modifier.defaultSizeFor(painter: Painter) = then(
-    if (painter.intrinsicSize == Size.Unspecified || painter.intrinsicSize.isInfinite())
-        Modifier.size(defaultIconSize())
-    else Modifier
-)
+private fun Modifier.defaultSizeFor(painter: Painter) = composed {
+    then(
+        if (painter.intrinsicSize == Size.Unspecified || painter.intrinsicSize.isInfinite())
+            Modifier.size(defaultIconSize())
+        else Modifier
+    )
+}
 
 @Composable
 @ReadOnlyComposable

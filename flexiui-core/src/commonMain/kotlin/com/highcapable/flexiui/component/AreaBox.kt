@@ -40,6 +40,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -78,7 +79,7 @@ fun AreaBox(
         LocalAreaBoxShape provides style.shape
     ) {
         Box(
-            modifier = Modifier.box(style, color, modifier, initializer),
+            modifier = Modifier.areaBox(color, style, modifier, initializer),
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
             content = content
@@ -101,7 +102,7 @@ fun AreaRow(
         LocalAreaBoxShape provides style.shape
     ) {
         Row(
-            modifier = Modifier.box(style, color, modifier, initializer),
+            modifier = Modifier.areaBox(color, style, modifier, initializer),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             content = content
@@ -124,7 +125,7 @@ fun AreaColumn(
         LocalAreaBoxShape provides style.shape
     ) {
         Column(
-            modifier = Modifier.box(style, color, modifier, initializer),
+            modifier = Modifier.areaBox(color, style, modifier, initializer),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             content = content
@@ -132,23 +133,25 @@ fun AreaColumn(
     }
 }
 
-private fun Modifier.box(
-    style: AreaBoxStyle,
+private fun Modifier.areaBox(
     color: Color,
-    modifier: Modifier,
+    style: AreaBoxStyle,
+    then: Modifier,
     initializer: Modifier.() -> Modifier
-) = initializer()
-    .shadow(style.shadowSize, style.shape)
-    .clip(style.shape)
-    .background(color, style.shape)
-    .borderOrNot(style.border, style.shape)
-    .then(modifier)
-    .padding(
-        start = style.paddings.start,
-        top = style.paddings.top,
-        end = style.paddings.end,
-        bottom = style.paddings.bottom
-    )
+) = composed {
+    initializer()
+        .shadow(style.shadowSize, style.shape)
+        .clip(style.shape)
+        .background(color, style.shape)
+        .borderOrNot(style.border, style.shape)
+        .then(then)
+        .padding(
+            start = style.paddings.start,
+            top = style.paddings.top,
+            end = style.paddings.end,
+            bottom = style.paddings.bottom
+        )
+}
 
 object AreaBox {
     val color: Color

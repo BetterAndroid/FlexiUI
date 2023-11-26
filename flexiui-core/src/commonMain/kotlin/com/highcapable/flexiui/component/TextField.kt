@@ -58,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -184,7 +185,7 @@ fun TextField(
             border = border,
             enabled = enabled,
             interactionSource = interactionSource,
-            modifier = modifier
+            then = modifier
         ).pointerHoverState(TextFieldPointerState.TEXT)
     ) {
         // Note: If minWidth is not 0, a constant width is currently set.
@@ -716,29 +717,33 @@ private fun Modifier.textField(
     border: BorderStroke,
     enabled: Boolean,
     interactionSource: MutableInteractionSource,
-    modifier: Modifier
-) = status(enabled)
-    .focusable(enabled, interactionSource)
-    .hoverable(interactionSource, enabled)
-    .clip(style.shape)
-    .background(colors.backgroundColor, style.shape)
-    .borderOrNot(border, style.shape)
-    .then(modifier)
+    then: Modifier
+) = composed {
+    status(enabled)
+        .focusable(enabled, interactionSource)
+        .hoverable(interactionSource, enabled)
+        .clip(style.shape)
+        .background(colors.backgroundColor, style.shape)
+        .borderOrNot(border, style.shape)
+        .then(then)
+}
 
 private fun Modifier.textFieldPadding(
     style: TextFieldStyle,
     fitStart: Boolean = false,
     fitEnd: Boolean = false
-) = when {
-    !fitStart && !fitEnd -> padding(
-        start = style.paddings.start,
-        top = style.paddings.top,
-        end = style.paddings.end,
-        bottom = style.paddings.bottom
-    )
-    fitStart -> padding(start = style.paddings.start)
-    fitEnd -> padding(end = style.paddings.end)
-    else -> this
+) = composed {
+    when {
+        !fitStart && !fitEnd -> padding(
+            start = style.paddings.start,
+            top = style.paddings.top,
+            end = style.paddings.end,
+            bottom = style.paddings.bottom
+        )
+        fitStart -> padding(start = style.paddings.start)
+        fitEnd -> padding(end = style.paddings.end)
+        else -> this
+    }
 }
 
 object TextField {

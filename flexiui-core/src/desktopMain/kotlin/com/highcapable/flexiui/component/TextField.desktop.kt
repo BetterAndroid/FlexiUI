@@ -24,11 +24,12 @@
 package com.highcapable.flexiui.component
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import java.awt.Cursor
 
-internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) =
+internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) = composed {
     pointerHoverIcon(
         PointerIcon(
             Cursor.getPredefinedCursor(when (state) {
@@ -37,3 +38,4 @@ internal actual fun Modifier.pointerHoverState(state: TextFieldPointerState) =
             })
         )
     )
+}

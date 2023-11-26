@@ -69,6 +69,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -193,7 +194,7 @@ fun DropdownList(
             enabled = enabled,
             focusRequester = focusRequester,
             interactionSource = interactionSource,
-            modifier = modifier.rippleClickable(
+            then = modifier.rippleClickable(
                 enabled = enabled,
                 role = Role.DropdownList,
                 interactionSource = interactionSource
@@ -416,21 +417,23 @@ private fun Modifier.dropdownList(
     enabled: Boolean,
     focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
-    modifier: Modifier
-) = status(enabled)
-    .focusRequester(focusRequester)
-    .focusable(enabled, interactionSource)
-    .hoverable(interactionSource, enabled)
-    .clip(style.shape)
-    .background(colors.backgroundColor, style.shape)
-    .borderOrNot(border, style.shape)
-    .then(modifier)
-    .padding(
-        start = style.paddings.start,
-        top = style.paddings.top,
-        end = style.paddings.end,
-        bottom = style.paddings.bottom
-    )
+    then: Modifier
+) = composed {
+    status(enabled)
+        .focusRequester(focusRequester)
+        .focusable(enabled, interactionSource)
+        .hoverable(interactionSource, enabled)
+        .clip(style.shape)
+        .background(colors.backgroundColor, style.shape)
+        .borderOrNot(border, style.shape)
+        .then(then)
+        .padding(
+            start = style.paddings.start,
+            top = style.paddings.top,
+            end = style.paddings.end,
+            bottom = style.paddings.bottom
+        )
+}
 
 private fun calculateTransformOrigin(parentBounds: IntRect, menuBounds: IntRect): TransformOrigin {
     val pivotX = when {

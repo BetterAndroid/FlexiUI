@@ -32,6 +32,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
@@ -72,17 +73,19 @@ fun Surface(
 private fun Modifier.surface(
     colors: SurfaceColors,
     style: SurfaceStyle,
-    modifier: Modifier,
+    then: Modifier,
     initializer: Modifier.() -> Modifier
-) = initializer()
-    .background(colors.backgroundColor)
-    .then(modifier)
-    .padding(
-        start = style.paddings.start,
-        top = style.paddings.top,
-        end = style.paddings.end,
-        bottom = style.paddings.bottom
-    )
+) = composed {
+    initializer()
+        .background(colors.backgroundColor)
+        .then(then)
+        .padding(
+            start = style.paddings.start,
+            top = style.paddings.top,
+            end = style.paddings.end,
+            bottom = style.paddings.bottom
+        )
+}
 
 object Surface {
     val colors: SurfaceColors

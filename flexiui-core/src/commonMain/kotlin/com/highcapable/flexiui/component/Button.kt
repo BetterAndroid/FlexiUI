@@ -38,6 +38,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -92,7 +93,7 @@ fun Button(
             enabled = enabled,
             colors = colors,
             style = style,
-            modifier = modifier
+            then = modifier
         ).rippleClickable(
             enabled = enabled,
             role = Role.Button,
@@ -133,7 +134,7 @@ fun IconButton(
             enabled = enabled,
             colors = colors,
             style = style,
-            modifier = modifier
+            then = modifier
         ).rippleClickable(
             rippleColor = colors.rippleColor,
             bounded = false,
@@ -162,7 +163,7 @@ fun IconToggleButton(
             enabled = enabled,
             colors = colors,
             style = style,
-            modifier = modifier
+            then = modifier
         ).rippleToggleable(
             value = checked,
             rippleColor = colors.rippleColor,
@@ -180,12 +181,14 @@ private fun Modifier.button(
     enabled: Boolean,
     colors: ButtonColors,
     style: ButtonStyle,
-    modifier: Modifier
-) = status(enabled)
-    .clip(style.shape)
-    .background(colors.backgroundColor, style.shape)
-    .borderOrNot(style.border, style.shape)
-    .then(modifier)
+    then: Modifier
+) = composed {
+    status(enabled)
+        .clip(style.shape)
+        .background(colors.backgroundColor, style.shape)
+        .borderOrNot(style.border, style.shape)
+        .then(then)
+}
 
 private fun Modifier.buttonPadding(style: ButtonStyle) = padding(
     start = style.paddings.start,
