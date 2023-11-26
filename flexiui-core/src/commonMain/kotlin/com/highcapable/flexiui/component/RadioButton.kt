@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.clickable
-import com.highcapable.flexiui.utils.status
+import com.highcapable.flexiui.extension.status
 
 @Immutable
 data class RadioButtonColors(

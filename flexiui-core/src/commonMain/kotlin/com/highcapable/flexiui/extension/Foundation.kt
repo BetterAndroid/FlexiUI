@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/5.
  */
-package com.highcapable.flexiui.utils
+package com.highcapable.flexiui.extension
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.runtime.Stable

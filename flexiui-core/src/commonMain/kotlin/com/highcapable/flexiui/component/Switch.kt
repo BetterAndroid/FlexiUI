@@ -62,8 +62,8 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.clickable
-import com.highcapable.flexiui.utils.borderOrNot
-import com.highcapable.flexiui.utils.status
+import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.status
 import kotlin.math.roundToInt
 
 @Immutable

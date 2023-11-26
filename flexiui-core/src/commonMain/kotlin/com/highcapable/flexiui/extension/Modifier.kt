@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.utils
+package com.highcapable.flexiui.extension
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border

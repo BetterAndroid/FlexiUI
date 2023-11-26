@@ -42,7 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.highcapable.flexiui.DefaultTypography
 import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.utils.orElse
+import com.highcapable.flexiui.extension.orElse
 
 @Composable
 fun Text(

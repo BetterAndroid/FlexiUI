@@ -65,7 +65,7 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.rippleClickable
-import com.highcapable.flexiui.utils.orElse
+import com.highcapable.flexiui.extension.orElse
 import java.awt.event.KeyEvent
 
 @Immutable

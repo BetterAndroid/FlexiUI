@@ -52,7 +52,7 @@ import com.highcapable.flexiui.DefaultShapes
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.utils.borderOrNot
+import com.highcapable.flexiui.extension.borderOrNot
 
 @Immutable
 data class AreaBoxStyle(

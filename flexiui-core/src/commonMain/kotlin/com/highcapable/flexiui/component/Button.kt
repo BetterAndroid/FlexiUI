@@ -49,9 +49,9 @@ import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.interaction.rippleToggleable
-import com.highcapable.flexiui.utils.borderOrNot
-import com.highcapable.flexiui.utils.orElse
-import com.highcapable.flexiui.utils.status
+import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.orElse
+import com.highcapable.flexiui.extension.status
 
 @Immutable
 data class ButtonColors(

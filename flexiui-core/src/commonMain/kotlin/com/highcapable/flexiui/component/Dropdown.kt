@@ -108,11 +108,11 @@ import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.Dropdown
-import com.highcapable.flexiui.utils.borderOrNot
-import com.highcapable.flexiui.utils.horizontal
-import com.highcapable.flexiui.utils.orElse
-import com.highcapable.flexiui.utils.solidColor
-import com.highcapable.flexiui.utils.status
+import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.horizontal
+import com.highcapable.flexiui.extension.orElse
+import com.highcapable.flexiui.extension.solidColor
+import com.highcapable.flexiui.extension.status
 import kotlin.math.max
 import kotlin.math.min
 

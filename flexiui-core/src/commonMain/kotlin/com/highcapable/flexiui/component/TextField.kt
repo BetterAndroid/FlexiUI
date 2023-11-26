@@ -92,12 +92,12 @@ import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.Backspace
 import com.highcapable.flexiui.resources.icon.ViewerClose
 import com.highcapable.flexiui.resources.icon.ViewerOpen
-import com.highcapable.flexiui.utils.borderOrNot
-import com.highcapable.flexiui.utils.calculateEnd
-import com.highcapable.flexiui.utils.calculateStart
-import com.highcapable.flexiui.utils.orElse
-import com.highcapable.flexiui.utils.solidColor
-import com.highcapable.flexiui.utils.status
+import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.calculateEnd
+import com.highcapable.flexiui.extension.calculateStart
+import com.highcapable.flexiui.extension.orElse
+import com.highcapable.flexiui.extension.solidColor
+import com.highcapable.flexiui.extension.status
 
 @Immutable
 data class TextFieldColors(

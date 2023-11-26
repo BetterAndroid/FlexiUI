@@ -55,8 +55,8 @@ import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.clickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.CheckMark
-import com.highcapable.flexiui.utils.borderOrNot
-import com.highcapable.flexiui.utils.status
+import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.status
 
 @Immutable
 data class CheckBoxColors(
