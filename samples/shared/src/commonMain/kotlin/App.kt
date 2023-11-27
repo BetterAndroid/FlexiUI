@@ -20,13 +20,18 @@
  * This file is created by fankes on 2023/11/5.
  */
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -35,6 +40,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +49,7 @@ import com.highcapable.flexiui.Colors
 import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.blueColors
 import com.highcapable.flexiui.component.AreaBox
+import com.highcapable.flexiui.component.AreaColumn
 import com.highcapable.flexiui.component.AutoCompleteOptions
 import com.highcapable.flexiui.component.BackspaceTextField
 import com.highcapable.flexiui.component.Button
@@ -51,9 +58,11 @@ import com.highcapable.flexiui.component.DropdownList
 import com.highcapable.flexiui.component.DropdownMenuItem
 import com.highcapable.flexiui.component.PasswordTextField
 import com.highcapable.flexiui.component.RadioButton
+import com.highcapable.flexiui.component.ScrollableTabRow
 import com.highcapable.flexiui.component.Slider
 import com.highcapable.flexiui.component.Surface
 import com.highcapable.flexiui.component.Switch
+import com.highcapable.flexiui.component.Tab
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
@@ -65,6 +74,7 @@ import com.highcapable.flexiui.pinkColors
 import com.highcapable.flexiui.purpleColors
 import com.highcapable.flexiui.redColors
 import com.highcapable.flexiui.yellowColors
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -73,7 +83,12 @@ fun App() {
     FlexiTheme(colors = themeColor.value) {
         Surface {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                AreaBox(modifier = Modifier.weight(1f)) { ContentView() }
+                AreaBox(modifier = Modifier.weight(0.82f)) { ContentView() }
+                Spacer(Modifier.padding(5.dp))
+                AreaColumn(
+                    modifier = Modifier.weight(0.18f),
+                    style = AreaBox.style.copy(padding = PaddingValues(3.dp))
+                ) { TabPagerView() }
                 Spacer(Modifier.padding(10.dp))
                 ThemeColorsView(themeColor)
             }
@@ -199,6 +214,28 @@ private fun ContentView() {
             }
         }
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun TabPagerView() {
+    val pageCount = 10
+    val state = rememberPagerState(pageCount = { pageCount })
+    val scope = rememberCoroutineScope()
+    ScrollableTabRow(
+        selectedTabIndex = state.currentPage,
+        pagerState = state
+    ) {
+        for (index in 0 until pageCount)
+            Tab(
+                selected = state.currentPage == index,
+                onClick = { scope.launch { state.animateScrollToPage(index) } },
+            ) { Text(text = "Tab ${index + 1}") }
+    }
+    HorizontalPager(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+    ) { index -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(text = "Page ${index + 1}") } }
 }
 
 @Composable
