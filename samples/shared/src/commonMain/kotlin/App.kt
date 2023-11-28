@@ -224,7 +224,7 @@ private fun TabPagerView() {
     val scope = rememberCoroutineScope()
     ScrollableTabRow(
         selectedTabIndex = state.currentPage,
-        pagerState = state
+        indicator = { TabIndicator(modifier = Modifier.pagerTabIndicatorOffset(state)) }
     ) {
         for (index in 0 until pageCount)
             Tab(
