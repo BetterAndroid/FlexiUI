@@ -104,6 +104,7 @@ data class TextFieldColors(
     val cursorColor: Color,
     val selectionColors: TextSelectionColors,
     val completionColors: AutoCompleteBoxColors,
+    val placeholderContentColor: Color,
     val decorInactiveTint: Color,
     val decorActiveTint: Color,
     val borderInactiveColor: Color,
@@ -224,6 +225,7 @@ fun TextField(
                         decorationBox = {
                             TextFieldDecorationBox(
                                 value = value.text,
+                                placeholderContentColor = colors.placeholderContentColor,
                                 placeholder = placeholder,
                                 innerTextField = it
                             )
@@ -682,13 +684,14 @@ private fun InnerDecorationBox(
 @Composable
 private fun TextFieldDecorationBox(
     value: String,
+    placeholderContentColor: Color,
     placeholder: @Composable () -> Unit,
     innerTextField: @Composable () -> Unit
 ) {
     val animatedAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
     Box(modifier = Modifier.alpha(animatedAlpha)) {
         CompositionLocalProvider(
-            LocalTextStyle provides LocalTextStyle.current.default(LocalColors.current.textSecondary)
+            LocalTextStyle provides LocalTextStyle.current.default(placeholderContentColor)
         ) { placeholder() }
     }
     innerTextField()
@@ -776,6 +779,7 @@ private fun defaultTextFieldColors() = TextFieldColors(
         highlightContentColor = LocalColors.current.themePrimary,
         menuColors = DropdownMenu.colors
     ),
+    placeholderContentColor = LocalColors.current.textSecondary,
     decorInactiveTint = LocalColors.current.themeSecondary,
     decorActiveTint = LocalColors.current.themePrimary,
     borderInactiveColor = LocalColors.current.themeSecondary,
