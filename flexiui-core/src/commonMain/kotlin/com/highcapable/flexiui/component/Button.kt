@@ -251,7 +251,7 @@ private fun defaultButtonStyle() = ButtonStyle(
     ),
     shape = when (LocalInAreaBox.current) {
         true -> LocalAreaBoxShape.current
-        else -> LocalShapes.current.tertiary
+        else -> LocalShapes.current.secondary
     },
     border = defaultButtonBorder()
 )
