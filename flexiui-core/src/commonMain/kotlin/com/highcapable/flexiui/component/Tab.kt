@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.highcapable.flexiui.component
 
@@ -102,25 +102,7 @@ fun TabRow(
     modifier: Modifier = Modifier,
     colors: TabColors = Tab.colors,
     style: TabStyle = Tab.style,
-    tabs: @Composable () -> Unit
-) {
-    TabRow(
-        selectedTabIndex = selectedTabIndex,
-        modifier = modifier,
-        colors = colors,
-        style = style,
-        pagerState = null,
-        tabs = tabs
-    )
-}
-
-@Composable
-fun TabRow(
-    selectedTabIndex: Int = 0,
-    modifier: Modifier = Modifier,
-    colors: TabColors = Tab.colors,
-    style: TabStyle = Tab.style,
-    pagerState: PagerState?,
+    indicator: @Composable TabRow.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
 ) {
     TabStyleBox(modifier, colors, style) {
@@ -145,7 +127,7 @@ fun TabRow(
                     placeable.placeRelative(x = index * tabAverageWidth, y = 0)
                 }
                 subcompose(TabSlots.Indicator) {
-                    TabIndicator(selectedTabIndex, colors, style, pagerState, tabPositions)
+                    indicator(TabRow(selectedTabIndex, colors, style, tabPositions))
                 }.forEach {
                     it.measure(Constraints.fixed(tabRowWidth, tabRowHeight)).placeRelative(x = 0, y = 0)
                 }
@@ -161,27 +143,7 @@ fun ScrollableTabRow(
     colors: TabColors = Tab.colors,
     style: TabStyle = Tab.style,
     scrollState: ScrollState = rememberScrollState(),
-    tabs: @Composable () -> Unit
-) {
-    ScrollableTabRow(
-        selectedTabIndex = selectedTabIndex,
-        modifier = modifier,
-        colors = colors,
-        style = style,
-        pagerState = null,
-        scrollState = scrollState,
-        tabs = tabs
-    )
-}
-
-@Composable
-fun ScrollableTabRow(
-    selectedTabIndex: Int = 0,
-    modifier: Modifier = Modifier,
-    colors: TabColors = Tab.colors,
-    style: TabStyle = Tab.style,
-    pagerState: PagerState?,
-    scrollState: ScrollState = rememberScrollState(),
+    indicator: @Composable TabRow.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
 ) {
     TabStyleBox(modifier, colors, style) {
@@ -214,7 +176,7 @@ fun ScrollableTabRow(
                     tabLeft += placeables.width
                 }
                 subcompose(TabSlots.Indicator) {
-                    TabIndicator(selectedTabIndex, colors, style, pagerState, tabPositions)
+                    indicator(TabRow(selectedTabIndex, colors, style, tabPositions))
                 }.forEach {
                     it.measure(Constraints.fixed(layoutWidth, layoutHeight)).placeRelative(x = 0, y = 0)
                 }
@@ -272,23 +234,6 @@ fun Tab(
 }
 
 @Composable
-private fun TabIndicator(
-    selectedTabIndex: Int,
-    colors: TabColors,
-    style: TabStyle,
-    pagerState: PagerState?,
-    tabPositions: List<TabPosition>
-) {
-    val indicatorModifier = pagerState?.let { Modifier.pagerTabIndicatorOffset(it, tabPositions, style.indicatorWidth) }
-        ?: Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex], style.indicatorWidth)
-    Box(
-        modifier = Modifier.then(indicatorModifier)
-            .height(style.indicatorHeight)
-            .background(colors.indicatorColor, style.indicatorShape)
-    )
-}
-
-@Composable
 private fun TabStyleBox(
     modifier: Modifier,
     colors: TabColors,
@@ -311,80 +256,107 @@ private fun rememberScrollableTabData(scrollState: ScrollState): ScrollableTabDa
     return remember(scrollState, coroutineScope) { ScrollableTabData(scrollState, coroutineScope) }
 }
 
-private fun Modifier.tabIndicatorOffset(
-    currentTabPosition: TabPosition,
-    indicatorWidth: Dp
-) = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "tabIndicatorOffset"
-        properties["currentTabPosition"] = currentTabPosition
-        properties["indicatorWidth"] = indicatorWidth
-    }
-) {
-    val currentWidth = indicatorWidth.orElse() ?: currentTabPosition.tabWidth
-    val animatedWidh by animateDpAsState(
-        targetValue = currentWidth,
-        animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
-    )
-    val animatedOffsetX by animateDpAsState(
-        targetValue = currentTabPosition.calculateCenter(currentWidth),
-        animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
-    )
-    fillMaxWidth()
-        .wrapContentSize(Alignment.BottomStart)
-        .offset(x = animatedOffsetX)
-        .width(animatedWidh)
+@Immutable
+data class TabPosition(val left: Dp, val width: Dp, val tabWidth: Dp) {
+
+    val right get() = left + width
+
+    fun calculateCenter(currentWidth: Dp) = left + width / 2 - currentWidth / 2
 }
 
-private fun Modifier.pagerTabIndicatorOffset(
-    pagerState: PagerState,
-    tabPositions: List<TabPosition>,
-    indicatorWidth: Dp
-) = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "pagerTabIndicatorOffset"
-        properties["pagerState"] = pagerState
-        properties["tabPositions"] = tabPositions
-        properties["indicatorWidth"] = indicatorWidth
-    }
+@Stable
+class TabRow internal constructor(
+    val selectedTabIndex: Int,
+    val colors: TabColors,
+    val style: TabStyle,
+    val tabPositions: List<TabPosition>
 ) {
-    layout { measurable, constraints ->
-        // If there are no pages, nothing to show.
-        if (tabPositions.isEmpty()) return@layout layout(constraints.maxWidth, 0) {}
-        val currentPage = minOf(tabPositions.lastIndex, pagerState.currentPage)
-        val currentTab = tabPositions[currentPage]
-        val previousTab = tabPositions.getOrNull(currentPage - 1)
-        val nextTab = tabPositions.getOrNull(currentPage + 1)
-        val currentWidth = indicatorWidth.orElse() ?: currentTab.tabWidth
-        val nextWidth = indicatorWidth.orElse() ?: nextTab?.tabWidth ?: currentWidth
-        val previousWidth = indicatorWidth.orElse() ?: previousTab?.tabWidth ?: currentWidth
-        val fraction = pagerState.currentPageOffsetFraction
-        // Calculate the width of the indicator from the current and next / previous tab.
-        val movableWidth = when {
-            fraction > 0 && nextTab != null -> lerp(currentWidth, nextWidth, fraction)
-            fraction < 0 && previousTab != null -> lerp(currentWidth, previousWidth, -fraction)
-            else -> currentWidth
-        }.roundToPx()
-        // Calculate the offset X of the indicator from the current and next / previous tab.
-        val movableOffsetX = when {
-            fraction > 0 && nextTab != null ->
-                lerp(currentTab.calculateCenter(currentWidth), nextTab.calculateCenter(nextWidth), fraction)
-            fraction < 0 && previousTab != null ->
-                lerp(currentTab.calculateCenter(currentWidth), previousTab.calculateCenter(previousWidth), -fraction)
-            else -> currentTab.calculateCenter(currentWidth)
-        }.roundToPx()
-        val placeable = measurable.measure(
-            Constraints(
-                minWidth = movableWidth,
-                maxWidth = movableWidth,
-                minHeight = 0,
-                maxHeight = constraints.maxHeight
-            )
+
+    @Composable
+    fun TabIndicator(
+        modifier: Modifier = Modifier,
+        color: Color = colors.indicatorColor,
+        height: Dp = style.indicatorHeight,
+        shape: Shape = style.indicatorShape
+    ) {
+        Box(modifier.height(height).background(color, shape))
+    }
+
+    fun Modifier.tabIndicatorOffset(
+        currentTabPosition: TabPosition = tabPositions[selectedTabIndex],
+        indicatorWidth: Dp = style.indicatorWidth
+    ) = composed(
+        inspectorInfo = debugInspectorInfo {
+            name = "tabIndicatorOffset"
+            properties["currentTabPosition"] = currentTabPosition
+            properties["indicatorWidth"] = indicatorWidth
+        }
+    ) {
+        val currentWidth = indicatorWidth.orElse() ?: currentTabPosition.tabWidth
+        val animatedWidh by animateDpAsState(
+            targetValue = currentWidth,
+            animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
         )
-        val offsetY = maxOf(constraints.minHeight - placeable.height, 0)
-        val measureWidth = constraints.maxWidth
-        val measureHeight = maxOf(placeable.height, constraints.minHeight)
-        layout(measureWidth, measureHeight) { placeable.placeRelative(movableOffsetX, offsetY) }
+        val animatedOffsetX by animateDpAsState(
+            targetValue = currentTabPosition.calculateCenter(currentWidth),
+            animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
+        )
+        fillMaxWidth()
+            .wrapContentSize(Alignment.BottomStart)
+            .offset(x = animatedOffsetX)
+            .width(animatedWidh)
+    }
+
+    fun Modifier.pagerTabIndicatorOffset(
+        pagerState: PagerState,
+        tabPositions: List<TabPosition> = this@TabRow.tabPositions,
+        indicatorWidth: Dp = style.indicatorWidth
+    ) = composed(
+        inspectorInfo = debugInspectorInfo {
+            name = "pagerTabIndicatorOffset"
+            properties["pagerState"] = pagerState
+            properties["tabPositions"] = tabPositions
+            properties["indicatorWidth"] = indicatorWidth
+        }
+    ) {
+        layout { measurable, constraints ->
+            // If there are no pages, nothing to show.
+            if (tabPositions.isEmpty()) return@layout layout(constraints.maxWidth, 0) {}
+            val currentPage = minOf(tabPositions.lastIndex, pagerState.currentPage)
+            val currentTab = tabPositions[currentPage]
+            val previousTab = tabPositions.getOrNull(currentPage - 1)
+            val nextTab = tabPositions.getOrNull(currentPage + 1)
+            val currentWidth = indicatorWidth.orElse() ?: currentTab.tabWidth
+            val nextWidth = indicatorWidth.orElse() ?: nextTab?.tabWidth ?: currentWidth
+            val previousWidth = indicatorWidth.orElse() ?: previousTab?.tabWidth ?: currentWidth
+            val fraction = pagerState.currentPageOffsetFraction
+            // Calculate the width of the indicator from the current and next / previous tab.
+            val movableWidth = when {
+                fraction > 0 && nextTab != null -> lerp(currentWidth, nextWidth, fraction)
+                fraction < 0 && previousTab != null -> lerp(currentWidth, previousWidth, -fraction)
+                else -> currentWidth
+            }.roundToPx()
+            // Calculate the offset X of the indicator from the current and next / previous tab.
+            val movableOffsetX = when {
+                fraction > 0 && nextTab != null ->
+                    lerp(currentTab.calculateCenter(currentWidth), nextTab.calculateCenter(nextWidth), fraction)
+                fraction < 0 && previousTab != null ->
+                    lerp(currentTab.calculateCenter(currentWidth), previousTab.calculateCenter(previousWidth), -fraction)
+                else -> currentTab.calculateCenter(currentWidth)
+            }.roundToPx()
+            val placeable = measurable.measure(
+                Constraints(
+                    minWidth = movableWidth,
+                    maxWidth = movableWidth,
+                    minHeight = 0,
+                    maxHeight = constraints.maxHeight
+                )
+            )
+            val offsetY = maxOf(constraints.minHeight - placeable.height, 0)
+            val measureWidth = constraints.maxWidth
+            val measureHeight = maxOf(placeable.height, constraints.minHeight)
+            layout(measureWidth, measureHeight) { placeable.placeRelative(movableOffsetX, offsetY) }
+        }
     }
 }
 
@@ -431,14 +403,6 @@ private class ScrollableTabData(private val scrollState: ScrollState, private va
             val availableSpace = (totalTabRowWidth - visibleWidth).coerceAtLeast(0)
             return centeredTabOffset.coerceIn(0, availableSpace)
         }
-}
-
-@Immutable
-private data class TabPosition(val left: Dp, val width: Dp, val tabWidth: Dp) {
-
-    val right get() = left + width
-
-    fun calculateCenter(currentWidth: Dp) = left + width / 2 - currentWidth / 2
 }
 
 @Stable
