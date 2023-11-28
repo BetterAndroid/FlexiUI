@@ -440,7 +440,7 @@ private fun defaultTabColors() = TabColors(
 private fun defaultTabStyle() = TabStyle(
     contentPadding = PaddingValues(
         horizontal = LocalSizes.current.spacingPrimary,
-        vertical = LocalSizes.current.spacingSecondary,
+        vertical = LocalSizes.current.spacingSecondary
     ),
     contentShape = withAreaBoxShape(),
     indicatorWidth = Dp.Unspecified,
