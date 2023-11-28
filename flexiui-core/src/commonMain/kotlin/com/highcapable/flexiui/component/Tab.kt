@@ -210,7 +210,7 @@ fun Tab(
     val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: Tab.style.contentPadding
     val currentContentShape = contentShape ?: LocalTabContentShape.current ?: Tab.style.contentShape
     val contentColor by animateColorAsState(if (selected) currentSelectedContentColor else currentUnselectedContentColor)
-    val contentStyle = LocalTextStyle.current.default(contentColor)
+    val contentStyle = LocalTextStyle.current.copy(contentColor)
     CompositionLocalProvider(
         LocalIconTint provides contentColor,
         LocalTextStyle provides contentStyle

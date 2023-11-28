@@ -79,7 +79,7 @@ fun Button(
     footer: @Composable () -> Unit = {},
     content: @Composable RowScope.() -> Unit
 ) {
-    val localTextStyle = LocalTextStyle.current.default(color = colors.contentColor)
+    val localTextStyle = LocalTextStyle.current.copy(color = colors.contentColor)
     val localProgressIndicatorColors = LocalProgressIndicatorColors.current.copy(
         foregroundColor = colors.contentColor,
         backgroundColor = Color.Transparent

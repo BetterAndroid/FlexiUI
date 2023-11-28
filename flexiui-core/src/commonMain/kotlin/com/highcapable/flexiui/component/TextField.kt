@@ -101,6 +101,7 @@ import com.highcapable.flexiui.resources.icon.ViewerOpen
 
 @Immutable
 data class TextFieldColors(
+    val textColor: Color,
     val cursorColor: Color,
     val selectionColors: TextSelectionColors,
     val completionColors: AutoCompleteBoxColors,
@@ -120,6 +121,7 @@ data class AutoCompleteBoxColors(
 
 @Immutable
 data class TextFieldStyle(
+    val textStyle: TextStyle,
     val padding: PaddingValues,
     val shape: Shape,
     val borderInactive: BorderStroke,
@@ -157,8 +159,7 @@ fun TextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
     placeholder: @Composable () -> Unit = {},
-    footer: @Composable (() -> Unit)? = null,
-    textStyle: TextStyle = TextField.textStyle
+    footer: @Composable (() -> Unit)? = null
 ) {
     val focused by interactionSource.collectIsFocusedAsState()
     val hovered by interactionSource.collectIsHoveredAsState()
@@ -179,6 +180,7 @@ fun TextField(
         focused || hovered -> style.borderInactive
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
+    val textColor = style.textStyle.color.orElse() ?: colors.textColor
     BoxWithConstraints(
         modifier = Modifier.textField(
             enabled = enabled,
@@ -212,7 +214,7 @@ fun TextField(
                             .onKeyEvent { keyEventFactory.onKeyEvent?.invoke(it) ?: false },
                         enabled = enabled,
                         readOnly = readOnly,
-                        textStyle = textStyle,
+                        textStyle = style.textStyle.copy(color = textColor),
                         keyboardOptions = keyboardOptions,
                         keyboardActions = keyboardActions,
                         singleLine = singleLine,
@@ -279,8 +281,7 @@ fun TextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
     placeholder: @Composable () -> Unit = {},
-    footer: @Composable (() -> Unit)? = null,
-    textStyle: TextStyle = TextField.textStyle
+    footer: @Composable (() -> Unit)? = null
 ) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
     TextField(
@@ -307,8 +308,7 @@ fun TextField(
         interactionSource = interactionSource,
         header = header,
         placeholder = placeholder,
-        footer = footer,
-        textStyle = textStyle
+        footer = footer
     )
 }
 
@@ -330,8 +330,7 @@ fun PasswordTextField(
     focusRequester: FocusRequester = remember { FocusRequester() },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
-    placeholder: @Composable () -> Unit = {},
-    textStyle: TextStyle = TextField.textStyle
+    placeholder: @Composable () -> Unit = {}
 ) {
     var passwordVisible by remember { mutableStateOf(defaultPasswordVisible) }
     TextField(
@@ -377,8 +376,7 @@ fun PasswordTextField(
                     interactionSource = cInteractionSource
                 ) { Icon(imageVector = if (passwordVisible) Icons.ViewerOpen else Icons.ViewerClose) }
             }
-        },
-        textStyle = textStyle
+        }
     )
 }
 
@@ -400,8 +398,7 @@ fun PasswordTextField(
     focusRequester: FocusRequester = remember { FocusRequester() },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
-    placeholder: @Composable () -> Unit = {},
-    textStyle: TextStyle = TextField.textStyle
+    placeholder: @Composable () -> Unit = {}
 ) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
     PasswordTextField(
@@ -424,8 +421,7 @@ fun PasswordTextField(
         focusRequester = focusRequester,
         interactionSource = interactionSource,
         header = header,
-        placeholder = placeholder,
-        textStyle = textStyle
+        placeholder = placeholder
     )
 }
 
@@ -450,8 +446,7 @@ fun BackspaceTextField(
     focusRequester: FocusRequester = remember { FocusRequester() },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
-    placeholder: @Composable () -> Unit = {},
-    textStyle: TextStyle = TextField.textStyle
+    placeholder: @Composable () -> Unit = {}
 ) {
     TextField(
         value = value,
@@ -499,8 +494,7 @@ fun BackspaceTextField(
                     interactionSource = cInteractionSource
                 ) { Icon(imageVector = Icons.Backspace) }
             }
-        },
-        textStyle = textStyle
+        }
     )
 }
 
@@ -525,8 +519,7 @@ fun BackspaceTextField(
     focusRequester: FocusRequester = remember { FocusRequester() },
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable (() -> Unit)? = null,
-    placeholder: @Composable () -> Unit = {},
-    textStyle: TextStyle = TextField.textStyle
+    placeholder: @Composable () -> Unit = {}
 ) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
     BackspaceTextField(
@@ -552,8 +545,7 @@ fun BackspaceTextField(
         focusRequester = focusRequester,
         interactionSource = interactionSource,
         header = header,
-        placeholder = placeholder,
-        textStyle = textStyle
+        placeholder = placeholder
     )
 }
 
@@ -691,7 +683,7 @@ private fun TextFieldDecorationBox(
     val animatedAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
     Box(modifier = Modifier.alpha(animatedAlpha)) {
         CompositionLocalProvider(
-            LocalTextStyle provides LocalTextStyle.current.default(placeholderContentColor)
+            LocalTextStyle provides LocalTextStyle.current.copy(placeholderContentColor)
         ) { placeholder() }
     }
     innerTextField()
@@ -761,15 +753,12 @@ object TextField {
         @Composable
         @ReadOnlyComposable
         get() = defaultTextFieldStyle()
-    val textStyle: TextStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalTextStyle.current.default(LocalColors.current.textPrimary)
 }
 
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldColors() = TextFieldColors(
+    textColor = defaultTextColor(),
     cursorColor = LocalColors.current.themePrimary,
     selectionColors = TextSelectionColors(
         handleColor = LocalColors.current.themePrimary,
@@ -790,6 +779,7 @@ private fun defaultTextFieldColors() = TextFieldColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultTextFieldStyle() = TextFieldStyle(
+    textStyle = LocalTextStyle.current,
     padding = PaddingValues(LocalSizes.current.spacingSecondary),
     shape = withAreaBoxShape(),
     borderInactive = defaultTextFieldInactiveBorder(),

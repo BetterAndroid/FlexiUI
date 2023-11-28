@@ -33,13 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
 import com.highcapable.flexiui.DefaultTypography
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.extension.orElse
@@ -49,41 +43,25 @@ fun Text(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
+    style: TextStyle = Text.style,
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = Text.style
+    onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     Text(
         text = AnnotatedString(text),
         modifier = modifier,
         color = color,
-        fontSize = fontSize,
-        fontStyle = fontStyle,
-        fontWeight = fontWeight,
-        fontFamily = fontFamily,
-        letterSpacing = letterSpacing,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
+        style = style,
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,
         minLines = minLines,
         inlineContent = emptyMap(),
-        onTextLayout = onTextLayout,
-        style = style
+        onTextLayout = onTextLayout
     )
 }
 
@@ -92,39 +70,20 @@ fun Text(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
+    style: TextStyle = Text.style,
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     inlineContent: Map<String, InlineTextContent> = mapOf(),
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = Text.style
+    onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
+    val currentColor = color.orElse() ?: style.color.orElse() ?: Text.color
     BasicText(
         text = text,
         modifier = modifier,
-        style = style.merge(
-            TextStyle(
-                color = color.orElse() ?: style.color.orElse() ?: Text.color,
-                fontSize = fontSize.orElse() ?: style.fontSize.orElse() ?: Text.fontSize,
-                fontWeight = fontWeight,
-                textAlign = textAlign,
-                lineHeight = lineHeight.orElse() ?: style.lineHeight.orElse() ?: Text.lineHeight,
-                fontFamily = fontFamily,
-                textDecoration = textDecoration,
-                fontStyle = fontStyle,
-                letterSpacing = letterSpacing
-            )
-        ),
+        style = style.copy(color = currentColor),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,
@@ -139,28 +98,16 @@ object Text {
         @Composable
         @ReadOnlyComposable
         get() = defaultTextColor()
-    val fontSize: TextUnit
-        @Composable
-        @ReadOnlyComposable
-        get() = style.fontSize
-    val lineHeight: TextUnit
-        @Composable
-        @ReadOnlyComposable
-        get() = style.lineHeight
     val style: TextStyle
         @Composable
         @ReadOnlyComposable
         get() = LocalTextStyle.current
 }
 
+@Composable
+@ReadOnlyComposable
+internal fun defaultTextColor() = LocalColors.current.textPrimary
+
 internal val LocalTextStyle = compositionLocalOf { DefaultTextStyle }
 
-internal val DefaultTextStyle = DefaultTypography.primary
-
-@Composable
-@ReadOnlyComposable
-internal fun TextStyle.default(color: Color) = copy(color = LocalTextStyle.current.color.orElse() ?: color)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultTextColor() = LocalTextStyle.current.default(LocalColors.current.textPrimary).color
+private val DefaultTextStyle = DefaultTypography.primary
