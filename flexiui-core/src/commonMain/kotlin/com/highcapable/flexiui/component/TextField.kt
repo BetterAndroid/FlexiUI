@@ -87,7 +87,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.borderOrNot
 import com.highcapable.flexiui.extension.calculateEnd
@@ -788,10 +787,7 @@ private fun defaultTextFieldColors() = TextFieldColors(
 @ReadOnlyComposable
 private fun defaultTextFieldStyle() = TextFieldStyle(
     padding = PaddingValues(LocalSizes.current.spacingSecondary),
-    shape = when (LocalInAreaBox.current) {
-        true -> LocalAreaBoxShape.current
-        else -> LocalShapes.current.secondary
-    },
+    shape = withAreaBoxShape(),
     borderInactive = defaultTextFieldInactiveBorder(),
     borderActive = defaultTextFieldActiveBorder(),
     completionStyle = DropdownMenu.style

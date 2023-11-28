@@ -172,6 +172,16 @@ internal val DefaultAreaBoxShape: Shape = DefaultShapes.primary
 
 @Composable
 @ReadOnlyComposable
+internal fun withAreaBoxShape(
+    inBox: Shape = LocalAreaBoxShape.current,
+    outBox: Shape = LocalShapes.current.secondary
+) = when (LocalInAreaBox.current) {
+    true -> inBox
+    else -> outBox
+}
+
+@Composable
+@ReadOnlyComposable
 private fun defaultAreaBoxStyle() = AreaBoxStyle(
     padding = PaddingValues(LocalSizes.current.spacingPrimary),
     shape = LocalShapes.current.primary,

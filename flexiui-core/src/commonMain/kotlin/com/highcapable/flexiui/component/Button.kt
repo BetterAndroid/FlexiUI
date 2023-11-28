@@ -249,10 +249,7 @@ private fun defaultButtonStyle() = ButtonStyle(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary
     ),
-    shape = when (LocalInAreaBox.current) {
-        true -> LocalAreaBoxShape.current
-        else -> LocalShapes.current.secondary
-    },
+    shape = withAreaBoxShape(),
     border = defaultButtonBorder()
 )
 

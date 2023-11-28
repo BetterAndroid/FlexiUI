@@ -442,10 +442,7 @@ private fun defaultTabStyle() = TabStyle(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary,
     ),
-    contentShape = when (LocalInAreaBox.current) {
-        true -> LocalAreaBoxShape.current
-        else -> LocalShapes.current.secondary
-    },
+    contentShape = withAreaBoxShape(),
     indicatorWidth = Dp.Unspecified,
     indicatorHeight = DefaultTabIndicatorHeight,
     indicatorShape = LocalShapes.current.tertiary

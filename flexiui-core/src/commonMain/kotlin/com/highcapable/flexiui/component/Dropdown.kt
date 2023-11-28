@@ -567,10 +567,7 @@ private fun defaultDropdownMenuColors() = DropdownMenuColors(
 @ReadOnlyComposable
 private fun defaultDropdownListStyle() = DropdownListStyle(
     padding = PaddingValues(LocalSizes.current.spacingSecondary),
-    shape = when (LocalInAreaBox.current) {
-        true -> LocalAreaBoxShape.current
-        else -> LocalShapes.current.secondary
-    },
+    shape = withAreaBoxShape(),
     endIconSize = LocalSizes.current.iconSizeTertiary,
     borderInactive = defaultDropdownListInactiveBorder(),
     borderActive = defaultDropdownListActiveBorder()
