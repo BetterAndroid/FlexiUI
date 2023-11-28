@@ -168,8 +168,6 @@ internal val LocalInAreaBox = compositionLocalOf { false }
 
 internal val LocalAreaBoxShape = compositionLocalOf { DefaultAreaBoxShape }
 
-internal val DefaultAreaBoxShape: Shape = DefaultShapes.primary
-
 @Composable
 @ReadOnlyComposable
 internal fun withAreaBoxShape(
@@ -196,5 +194,7 @@ private fun defaultAreaBoxColor() = LocalColors.current.foregroundPrimary
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
+
+private val DefaultAreaBoxShape: Shape = DefaultShapes.primary
 
 private val DefaultAreaBoxShadowSize = 0.dp
