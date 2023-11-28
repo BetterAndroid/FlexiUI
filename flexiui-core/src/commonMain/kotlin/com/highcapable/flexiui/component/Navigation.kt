@@ -72,13 +72,13 @@ data class NavigationColors(
 @Immutable
 data class NavigationStyle(
     val padding: PaddingValues,
-    val contentSpace: Dp,
+    val contentSpacing: Dp,
     val contentPadding: PaddingValues,
     val contentShape: Shape
 )
 
 @Composable
-fun HorizontalNavigation(
+fun NavigationRow(
     modifier: Modifier = Modifier,
     colors: NavigationColors = Navigation.colors,
     style: NavigationStyle = Navigation.style,
@@ -96,7 +96,7 @@ fun HorizontalNavigation(
 }
 
 @Composable
-fun VerticalNavigation(
+fun NavigationColumn(
     modifier: Modifier = Modifier,
     colors: NavigationColors = Navigation.colors,
     style: NavigationStyle = Navigation.style,
@@ -130,7 +130,7 @@ fun NavigationItem(
 ) {
     val currentHorizontal = horizontal ?: LocalHorizontalNavigation.current
     val currentColors = colors ?: LocalNavigationColors.current ?: Navigation.colors
-    val currentContentSpace = contentSpace.orElse() ?: LocalNavigationContentSpace.current.orElse() ?: Navigation.style.contentSpace
+    val currentContentSpace = contentSpace.orElse() ?: LocalNavigationContentSpace.current.orElse() ?: Navigation.style.contentSpacing
     val currentContentPadding = contentPadding ?: LocalNavigationContentPadding.current ?: Navigation.style.contentPadding
     val currentContentShape = contentShape ?: LocalNavigationContentShape.current ?: Navigation.style.contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
@@ -246,7 +246,7 @@ private fun defaultNavigationStyle() = NavigationStyle(
             vertical = LocalSizes.current.spacingSecondary
         )
     },
-    contentSpace = LocalSizes.current.spacingSecondary,
+    contentSpacing = LocalSizes.current.spacingSecondary,
     contentPadding = PaddingValues(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary
