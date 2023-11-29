@@ -107,6 +107,8 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.calculateEnd
+import com.highcapable.flexiui.extension.calculateStart
 import com.highcapable.flexiui.extension.horizontal
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.solidColor
@@ -224,7 +226,7 @@ fun DropdownList(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) },
-            offset = DefaultDropdownListMenuOffset,
+            offset = DpOffset(-style.padding.calculateStart(), style.padding.calculateEnd()),
             modifier = Modifier.width(menuMaxWidth).heightIn(max = menuMaxHeight),
             colors = menuColors,
             style = menuStyle,
@@ -594,8 +596,6 @@ private fun defaultDropdownListInactiveBorder() = BorderStroke(LocalSizes.curren
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
-
-private val DefaultDropdownListMenuOffset = DpOffset((-10).dp, 10.dp)
 
 private val DefaultMenuContentPadding = 16.dp
 
