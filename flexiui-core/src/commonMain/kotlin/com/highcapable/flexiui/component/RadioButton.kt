@@ -65,6 +65,7 @@ data class RadioButtonColors(
 
 @Immutable
 data class RadioButtonStyle(
+    val contentSpacing: Dp,
     val contentRadius: Dp,
     val contentShadowSize: Dp,
     val strokeRadius: Dp,
@@ -83,7 +84,6 @@ fun RadioButton(
     style: RadioButtonStyle = RadioButton.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    contentSpacing: Dp = RadioButton.contentSpacing,
     content: @Composable () -> Unit = {}
 ) {
     val contentDiameter = style.contentRadius * 2
@@ -116,7 +116,7 @@ fun RadioButton(
             )
         }
         Box(
-            modifier = Modifier.padding(start = contentSpacing)
+            modifier = Modifier.padding(start = style.contentSpacing)
                 .clickable(enabled = enabled, onClick = onClick)
         ) { content() }
     }
@@ -131,10 +131,6 @@ object RadioButton {
         @Composable
         @ReadOnlyComposable
         get() = defaultRadioButtonStyle()
-    val contentSpacing: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultRadioButtonContentSpacing()
 }
 
 @Composable
@@ -148,6 +144,7 @@ private fun defaultRadioButtonColors() = RadioButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultRadioButtonStyle() = RadioButtonStyle(
+    contentSpacing = LocalSizes.current.spacingSecondary,
     contentRadius = DefaultContentRadius,
     contentShadowSize = DefaultContentShadowSize,
     strokeRadius = DefaultStrokeRadius,
@@ -160,10 +157,6 @@ private fun defaultRadioButtonStyle() = RadioButtonStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultRadioButtonBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultRadioButtonContentSpacing() = LocalSizes.current.spacingSecondary
 
 private val DefaultContentRadius = 5.dp
 private val DefaultStrokeRadius = 10.dp
