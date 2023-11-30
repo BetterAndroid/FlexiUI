@@ -24,7 +24,6 @@
 package com.highcapable.flexiui.component
 
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateFloat
@@ -74,8 +73,7 @@ data class CircularIndicatorStyle(
     val rotationsPerCycle: Int,
     val startAngleOffset: Float,
     val baseRotationAngle: Float,
-    val jumpRotationAngle: Float,
-    val easing: Easing
+    val jumpRotationAngle: Float
 ) : IProgressIndicatorStyle
 
 @Immutable
@@ -91,11 +89,7 @@ data class LinearIndicatorStyle(
     val firstLineHeadDelay: Int,
     val firstLineTailDelay: Int,
     val secondLineHeadDelay: Int,
-    val secondLineTailDelay: Int,
-    val firstLineHeadEasing: Easing,
-    val firstLineTailEasing: Easing,
-    val secondLineHeadEasing: Easing,
-    val secondLineTailEasing: Easing
+    val secondLineTailDelay: Int
 ) : IProgressIndicatorStyle
 
 @Immutable
@@ -160,7 +154,7 @@ fun CircularProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
-                    0f at 0 with style.easing
+                    0f at 0 with CircularEasing
                     style.jumpRotationAngle at headAndTailAnimationDuration
                 }
             )
@@ -171,7 +165,7 @@ fun CircularProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
-                    0f at headAndTailAnimationDuration with style.easing
+                    0f at headAndTailAnimationDuration with CircularEasing
                     style.jumpRotationAngle at durationMillis
                 }
             )
@@ -218,7 +212,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = style.animationDuration
-                    0f at style.firstLineHeadDelay with style.firstLineHeadEasing
+                    0f at style.firstLineHeadDelay with FirstLineHeadEasing
                     1f at style.firstLineHeadDuration + style.firstLineHeadDelay
                 }
             )
@@ -229,7 +223,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = style.animationDuration
-                    0f at style.firstLineTailDelay with style.firstLineTailEasing
+                    0f at style.firstLineTailDelay with FirstLineTailEasing
                     1f at style.firstLineTailDuration + style.firstLineTailDelay
                 }
             )
@@ -240,7 +234,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = style.animationDuration
-                    0f at style.secondLineHeadDelay with style.secondLineHeadEasing
+                    0f at style.secondLineHeadDelay with SecondLineHeadEasing
                     1f at style.secondLineHeadDuration + style.secondLineHeadDelay
                 }
             )
@@ -251,7 +245,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = style.animationDuration
-                    0f at style.secondLineTailDelay with style.secondLineTailEasing
+                    0f at style.secondLineTailDelay with SecondLineTailEasing
                     1f at style.secondLineTailDuration + style.secondLineTailDelay
                 }
             )
@@ -398,8 +392,7 @@ private fun defaultCircularIndicatorStyle() = CircularIndicatorStyle(
     rotationsPerCycle = DefaultRotationsPerCycle,
     startAngleOffset = DefaultStartAngleOffset,
     baseRotationAngle = DefaultBaseRotationAngle,
-    jumpRotationAngle = DefaultJumpRotationAngle,
-    easing = DefaultCircularEasing
+    jumpRotationAngle = DefaultJumpRotationAngle
 )
 
 @Composable
@@ -416,11 +409,7 @@ private fun defaultLinearIndicatorStyle() = LinearIndicatorStyle(
     firstLineHeadDelay = DefaultFirstLineHeadDelay,
     firstLineTailDelay = DefaultFirstLineTailDelay,
     secondLineHeadDelay = DefaultSecondLineHeadDelay,
-    secondLineTailDelay = DefaultSecondLineTailDelay,
-    firstLineHeadEasing = DefaultFirstLineHeadEasing,
-    firstLineTailEasing = DefaultFirstLineTailEasing,
-    secondLineHeadEasing = DefaultSecondLineHeadEasing,
-    secondLineTailEasing = DefaultSecondLineTailEasing
+    secondLineTailDelay = DefaultSecondLineTailDelay
 )
 
 private fun caleRotationAngleOffset(baseRotationAngle: Float, jumpRotationAngle: Float) = (baseRotationAngle + jumpRotationAngle) % 360f
@@ -448,8 +437,8 @@ private const val DefaultStartAngleOffset = -90f
 private const val DefaultBaseRotationAngle = 286f
 private const val DefaultJumpRotationAngle = 290f
 
-private val DefaultFirstLineHeadEasing = CubicBezierEasing(0.2f, 0f, 0.8f, 1f)
-private val DefaultFirstLineTailEasing = CubicBezierEasing(0.4f, 0f, 1f, 1f)
-private val DefaultSecondLineHeadEasing = CubicBezierEasing(0f, 0f, 0.65f, 1f)
-private val DefaultSecondLineTailEasing = CubicBezierEasing(0.1f, 0f, 0.45f, 1f)
-private val DefaultCircularEasing = CubicBezierEasing(0.4f, 0f, 0.2f, 1f)
+private val FirstLineHeadEasing = CubicBezierEasing(0.2f, 0f, 0.8f, 1f)
+private val FirstLineTailEasing = CubicBezierEasing(0.4f, 0f, 1f, 1f)
+private val SecondLineHeadEasing = CubicBezierEasing(0f, 0f, 0.65f, 1f)
+private val SecondLineTailEasing = CubicBezierEasing(0.1f, 0f, 0.45f, 1f)
+private val CircularEasing = CubicBezierEasing(0.4f, 0f, 0.2f, 1f)
