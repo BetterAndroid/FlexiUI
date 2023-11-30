@@ -683,8 +683,10 @@ private fun TextFieldDecorationBox(
     val animatedAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
     Box(modifier = Modifier.alpha(animatedAlpha)) {
         CompositionLocalProvider(
-            LocalTextStyle provides LocalTextStyle.current.copy(color = placeholderContentColor)
-        ) { placeholder() }
+            LocalIconTint provides placeholderContentColor,
+            LocalTextStyle provides LocalTextStyle.current.copy(color = placeholderContentColor),
+            content = placeholder
+        )
     }
     innerTextField()
 }

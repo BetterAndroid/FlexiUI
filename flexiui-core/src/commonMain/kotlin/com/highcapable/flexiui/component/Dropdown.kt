@@ -354,9 +354,10 @@ fun DropdownMenuItem(
         style = currentStyle,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CompositionLocalProvider(LocalTextStyle provides LocalTextStyle.current.copy(color = currentColor)) {
-            content()
-        }
+        CompositionLocalProvider(
+            LocalIconTint provides currentColor,
+            LocalTextStyle provides LocalTextStyle.current.copy(color = currentColor)
+        ) { content() }
     }
 }
 
