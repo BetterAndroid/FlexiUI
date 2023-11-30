@@ -121,7 +121,7 @@ fun NavigationItem(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: NavigationColors? = null,
-    contentSpace: Dp = Dp.Unspecified,
+    contentSpacing: Dp = Dp.Unspecified,
     contentPadding: PaddingValues? = null,
     contentShape: Shape? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -130,7 +130,7 @@ fun NavigationItem(
 ) {
     val currentHorizontal = horizontal ?: LocalHorizontalNavigation.current
     val currentColors = colors ?: LocalNavigationColors.current ?: Navigation.colors
-    val currentContentSpace = contentSpace.orElse() ?: LocalNavigationContentSpace.current.orElse() ?: Navigation.style.contentSpacing
+    val currentContentSpacing = contentSpacing.orElse() ?: LocalNavigationContentSpacing.current.orElse() ?: Navigation.style.contentSpacing
     val currentContentPadding = contentPadding ?: LocalNavigationContentPadding.current ?: Navigation.style.contentPadding
     val currentContentShape = contentShape ?: LocalNavigationContentShape.current ?: Navigation.style.contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
@@ -167,7 +167,7 @@ fun NavigationItem(
                             exit = shrinkHorizontally()
                         ) {
                             Row {
-                                Box(modifier = Modifier.width(currentContentSpace))
+                                Box(modifier = Modifier.width(currentContentSpacing))
                                 content()
                             }
                         }
@@ -180,7 +180,7 @@ fun NavigationItem(
                 ) {
                     icon()
                     text?.also { content ->
-                        Box(modifier = Modifier.height(currentContentSpace / 2))
+                        Box(modifier = Modifier.height(currentContentSpacing / 2))
                         content()
                     }
                 }
@@ -222,7 +222,7 @@ private val LocalHorizontalNavigation = compositionLocalOf { true }
 
 private val LocalNavigationColors = compositionLocalOf<NavigationColors?> { null }
 
-private val LocalNavigationContentSpace = compositionLocalOf { Dp.Unspecified }
+private val LocalNavigationContentSpacing = compositionLocalOf { Dp.Unspecified }
 
 private val LocalNavigationContentPadding = compositionLocalOf<PaddingValues?> { null }
 
