@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.component
+package com.highcapable.flexiui.window
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,6 +47,8 @@ actual fun Popup(
             popupPositionProvider = it,
             onDismissRequest = onDismissRequest,
             properties = properties,
+            onPreviewKeyEvent = onPreviewKeyEvent,
+            onKeyEvent = onKeyEvent,
             content = content
         )
     } ?: ComposePopup(
@@ -54,6 +56,8 @@ actual fun Popup(
         offset = offset,
         onDismissRequest = onDismissRequest,
         properties = properties,
+        onPreviewKeyEvent = onPreviewKeyEvent,
+        onKeyEvent = onKeyEvent,
         content = content
     )
 }

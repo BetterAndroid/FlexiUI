@@ -21,6 +21,6 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.interaction
+package com.highcapable.flexiui.window
 
 // TODO: To be implemented

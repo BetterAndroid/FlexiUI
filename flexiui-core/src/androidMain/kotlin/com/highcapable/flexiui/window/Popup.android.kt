@@ -17,11 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/5.
+ * This file is created by fankes on 2023/11/16.
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.component
+package com.highcapable.flexiui.window
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,15 +29,31 @@ import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.window.Popup as ComposePopup
 
 @Composable
-expect fun Popup(
-    alignment: Alignment = Alignment.TopStart,
-    offset: IntOffset = IntOffset(0, 0),
-    popupPositionProvider: PopupPositionProvider? = null,
-    onDismissRequest: (() -> Unit)? = null,
-    properties: PopupProperties = PopupProperties(),
-    onPreviewKeyEvent: ((KeyEvent) -> Boolean)? = null,
-    onKeyEvent: ((KeyEvent) -> Boolean)? = null,
+actual fun Popup(
+    alignment: Alignment,
+    offset: IntOffset,
+    popupPositionProvider: PopupPositionProvider?,
+    onDismissRequest: (() -> Unit)?,
+    properties: PopupProperties,
+    onPreviewKeyEvent: ((KeyEvent) -> Boolean)?,
+    onKeyEvent: ((KeyEvent) -> Boolean)?,
     content: @Composable () -> Unit
-)
+) {
+    popupPositionProvider?.also {
+        ComposePopup(
+            popupPositionProvider = it,
+            onDismissRequest = onDismissRequest,
+            properties = properties,
+            content = content
+        )
+    } ?: ComposePopup(
+        alignment = alignment,
+        offset = offset,
+        onDismissRequest = onDismissRequest,
+        properties = properties,
+        content = content
+    )
+}

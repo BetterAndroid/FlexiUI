@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.component
+package com.highcapable.flexiui.window
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
