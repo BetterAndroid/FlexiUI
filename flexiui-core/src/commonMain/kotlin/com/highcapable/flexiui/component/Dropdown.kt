@@ -341,9 +341,9 @@ fun DropdownMenuItem(
             .then(modifier)
             .fillMaxWidth()
             .sizeIn(
-                minWidth = DefaultMenuItemMinWidth,
-                maxWidth = DefaultMenuItemMaxWidth,
-                minHeight = DefaultMenuItemMinHeight
+                minWidth = MenuItemMinWidth,
+                maxWidth = MenuItemMaxWidth,
+                minHeight = MenuItemMinHeight
             )
             .rippleClickable(
                 enabled = enabled,
@@ -604,6 +604,6 @@ private val DefaultMenuContentPadding = 16.dp
 private const val DefaultInTransitionDuration = 120
 private const val DefaultOutTransitionDuration = 90
 
-private val DefaultMenuItemMinWidth = 112.dp
-private val DefaultMenuItemMaxWidth = 280.dp
-private val DefaultMenuItemMinHeight = 32.dp
+private val MenuItemMinWidth = 112.dp
+private val MenuItemMaxWidth = 280.dp
+private val MenuItemMinHeight = 32.dp

@@ -64,8 +64,8 @@ import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.extension.orElse
+import com.highcapable.flexiui.interaction.rippleClickable
 import java.awt.event.KeyEvent
 
 @Immutable
@@ -150,9 +150,9 @@ private fun MenuItemContent(
             .onHover { hovered = it }
             .fillMaxWidth()
             .sizeIn(
-                minWidth = DefaultMenuContentMinWidth,
-                maxWidth = DefaultMenuContentMaxWidth,
-                minHeight = DefaultMenuContentMinHeight
+                minWidth = MenuContentMinWidth,
+                maxWidth = MenuContentMaxWidth,
+                minHeight = MenuContentMinHeight
             ),
         color = Color.Transparent,
         style = style,
@@ -218,7 +218,8 @@ internal fun defaultContextMenuStyle() = ContextMenuStyle(
     )
 )
 
-private val DefaultMenuContentMinWidth = 112.dp
-private val DefaultMenuContentMaxWidth = 280.dp
-private val DefaultMenuContentMinHeight = 32.dp
 private val DefaultMenuContentPadding = 16.dp
+
+private val MenuContentMinWidth = 112.dp
+private val MenuContentMaxWidth = 280.dp
+private val MenuContentMinHeight = 32.dp

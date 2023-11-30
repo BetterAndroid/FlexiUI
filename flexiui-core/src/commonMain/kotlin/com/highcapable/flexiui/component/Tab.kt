@@ -295,11 +295,11 @@ class TabRow internal constructor(
         val currentWidth = indicatorWidth.orElse() ?: currentTabPosition.tabWidth
         val animatedWidh by animateDpAsState(
             targetValue = currentWidth,
-            animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
+            animationSpec = tween(TabIndicatorDuration, easing = FastOutSlowInEasing)
         )
         val animatedOffsetX by animateDpAsState(
             targetValue = currentTabPosition.calculateCenter(currentWidth),
-            animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
+            animationSpec = tween(TabIndicatorDuration, easing = FastOutSlowInEasing)
         )
         fillMaxWidth()
             .wrapContentSize(Alignment.BottomStart)
@@ -378,7 +378,7 @@ private class ScrollableTabData(private val scrollState: ScrollState, private va
                     coroutineScope.launch {
                         scrollState.animateScrollTo(
                             value = calculatedOffset,
-                            animationSpec = tween(DefaultTabIndicatorDuration, easing = FastOutSlowInEasing)
+                            animationSpec = tween(TabIndicatorDuration, easing = FastOutSlowInEasing)
                         )
                     }
             }
@@ -448,5 +448,6 @@ private fun defaultTabStyle() = TabStyle(
     indicatorShape = LocalShapes.current.tertiary
 )
 
-private const val DefaultTabIndicatorDuration = 250
 private val DefaultTabIndicatorHeight = 3.dp
+
+private const val TabIndicatorDuration = 250
