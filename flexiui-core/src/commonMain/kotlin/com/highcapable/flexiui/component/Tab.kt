@@ -264,7 +264,7 @@ data class TabPosition(val left: Dp, val width: Dp, val tabWidth: Dp) {
     fun calculateCenter(currentWidth: Dp) = left + width / 2 - currentWidth / 2
 }
 
-@Stable
+@Immutable
 class TabRow internal constructor(
     val selectedTabIndex: Int,
     val colors: TabColors,
@@ -360,7 +360,7 @@ class TabRow internal constructor(
     }
 }
 
-@Stable
+@Immutable
 private class ScrollableTabData(private val scrollState: ScrollState, private val coroutineScope: CoroutineScope) {
 
     private var selectedTab: Int? = null
