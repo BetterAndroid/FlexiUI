@@ -67,6 +67,7 @@ data class CheckBoxColors(
 
 @Immutable
 data class CheckBoxStyle(
+    val contentSpacing: Dp,
     val contentSize: Dp,
     val strokeSize: Dp,
     val pressedGain: Float,
@@ -84,7 +85,6 @@ fun CheckBox(
     style: CheckBoxStyle = CheckBox.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    contentSpacing: Dp = CheckBox.contentSpacing,
     content: @Composable () -> Unit = {}
 ) {
     val hovered by interactionSource.collectIsHoveredAsState()
@@ -121,7 +121,7 @@ fun CheckBox(
             )
         }
         Box(
-            modifier = Modifier.padding(start = contentSpacing)
+            modifier = Modifier.padding(start = style.contentSpacing)
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }
         ) { content() }
     }
@@ -136,10 +136,6 @@ object CheckBox {
         @Composable
         @ReadOnlyComposable
         get() = defaultCheckBoxStyle()
-    val contentSpacing: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultCheckBoxContentSpacing()
 }
 
 @Composable
@@ -153,6 +149,7 @@ private fun defaultCheckBoxColors() = CheckBoxColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultCheckBoxStyle() = CheckBoxStyle(
+    contentSpacing = LocalSizes.current.spacingSecondary,
     contentSize = DefaultContentSize,
     strokeSize = DefaultStrokeSize,
     pressedGain = DefaultPressedGain,
@@ -164,10 +161,6 @@ private fun defaultCheckBoxStyle() = CheckBoxStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultCheckBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultCheckBoxContentSpacing() = LocalSizes.current.spacingSecondary
 
 private val DefaultContentSize = 13.dp
 private val DefaultStrokeSize = 20.dp

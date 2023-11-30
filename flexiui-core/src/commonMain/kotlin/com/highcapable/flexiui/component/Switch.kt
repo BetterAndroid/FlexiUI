@@ -75,6 +75,7 @@ data class SwitchColors(
 @Immutable
 data class SwitchStyle(
     val padding: Dp,
+    val contentSpacing: Dp,
     val thumbRadius: Dp,
     val thumbGain: Float,
     val thumbShadowSize: Dp,
@@ -95,7 +96,6 @@ fun Switch(
     style: SwitchStyle = Switch.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    contentSpacing: Dp = Switch.contentSpacing,
     content: @Composable () -> Unit = {}
 ) {
     val thumbDiameter = style.thumbRadius * 2
@@ -182,7 +182,7 @@ fun Switch(
     }
     Row(modifier = Modifier.status(enabled).then(modifier)) {
         Box(
-            modifier = Modifier.padding(end = contentSpacing)
+            modifier = Modifier.padding(end = style.contentSpacing)
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }
         ) { content() }
         Track { Thumb() }
@@ -198,10 +198,6 @@ object Switch {
         @Composable
         @ReadOnlyComposable
         get() = defaultSwitchStyle()
-    val contentSpacing: Dp
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSwitchContentSpacing()
 }
 
 @Composable
@@ -215,6 +211,7 @@ private fun defaultSwitchColors() = SwitchColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultSwitchStyle() = SwitchStyle(
+    contentSpacing = LocalSizes.current.spacingSecondary,
     padding = DefaultSwitchPadding,
     thumbRadius = DefaultThumbRadius,
     thumbGain = DefaultThumbGain,
@@ -230,10 +227,6 @@ private fun defaultSwitchStyle() = SwitchStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultSwitchBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSwitchContentSpacing() = LocalSizes.current.spacingSecondary
 
 private val DefaultSwitchPadding = 3.dp
 
