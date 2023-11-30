@@ -33,6 +33,7 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.offset
@@ -61,6 +62,7 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.horizontal
 import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.clickable
 import kotlin.math.roundToInt
@@ -74,7 +76,7 @@ data class SwitchColors(
 
 @Immutable
 data class SwitchStyle(
-    val padding: Dp,
+    val padding: PaddingValues,
     val contentSpacing: Dp,
     val thumbRadius: Dp,
     val thumbGain: Float,
@@ -99,7 +101,7 @@ fun Switch(
     content: @Composable () -> Unit = {}
 ) {
     val thumbDiameter = style.thumbRadius * 2
-    val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter - style.padding * 2).toPx() }
+    val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter - style.padding.horizontal).toPx() }
     val halfWidth = maxOffsetX / 2
     val hovered by interactionSource.collectIsHoveredAsState()
     var dragging by remember { mutableStateOf(false) }
@@ -132,7 +134,7 @@ fun Switch(
             }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrNot(style.trackBorder, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
-                .padding(horizontal = style.padding),
+                .padding(style.padding),
             verticalAlignment = Alignment.CenterVertically,
             content = content
         )
@@ -211,8 +213,8 @@ private fun defaultSwitchColors() = SwitchColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultSwitchStyle() = SwitchStyle(
+    padding = PaddingValues(horizontal = DefaultSwitchPadding),
     contentSpacing = LocalSizes.current.spacingSecondary,
-    padding = DefaultSwitchPadding,
     thumbRadius = DefaultThumbRadius,
     thumbGain = DefaultThumbGain,
     thumbShadowSize = DefaultThumbShadowSize,
