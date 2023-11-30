@@ -26,3 +26,5 @@ package com.highcapable.flexiui.component
 // TODO: Scaffold, modeled after Scaffold in Material Design
 //       Also set the global background color to Scaffold
 //       Scaffold creates Surface
+
+// TODO: Linkage BetterAndroid SafeArea (SystemBarsController)

@@ -39,8 +39,6 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 
-// TODO: Linkage BetterAndroid SafeArea (SystemBarsController)
-
 @Immutable
 data class SurfaceColors(
     val contentColor: Color,
