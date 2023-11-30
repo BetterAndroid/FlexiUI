@@ -111,8 +111,8 @@ fun CircularProgressIndicator(
     min: Float = 0f,
     max: Float = 100f,
     indeterminate: Boolean = progress < min,
-    colors: ProgressIndicatorColors = ProgressIndicator.circularColors,
-    style: CircularIndicatorStyle = ProgressIndicator.circularStyle
+    colors: ProgressIndicatorColors = CircularProgressIndicator.colors,
+    style: CircularIndicatorStyle = CircularProgressIndicator.style
 ) {
     val diameter = style.radius * 2
     val stroke = with(LocalDensity.current) { Stroke(width = style.strokeWidth.toPx(), cap = style.strokeCap) }
@@ -195,8 +195,8 @@ fun LinearProgressIndicator(
     min: Float = 0f,
     max: Float = 100f,
     indeterminate: Boolean = progress < min,
-    colors: ProgressIndicatorColors = ProgressIndicator.linearColors,
-    style: LinearIndicatorStyle = ProgressIndicator.linearStyle
+    colors: ProgressIndicatorColors = LinearProgressIndicator.colors,
+    style: LinearIndicatorStyle = LinearProgressIndicator.style
 ) {
     @Composable
     fun Determinate() {
@@ -338,8 +338,8 @@ private fun DrawScope.drawLinearIndicator(
     }
 }
 
-object ProgressIndicator {
-    val circularColors: ProgressIndicatorColors
+object CircularProgressIndicator {
+    val colors: ProgressIndicatorColors
         @Composable
         @ReadOnlyComposable
         get() = LocalProgressIndicatorColors.current.copy(
@@ -348,7 +348,14 @@ object ProgressIndicator {
             backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orElse()
                 ?: defaultCircularIndicatorColors().backgroundColor
         )
-    val linearColors: ProgressIndicatorColors
+    val style: CircularIndicatorStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = defaultCircularIndicatorStyle()
+}
+
+object LinearProgressIndicator {
+    val colors: ProgressIndicatorColors
         @Composable
         @ReadOnlyComposable
         get() = LocalProgressIndicatorColors.current.copy(
@@ -357,11 +364,7 @@ object ProgressIndicator {
             backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orElse()
                 ?: defaultLinearIndicatorColors().backgroundColor
         )
-    val circularStyle: CircularIndicatorStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultCircularIndicatorStyle()
-    val linearStyle: LinearIndicatorStyle
+    val style: LinearIndicatorStyle
         @Composable
         @ReadOnlyComposable
         get() = defaultLinearIndicatorStyle()
@@ -369,7 +372,7 @@ object ProgressIndicator {
 
 internal val LocalProgressIndicatorColors = compositionLocalOf { DefaultProgressIndicatorColors }
 
-internal val DefaultProgressIndicatorColors = ProgressIndicatorColors(Color.Unspecified, Color.Unspecified)
+private val DefaultProgressIndicatorColors = ProgressIndicatorColors(Color.Unspecified, Color.Unspecified)
 
 @Composable
 @ReadOnlyComposable
