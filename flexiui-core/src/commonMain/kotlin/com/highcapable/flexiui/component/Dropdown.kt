@@ -311,17 +311,6 @@ fun DropdownMenuBox(
 }
 
 @Composable
-internal expect fun DropdownMenuMeasureBox(
-    menuMaxHeight: (Dp) -> Unit,
-    content: @Composable BoxScope.() -> Unit
-)
-
-@Stable
-interface DropdownMenuBoxScope : BoxWithConstraintsScope {
-    val menuMaxHeight: Dp
-}
-
-@Composable
 fun DropdownMenuItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -360,6 +349,17 @@ fun DropdownMenuItem(
             LocalTextStyle provides LocalTextStyle.current.copy(color = currentColor)
         ) { content() }
     }
+}
+
+@Composable
+internal expect fun DropdownMenuMeasureBox(
+    menuMaxHeight: (Dp) -> Unit,
+    content: @Composable BoxScope.() -> Unit
+)
+
+@Stable
+interface DropdownMenuBoxScope : BoxWithConstraintsScope {
+    val menuMaxHeight: Dp
 }
 
 @Composable
