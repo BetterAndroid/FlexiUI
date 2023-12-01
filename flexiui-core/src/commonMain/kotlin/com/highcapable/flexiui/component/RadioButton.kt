@@ -34,8 +34,9 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -118,7 +119,7 @@ fun RadioButton(
         }
         content?.also { content ->
             Row(modifier = Modifier.clickable(enabled = enabled, onClick = onClick)) {
-                Box(modifier = Modifier.width(style.contentSpacing))
+                Spacer(modifier = Modifier.padding(end = style.contentSpacing))
                 content()
             }
         }

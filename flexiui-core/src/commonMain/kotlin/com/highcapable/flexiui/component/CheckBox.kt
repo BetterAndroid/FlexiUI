@@ -33,8 +33,9 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -123,7 +124,7 @@ fun CheckBox(
         }
         content?.also { content ->
             Row(modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }) {
-                Box(modifier = Modifier.width(style.contentSpacing))
+                Spacer(modifier = Modifier.padding(end = style.contentSpacing))
                 content()
             }
         }

@@ -36,10 +36,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -187,7 +187,7 @@ fun Switch(
         content?.also { content ->
             Row(modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }) {
                 content()
-                Box(modifier = Modifier.width(style.contentSpacing))
+                Spacer(modifier = Modifier.padding(start = style.contentSpacing))
             }
         }
         Track { Thumb() }
