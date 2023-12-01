@@ -33,8 +33,9 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -84,7 +85,7 @@ fun RadioButton(
     style: RadioButtonStyle = RadioButton.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable () -> Unit = {}
+    content: @Composable (RowScope.() -> Unit)? = null
 ) {
     val contentDiameter = style.contentRadius * 2
     val strokeDiameter = style.strokeRadius * 2
@@ -115,10 +116,12 @@ fun RadioButton(
                     .background(colors.contentColor, style.shape)
             )
         }
-        Box(
-            modifier = Modifier.padding(start = style.contentSpacing)
-                .clickable(enabled = enabled, onClick = onClick)
-        ) { content() }
+        content?.also { content ->
+            Row(modifier = Modifier.clickable(enabled = enabled, onClick = onClick)) {
+                Box(modifier = Modifier.width(style.contentSpacing))
+                content()
+            }
+        }
     }
 }
 

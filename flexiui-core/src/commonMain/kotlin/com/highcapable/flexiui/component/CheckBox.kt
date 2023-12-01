@@ -32,8 +32,9 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -85,7 +86,7 @@ fun CheckBox(
     style: CheckBoxStyle = CheckBox.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable () -> Unit = {}
+    content: @Composable (RowScope.() -> Unit)? = null
 ) {
     val hovered by interactionSource.collectIsHoveredAsState()
     val pressed by interactionSource.collectIsPressedAsState()
@@ -120,10 +121,12 @@ fun CheckBox(
                 tint = colors.contentColor
             )
         }
-        Box(
-            modifier = Modifier.padding(start = style.contentSpacing)
-                .clickable(enabled = enabled) { onCheckedChange(!checked) }
-        ) { content() }
+        content?.also { content ->
+            Row(modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }) {
+                Box(modifier = Modifier.width(style.contentSpacing))
+                content()
+            }
+        }
     }
 }
 

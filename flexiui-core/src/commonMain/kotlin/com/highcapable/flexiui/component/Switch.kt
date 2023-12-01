@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -98,7 +99,7 @@ fun Switch(
     style: SwitchStyle = Switch.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable () -> Unit = {}
+    content: @Composable (RowScope.() -> Unit)? = null
 ) {
     val thumbDiameter = style.thumbRadius * 2
     val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter - style.padding.horizontal).toPx() }
@@ -183,10 +184,12 @@ fun Switch(
         )
     }
     Row(modifier = Modifier.status(enabled).then(modifier)) {
-        Box(
-            modifier = Modifier.padding(end = style.contentSpacing)
-                .clickable(enabled = enabled) { onCheckedChange(!checked) }
-        ) { content() }
+        content?.also { content ->
+            Row(modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }) {
+                content()
+                Box(modifier = Modifier.width(style.contentSpacing))
+            }
+        }
         Track { Thumb() }
     }
 }
