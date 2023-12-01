@@ -27,12 +27,14 @@ import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.extension.orElse
 import androidx.compose.foundation.clickable as foundationClickable
 import androidx.compose.foundation.selection.selectable as foundationSelectable
 import androidx.compose.foundation.selection.toggleable as foundationToggleable
@@ -133,8 +135,10 @@ object Interaction {
     val rippleColor: Color
         @Composable
         @ReadOnlyComposable
-        get() = defaultInteractionRippleColor()
+        get() = LocalRippleColor.current.orElse() ?: defaultInteractionRippleColor()
 }
+
+val LocalRippleColor = compositionLocalOf { Color.Unspecified }
 
 @Composable
 @ReadOnlyComposable
