@@ -182,7 +182,7 @@ internal fun withAreaBoxShape(
 @ReadOnlyComposable
 private fun defaultAreaBoxStyle() = AreaBoxStyle(
     padding = PaddingValues(LocalSizes.current.spacingPrimary),
-    shape = LocalShapes.current.primary,
+    shape = LocalAreaBoxShape.current,
     border = defaultAreaBoxBorder(),
     shadowSize = DefaultAreaBoxShadowSize
 )
