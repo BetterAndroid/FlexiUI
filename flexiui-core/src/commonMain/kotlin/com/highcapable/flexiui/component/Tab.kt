@@ -102,7 +102,7 @@ fun TabRow(
     modifier: Modifier = Modifier,
     colors: TabColors = Tab.colors,
     style: TabStyle = Tab.style,
-    indicator: @Composable TabRow.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
+    indicator: @Composable TabRowScope.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
 ) {
     TabStyleBox(modifier, colors, style) {
@@ -127,7 +127,7 @@ fun TabRow(
                     placeable.placeRelative(x = index * tabAverageWidth, y = 0)
                 }
                 subcompose(TabSlots.Indicator) {
-                    indicator(TabRow(selectedTabIndex, colors, style, tabPositions))
+                    indicator(TabRowImpl(selectedTabIndex, colors, style, tabPositions))
                 }.forEach {
                     it.measure(Constraints.fixed(tabRowWidth, tabRowHeight)).placeRelative(x = 0, y = 0)
                 }
@@ -143,7 +143,7 @@ fun ScrollableTabRow(
     colors: TabColors = Tab.colors,
     style: TabStyle = Tab.style,
     scrollState: ScrollState = rememberScrollState(),
-    indicator: @Composable TabRow.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
+    indicator: @Composable TabRowScope.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
 ) {
     TabStyleBox(modifier, colors, style) {
@@ -176,7 +176,7 @@ fun ScrollableTabRow(
                     tabLeft += placeables.width
                 }
                 subcompose(TabSlots.Indicator) {
-                    indicator(TabRow(selectedTabIndex, colors, style, tabPositions))
+                    indicator(TabRowImpl(selectedTabIndex, colors, style, tabPositions))
                 }.forEach {
                     it.measure(Constraints.fixed(layoutWidth, layoutHeight)).placeRelative(x = 0, y = 0)
                 }
@@ -265,27 +265,22 @@ data class TabPosition(val left: Dp, val width: Dp, val tabWidth: Dp) {
     fun calculateCenter(currentWidth: Dp) = left + width / 2 - currentWidth / 2
 }
 
-@Immutable
-class TabRow internal constructor(
-    val selectedTabIndex: Int,
-    val colors: TabColors,
-    val style: TabStyle,
-    val tabPositions: List<TabPosition>
-) {
+@Stable
+interface TabRowScope {
 
     @Composable
     fun TabIndicator(
         modifier: Modifier = Modifier,
-        color: Color = colors.indicatorColor,
-        height: Dp = style.indicatorHeight,
-        shape: Shape = style.indicatorShape
+        color: Color = impl.colors.indicatorColor,
+        height: Dp = impl.style.indicatorHeight,
+        shape: Shape = impl.style.indicatorShape
     ) {
         Box(modifier.height(height).background(color, shape))
     }
 
     fun Modifier.tabIndicatorOffset(
-        currentTabPosition: TabPosition = tabPositions[selectedTabIndex],
-        indicatorWidth: Dp = style.indicatorWidth
+        currentTabPosition: TabPosition = impl.tabPositions[impl.selectedTabIndex],
+        indicatorWidth: Dp = impl.style.indicatorWidth
     ) = composed(
         inspectorInfo = debugInspectorInfo {
             name = "tabIndicatorOffset"
@@ -310,8 +305,8 @@ class TabRow internal constructor(
 
     fun Modifier.pagerTabIndicatorOffset(
         pagerState: PagerState,
-        tabPositions: List<TabPosition> = this@TabRow.tabPositions,
-        indicatorWidth: Dp = style.indicatorWidth
+        tabPositions: List<TabPosition> = impl.tabPositions,
+        indicatorWidth: Dp = impl.style.indicatorWidth
     ) = composed(
         inspectorInfo = debugInspectorInfo {
             name = "pagerTabIndicatorOffset"
@@ -360,6 +355,17 @@ class TabRow internal constructor(
         }
     }
 }
+
+@Immutable
+private class TabRowImpl(
+    val selectedTabIndex: Int,
+    val colors: TabColors,
+    val style: TabStyle,
+    val tabPositions: List<TabPosition>
+) : TabRowScope
+
+@Stable
+private val TabRowScope.impl get() = this as? TabRowImpl? ?: error("Could not got TabRowScope's impl.")
 
 @Immutable
 private class ScrollableTabData(private val scrollState: ScrollState, private val coroutineScope: CoroutineScope) {

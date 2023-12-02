@@ -81,7 +81,7 @@ fun TopActionBar(
     style: ActionBarStyle? = null,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
-    actions: @Composable (BasicActionBar.() -> Unit)? = null
+    actions: @Composable (ActionBarScope.() -> Unit)? = null
 ) {
     BasicActionBar(
         type = ActionBarType.LARGE,
@@ -103,9 +103,9 @@ fun ActionBar(
     style: ActionBarStyle? = null,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
-    finishIcon: @Composable (BasicActionBar.() -> Unit)? = null,
-    navigationIcon: @Composable (BasicActionBar.() -> Unit)? = null,
-    actions: @Composable (BasicActionBar.() -> Unit)? = null
+    finishIcon: @Composable (ActionBarScope.() -> Unit)? = null,
+    navigationIcon: @Composable (ActionBarScope.() -> Unit)? = null,
+    actions: @Composable (ActionBarScope.() -> Unit)? = null
 ) {
     BasicActionBar(
         type = ActionBarType.MIDDLE,
@@ -128,15 +128,15 @@ private fun BasicActionBar(
     style: ActionBarStyle?,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)?,
-    finishIcon: @Composable (BasicActionBar.() -> Unit)?,
-    navigationIcon: @Composable (BasicActionBar.() -> Unit)?,
-    actions: @Composable (BasicActionBar.() -> Unit)?
+    finishIcon: @Composable (ActionBarScope.() -> Unit)?,
+    navigationIcon: @Composable (ActionBarScope.() -> Unit)?,
+    actions: @Composable (ActionBarScope.() -> Unit)?
 ) {
     CompositionLocalProvider(LocalActionBarType provides type) {
         val currentColors = colors ?: ActionBar.colors
         val currentStyle = style ?: ActionBar.style
         Box(modifier = modifier.padding(currentStyle.padding)) {
-            BasicActionBar(
+            ActionBarImpl(
                 type = type,
                 colors = currentColors,
                 style = currentStyle,
@@ -150,17 +150,8 @@ private fun BasicActionBar(
     }
 }
 
-@Immutable
-class BasicActionBar internal constructor(
-    private val type: ActionBarType,
-    private val colors: ActionBarColors,
-    private val style: ActionBarStyle,
-    private val titleText: @Composable () -> Unit,
-    private val subText: @Composable (() -> Unit)?,
-    private val finishIcon: @Composable (BasicActionBar.() -> Unit)?,
-    private val navigationIcon: @Composable (BasicActionBar.() -> Unit)?,
-    private val actions: @Composable (BasicActionBar.() -> Unit)?
-) {
+@Stable
+interface ActionBarScope {
 
     @Composable
     fun FinishIconButton(
@@ -210,7 +201,7 @@ class BasicActionBar internal constructor(
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         content: @Composable () -> Unit
     ) {
-        val iconInflateSize = this.style.actionIconSize + this.style.actionIconPadding
+        val iconInflateSize = impl.style.actionIconSize + impl.style.actionIconPadding
         IconButton(
             onClick = onClick,
             modifier = Modifier.size(iconInflateSize).then(modifier),
@@ -221,9 +212,22 @@ class BasicActionBar internal constructor(
             content = content
         )
     }
+}
+
+@Immutable
+private class ActionBarImpl(
+    val type: ActionBarType,
+    val colors: ActionBarColors,
+    val style: ActionBarStyle,
+    val titleText: @Composable () -> Unit,
+    val subText: @Composable (() -> Unit)?,
+    val finishIcon: @Composable (ActionBarScope.() -> Unit)?,
+    val navigationIcon: @Composable (ActionBarScope.() -> Unit)?,
+    val actions: @Composable (ActionBarScope.() -> Unit)?
+) : ActionBarScope {
 
     @Composable
-    internal fun Content() {
+    fun Content() {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val contentMaxWidth = maxWidth
             Row(
@@ -308,7 +312,10 @@ class BasicActionBar internal constructor(
 }
 
 @Stable
-internal enum class ActionBarType { LARGE, MIDDLE }
+private val ActionBarScope.impl get() = this as? ActionBarImpl? ?: error("Could not got ActionBarScope's impl.")
+
+@Stable
+private enum class ActionBarType { LARGE, MIDDLE }
 
 object ActionBar {
     val colors: ActionBarColors
