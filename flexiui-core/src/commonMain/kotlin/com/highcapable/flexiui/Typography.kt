@@ -26,6 +26,7 @@ package com.highcapable.flexiui
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
@@ -43,11 +44,13 @@ internal val LocalTypography = staticCompositionLocalOf { DefaultTypography }
 internal val DefaultTypography = Typography(
     titlePrimary = TextStyle(
         fontSize = 25.sp,
-        lineHeight = 1.5.em
+        lineHeight = 1.5.em,
+        fontWeight = FontWeight.Bold
     ),
     titleSecondary = TextStyle(
         fontSize = 18.sp,
-        lineHeight = 1.2.em
+        lineHeight = 1.2.em,
+        fontWeight = FontWeight.Bold
     ),
     subtitle = TextStyle(
         fontSize = 12.sp,
