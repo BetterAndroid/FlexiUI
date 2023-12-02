@@ -69,8 +69,8 @@ data class ActionBarStyle(
     val contentSpacing: Dp,
     val titleTextStyle: TextStyle,
     val subTextStyle: TextStyle,
+    val actionIconSize: Dp,
     val actionIconPadding: Dp,
-    val actionIconMaxSize: Dp,
     val actionContentMaxWidth: Dp
 )
 
@@ -210,7 +210,7 @@ class BasicActionBar internal constructor(
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         content: @Composable () -> Unit
     ) {
-        val iconInflateSize = this.style.actionIconMaxSize + this.style.actionIconPadding
+        val iconInflateSize = this.style.actionIconSize + this.style.actionIconPadding
         IconButton(
             onClick = onClick,
             modifier = Modifier.size(iconInflateSize).then(modifier),
@@ -300,7 +300,7 @@ class BasicActionBar internal constructor(
         content: @Composable () -> Unit
     ) {
         CompositionLocalProvider(
-            LocalIconStyle provides LocalIconStyle.current.copy(size = style.actionIconMaxSize, tint = color),
+            LocalIconStyle provides LocalIconStyle.current.copy(size = style.actionIconSize, tint = color),
             LocalTextStyle provides LocalTextStyle.current.merge(textStyle ?: LocalTextStyle.current).copy(color = color),
             content = content
         )
@@ -345,12 +345,12 @@ private fun defaultActionBarStyle() = ActionBarStyle(
         ActionBarType.MIDDLE -> LocalTypography.current.titleSecondary
     },
     subTextStyle = LocalTypography.current.subtitle,
-    actionContentMaxWidth = DefaultActionContentMaxWidth,
-    actionIconPadding = LocalSizes.current.spacingTertiary,
-    actionIconMaxSize = when (LocalActionBarType.current) {
+    actionIconSize = when (LocalActionBarType.current) {
         ActionBarType.LARGE -> LocalSizes.current.iconSizePrimary
         ActionBarType.MIDDLE -> LocalSizes.current.iconSizeSecondary
-    }
+    },
+    actionIconPadding = LocalSizes.current.spacingTertiary,
+    actionContentMaxWidth = DefaultActionContentMaxWidth
 )
 
 private val DefaultActionContentMaxWidth = 170.dp
