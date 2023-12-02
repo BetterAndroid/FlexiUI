@@ -44,11 +44,11 @@ fun Text(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     style: TextStyle = Text.style,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    softWrap: Boolean = !singleLine || maxLines > 1,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     Text(
@@ -71,11 +71,11 @@ fun Text(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     style: TextStyle = Text.style,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    softWrap: Boolean = !singleLine || maxLines > 1,
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
