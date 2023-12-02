@@ -48,20 +48,21 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
+import com.highcapable.flexiui.interaction.Interaction
+import com.highcapable.flexiui.interaction.RippleStyle
 import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.interaction.rippleToggleable
 
 @Immutable
 data class ButtonColors(
-    val rippleColor: Color,
     val contentColor: Color,
     val backgroundColor: Color
 )
 
 @Immutable
 data class ButtonStyle(
+    val rippleStyle: RippleStyle,
     val padding: PaddingValues,
     val shape: Shape,
     val border: BorderStroke
@@ -91,9 +92,9 @@ fun Button(
             style = style,
             then = modifier
         ).rippleClickable(
+            rippleStyle = style.rippleStyle,
             enabled = enabled,
             role = Role.Button,
-            rippleColor = colors.rippleColor,
             interactionSource = interactionSource,
             onClick = onClick
         )
@@ -132,8 +133,7 @@ fun IconButton(
             style = style,
             then = modifier
         ).rippleClickable(
-            rippleColor = colors.rippleColor,
-            bounded = false,
+            rippleStyle = style.rippleStyle,
             enabled = enabled,
             role = Role.Button,
             interactionSource = interactionSource,
@@ -162,8 +162,7 @@ fun IconToggleButton(
             then = modifier
         ).rippleToggleable(
             value = checked,
-            rippleColor = colors.rippleColor,
-            bounded = false,
+            rippleStyle = style.rippleStyle,
             onValueChange = onCheckedChange,
             enabled = enabled,
             role = Role.Checkbox,
@@ -197,10 +196,7 @@ object Button {
     val colors: ButtonColors
         @Composable
         @ReadOnlyComposable
-        get() = when (LocalInAreaBox.current) {
-            true -> defaultButtonInBoxColors()
-            else -> defaultButtonOutBoxColors()
-        }
+        get() = defaultButtonColors()
     val style: ButtonStyle
         @Composable
         @ReadOnlyComposable
@@ -220,31 +216,22 @@ object IconButton {
 
 @Composable
 @ReadOnlyComposable
-private fun defaultButtonInBoxColors() = ButtonColors(
-    rippleColor = LocalColors.current.themeSecondary,
-    contentColor = LocalColors.current.textPrimary,
-    backgroundColor = LocalColors.current.foregroundSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultButtonOutBoxColors() = ButtonColors(
-    rippleColor = LocalColors.current.foregroundSecondary,
-    contentColor = Color.White,
-    backgroundColor = LocalColors.current.themePrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultIconButtonColors() = ButtonColors(
-    rippleColor = LocalColors.current.themeSecondary,
-    contentColor = LocalIconTint.current.orElse() ?: LocalColors.current.themePrimary,
-    backgroundColor = Color.Transparent
-)
+private fun defaultButtonColors() =
+    when (LocalInAreaBox.current) {
+        true -> ButtonColors(
+            contentColor = LocalColors.current.textPrimary,
+            backgroundColor = LocalColors.current.foregroundSecondary
+        )
+        else -> ButtonColors(
+            contentColor = Color.White,
+            backgroundColor = LocalColors.current.themePrimary
+        )
+    }
 
 @Composable
 @ReadOnlyComposable
 private fun defaultButtonStyle() = ButtonStyle(
+    rippleStyle = defaultButtonRippleStyle(),
     padding = PaddingValues(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary
@@ -255,11 +242,27 @@ private fun defaultButtonStyle() = ButtonStyle(
 
 @Composable
 @ReadOnlyComposable
+private fun defaultIconButtonColors() = ButtonColors(
+    contentColor = LocalColors.current.themePrimary,
+    backgroundColor = Color.Transparent
+)
+
+@Composable
+@ReadOnlyComposable
 private fun defaultIconButtonStyle() = ButtonStyle(
+    rippleStyle = defaultButtonRippleStyle(),
     padding = PaddingValues(),
     shape = LocalShapes.current.tertiary,
     border = defaultButtonBorder()
 )
+
+@Composable
+@ReadOnlyComposable
+private fun defaultButtonRippleStyle() =
+    Interaction.rippleStyle.copy(color = when (LocalInAreaBox.current) {
+        true -> LocalColors.current.themeSecondary
+        else -> LocalColors.current.foregroundSecondary
+    })
 
 @Composable
 @ReadOnlyComposable

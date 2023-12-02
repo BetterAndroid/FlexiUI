@@ -26,6 +26,7 @@ package com.highcapable.flexiui.interaction
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -34,18 +35,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.extension.orElse
 import androidx.compose.foundation.clickable as foundationClickable
 import androidx.compose.foundation.selection.selectable as foundationSelectable
 import androidx.compose.foundation.selection.toggleable as foundationToggleable
 import androidx.compose.material.ripple.rememberRipple as materialRememberRipple
 
+@Immutable
+data class RippleStyle(
+    val bounded: Boolean,
+    val radius: Dp,
+    val color: Color
+)
+
 @Composable
-fun rememberRipple(
-    bounded: Boolean = true,
-    radius: Dp = Dp.Unspecified,
-    color: Color = Interaction.rippleColor
-) = materialRememberRipple(bounded, radius, color)
+fun rememberRipple(style: RippleStyle) = materialRememberRipple(style.bounded, style.radius, style.color)
 
 @Composable
 fun Modifier.clickable(
@@ -79,8 +82,7 @@ fun Modifier.selectable(
 
 @Composable
 fun Modifier.rippleClickable(
-    rippleColor: Color = Interaction.rippleColor,
-    bounded: Boolean = true,
+    rippleStyle: RippleStyle = Interaction.rippleStyle,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     enabled: Boolean = true,
     onClickLabel: String? = null,
@@ -89,7 +91,7 @@ fun Modifier.rippleClickable(
 ) = clickable(
     onClick = onClick,
     interactionSource = interactionSource,
-    indication = rememberRipple(bounded = bounded, color = rippleColor),
+    indication = rememberRipple(rippleStyle),
     enabled = enabled,
     onClickLabel = onClickLabel,
     role = role
@@ -98,8 +100,7 @@ fun Modifier.rippleClickable(
 @Composable
 fun Modifier.rippleToggleable(
     value: Boolean,
-    rippleColor: Color = Interaction.rippleColor,
-    bounded: Boolean = true,
+    rippleStyle: RippleStyle = Interaction.rippleStyle,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     enabled: Boolean = true,
     role: Role? = null,
@@ -107,7 +108,7 @@ fun Modifier.rippleToggleable(
 ) = toggleable(
     value = value,
     interactionSource = interactionSource,
-    indication = rememberRipple(bounded = bounded, color = rippleColor),
+    indication = rememberRipple(rippleStyle),
     enabled = enabled,
     role = role,
     onValueChange = onValueChange
@@ -116,8 +117,7 @@ fun Modifier.rippleToggleable(
 @Composable
 fun Modifier.rippleSelectable(
     selected: Boolean,
-    rippleColor: Color = Interaction.rippleColor,
-    bounded: Boolean = true,
+    rippleStyle: RippleStyle = Interaction.rippleStyle,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     enabled: Boolean = true,
     role: Role? = null,
@@ -125,21 +125,25 @@ fun Modifier.rippleSelectable(
 ) = selectable(
     selected = selected,
     interactionSource = interactionSource,
-    indication = rememberRipple(bounded = bounded, color = rippleColor),
+    indication = rememberRipple(rippleStyle),
     enabled = enabled,
     role = role,
     onClick = onClick
 )
 
 object Interaction {
-    val rippleColor: Color
+    val rippleStyle: RippleStyle
         @Composable
         @ReadOnlyComposable
-        get() = LocalRippleColor.current.orElse() ?: defaultInteractionRippleColor()
+        get() = LocalRippleStyle.current ?: defaultRippleStyle()
 }
 
-val LocalRippleColor = compositionLocalOf { Color.Unspecified }
+val LocalRippleStyle = compositionLocalOf<RippleStyle?> { null }
 
 @Composable
 @ReadOnlyComposable
-private fun defaultInteractionRippleColor() = LocalColors.current.themeSecondary
+private fun defaultRippleStyle() = RippleStyle(
+    bounded = true,
+    radius = Dp.Unspecified,
+    color = LocalColors.current.themeSecondary
+)

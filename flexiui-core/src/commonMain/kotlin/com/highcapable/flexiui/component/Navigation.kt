@@ -59,6 +59,7 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
+import com.highcapable.flexiui.interaction.Interaction
 import com.highcapable.flexiui.interaction.rippleClickable
 
 @Immutable
@@ -141,9 +142,9 @@ fun NavigationItem(
             .then(modifier)
             .background(animatedIndicatorColor)
             .rippleClickable(
+                rippleStyle = Interaction.rippleStyle.copy(color = currentColors.indicatorColor),
                 enabled = enabled,
                 role = Role.Tab,
-                rippleColor = currentColors.indicatorColor,
                 interactionSource = interactionSource,
                 onClick = onClick
             )
