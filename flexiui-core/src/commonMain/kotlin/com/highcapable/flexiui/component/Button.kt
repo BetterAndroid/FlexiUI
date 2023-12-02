@@ -243,6 +243,14 @@ private fun defaultButtonStyle() = ButtonStyle(
 
 @Composable
 @ReadOnlyComposable
+private fun defaultButtonRippleStyle() =
+    Interaction.rippleStyle.copy(color = when (LocalInAreaBox.current) {
+        true -> LocalColors.current.themeSecondary
+        else -> LocalColors.current.foregroundSecondary
+    })
+
+@Composable
+@ReadOnlyComposable
 private fun defaultIconButtonColors() = ButtonColors(
     contentColor = LocalIconTint.current.orElse() ?: LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
@@ -251,7 +259,7 @@ private fun defaultIconButtonColors() = ButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultIconButtonStyle() = ButtonStyle(
-    rippleStyle = defaultButtonRippleStyle(),
+    rippleStyle = defaultIconButtonRippleStyle(),
     padding = PaddingValues(),
     shape = LocalShapes.current.tertiary,
     border = defaultButtonBorder()
@@ -259,11 +267,7 @@ private fun defaultIconButtonStyle() = ButtonStyle(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultButtonRippleStyle() =
-    Interaction.rippleStyle.copy(color = when (LocalInAreaBox.current) {
-        true -> LocalColors.current.themeSecondary
-        else -> LocalColors.current.foregroundSecondary
-    })
+private fun defaultIconButtonRippleStyle() = Interaction.rippleStyle.copy(bounded = false)
 
 @Composable
 @ReadOnlyComposable
