@@ -95,6 +95,6 @@ private fun Modifier.defaultSizeFor(painter: Painter) = composed {
 
 @Composable
 @ReadOnlyComposable
-private fun defaultIconSize() = LocalSizes.current.iconSizeSecondary
+private fun defaultIconSize() = LocalSizes.current.iconSizePrimary
 
 private fun Size.isInfinite() = width.isInfinite() && height.isInfinite()
