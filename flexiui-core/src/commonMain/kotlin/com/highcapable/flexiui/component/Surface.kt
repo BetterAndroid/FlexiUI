@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
@@ -54,6 +55,7 @@ fun Surface(
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
+        LocalInSurface provides true,
         LocalColors provides LocalColors.current.copy(
             backgroundPrimary = colors.backgroundColor,
             textPrimary = colors.contentColor
@@ -89,6 +91,8 @@ object Surface {
         @ReadOnlyComposable
         get() = defaultSurfacePadding()
 }
+
+internal val LocalInSurface = compositionLocalOf { false }
 
 @Composable
 @ReadOnlyComposable
