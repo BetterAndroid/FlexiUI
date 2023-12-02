@@ -26,6 +26,7 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
@@ -34,26 +35,37 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.isUnspecified
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toolingGraphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.isSpecified
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.orElse
+
+@Immutable
+data class IconStyle(
+    val size: Dp,
+    val tint: Color
+)
 
 @Composable
 fun Icon(
     imageVector: ImageVector,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
-    tint: Color = LocalIconTint.current
+    style: IconStyle = Icon.style
 ) {
     val painter = rememberVectorPainter(imageVector)
-    Icon(painter, contentDescription, modifier, tint)
+    Icon(painter, contentDescription, modifier, style)
 }
 
 @Composable
@@ -61,10 +73,10 @@ fun Icon(
     painter: Painter,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
-    tint: Color = LocalIconTint.current
+    style: IconStyle = Icon.style
 ) {
     // TODO: b/149735981 semantics for content description
-    val colorFilter = if (tint == Color.Unspecified) null else ColorFilter.tint(tint)
+    val colorFilter = if (style.tint.isUnspecified) null else ColorFilter.tint(style.tint)
     val semantics = if (contentDescription != null)
         Modifier.semantics {
             this.contentDescription = contentDescription
@@ -73,7 +85,7 @@ fun Icon(
     else Modifier
     Box(
         modifier = modifier.toolingGraphicsLayer()
-            .defaultSizeFor(painter)
+            .defaultSizeFor(style, painter)
             .paint(
                 painter,
                 colorFilter = colorFilter,
@@ -83,15 +95,38 @@ fun Icon(
     )
 }
 
-internal val LocalIconTint = compositionLocalOf { Color.Unspecified }
-
-private fun Modifier.defaultSizeFor(painter: Painter) = composed {
-    then(
-        if (painter.intrinsicSize == Size.Unspecified || painter.intrinsicSize.isInfinite())
-            Modifier.size(defaultIconSize())
-        else Modifier
-    )
+private fun Modifier.defaultSizeFor(
+    style: IconStyle,
+    painter: Painter
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "defaultSizeFor"
+        properties["style"] = style
+        properties["painter"] = painter
+    }
+) {
+    then(when {
+        style.size.isSpecified ||
+            painter.intrinsicSize == Size.Unspecified ||
+            painter.intrinsicSize.isInfinite() ->
+            Modifier.size(style.size.orElse() ?: defaultIconSize())
+        else -> Modifier
+    })
 }
+
+object Icon {
+    val style: IconStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalIconStyle.current
+}
+
+internal val LocalIconStyle = compositionLocalOf { DefaultIconStyle }
+
+private val DefaultIconStyle = IconStyle(
+    size = Dp.Unspecified,
+    tint = Color.Unspecified
+)
 
 @Composable
 @ReadOnlyComposable

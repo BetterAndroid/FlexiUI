@@ -667,9 +667,11 @@ private fun InnerDecorationBox(
     content: @Composable () -> Unit
 ) {
     Box(modifier = Modifier.textFieldPadding(style, fitStart = header, fitEnd = footer)) {
-        CompositionLocalProvider(LocalIconTint provides decorTint) {
-            content()
-        }
+        CompositionLocalProvider(
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = decorTint),
+            LocalTextStyle provides LocalTextStyle.current.copy(color = decorTint),
+            content = content
+        )
     }
 }
 
@@ -683,7 +685,7 @@ private fun TextFieldDecorationBox(
     val animatedAlpha by animateFloatAsState(if (value.isNotEmpty()) 0f else 1f)
     Box(modifier = Modifier.alpha(animatedAlpha)) {
         CompositionLocalProvider(
-            LocalIconTint provides placeholderContentColor,
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = placeholderContentColor),
             LocalTextStyle provides LocalTextStyle.current.copy(color = placeholderContentColor),
             content = placeholder
         )

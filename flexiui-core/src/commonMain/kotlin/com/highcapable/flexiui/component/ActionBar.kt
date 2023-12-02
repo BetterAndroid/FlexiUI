@@ -261,7 +261,7 @@ class BasicActionBar internal constructor(
         content: @Composable () -> Unit
     ) {
         CompositionLocalProvider(
-            LocalIconTint provides color,
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = color),
             LocalTextStyle provides LocalTextStyle.current.merge(textStyle ?: LocalTextStyle.current).copy(color = color),
             content = content
         )

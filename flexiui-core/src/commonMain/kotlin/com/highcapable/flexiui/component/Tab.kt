@@ -210,10 +210,11 @@ fun Tab(
     val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: Tab.style.contentPadding
     val currentContentShape = contentShape ?: LocalTabContentShape.current ?: Tab.style.contentShape
     val contentColor by animateColorAsState(if (selected) currentSelectedContentColor else currentUnselectedContentColor)
-    val contentStyle = LocalTextStyle.current.copy(color = contentColor)
+    val contentIconStyle = LocalIconStyle.current.copy(tint = contentColor)
+    val contentTextStyle = LocalTextStyle.current.copy(color = contentColor)
     CompositionLocalProvider(
-        LocalIconTint provides contentColor,
-        LocalTextStyle provides contentStyle
+        LocalIconStyle provides contentIconStyle,
+        LocalTextStyle provides contentTextStyle
     ) {
         Row(
             modifier = Modifier.status(enabled)

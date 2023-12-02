@@ -221,7 +221,7 @@ fun DropdownList(
                     rotationZ = animatedDirection
                 }.size(style.endIconSize),
                 imageVector = Icons.Dropdown,
-                tint = animatedEndIconTint
+                style = Icon.style.copy(tint = animatedEndIconTint)
             )
         }
         DropdownMenu(
@@ -345,7 +345,7 @@ fun DropdownMenuItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CompositionLocalProvider(
-            LocalIconTint provides currentColor,
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = currentColor),
             LocalTextStyle provides LocalTextStyle.current.copy(color = currentColor)
         ) { content() }
     }

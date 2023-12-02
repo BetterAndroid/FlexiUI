@@ -119,7 +119,7 @@ fun CheckBox(
                         scaleY = animatedContentLayer
                     ),
                 imageVector = Icons.CheckMark,
-                tint = colors.contentColor
+                style = Icon.style.copy(tint = colors.contentColor)
             )
         }
         content?.also { content ->

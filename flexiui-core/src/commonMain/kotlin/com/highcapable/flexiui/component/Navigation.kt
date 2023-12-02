@@ -135,7 +135,8 @@ fun NavigationItem(
     val currentContentShape = contentShape ?: LocalNavigationContentShape.current ?: Navigation.style.contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
     val animatedContentColor by animateColorAsState(if (selected) currentColors.selectedContentColor else currentColors.unselectedContentColor)
-    val currentContentStyle = LocalTextStyle.current.copy(color = animatedContentColor)
+    val currentIconStyle = LocalIconStyle.current.copy(tint = animatedContentColor)
+    val currentTextStyle = LocalTextStyle.current.copy(color = animatedContentColor)
     Box(
         modifier = Modifier.status(enabled)
             .clip(currentContentShape)
@@ -151,8 +152,8 @@ fun NavigationItem(
             .padding(currentContentPadding)
     ) {
         CompositionLocalProvider(
-            LocalIconTint provides animatedContentColor,
-            LocalTextStyle provides currentContentStyle
+            LocalIconStyle provides currentIconStyle,
+            LocalTextStyle provides currentTextStyle
         ) {
             if (currentHorizontal)
                 Row(

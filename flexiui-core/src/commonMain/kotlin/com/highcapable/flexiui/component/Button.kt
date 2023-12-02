@@ -101,7 +101,7 @@ fun Button(
         )
     ) {
         CompositionLocalProvider(
-            LocalIconTint provides colors.contentColor,
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = colors.contentColor),
             LocalTextStyle provides localTextStyle,
             LocalProgressIndicatorColors provides localProgressIndicatorColors
         ) {
@@ -141,7 +141,12 @@ fun IconButton(
             onClick = onClick
         ).padding(style.padding),
         contentAlignment = Alignment.Center,
-    ) { CompositionLocalProvider(LocalIconTint provides colors.contentColor, content = content) }
+    ) {
+        CompositionLocalProvider(
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = colors.contentColor),
+            content = content
+        )
+    }
 }
 
 @Composable
@@ -170,7 +175,12 @@ fun IconToggleButton(
             interactionSource = interactionSource
         ).padding(style.padding),
         contentAlignment = Alignment.Center
-    ) { CompositionLocalProvider(LocalIconTint provides colors.contentColor, content = content) }
+    ) {
+        CompositionLocalProvider(
+            LocalIconStyle provides LocalIconStyle.current.copy(tint = colors.contentColor),
+            content = content
+        )
+    }
 }
 
 private fun Modifier.button(
@@ -252,7 +262,7 @@ private fun defaultButtonRippleStyle() =
 @Composable
 @ReadOnlyComposable
 private fun defaultIconButtonColors() = ButtonColors(
-    contentColor = LocalIconTint.current.orElse() ?: LocalColors.current.themePrimary,
+    contentColor = LocalIconStyle.current.tint.orElse() ?: LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
 )
 
