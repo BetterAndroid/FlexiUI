@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
 import androidx.compose.foundation.clickable as foundationClickable
+import androidx.compose.foundation.combinedClickable as foundationCombinedClickable
 import androidx.compose.foundation.selection.selectable as foundationSelectable
 import androidx.compose.foundation.selection.toggleable as foundationToggleable
 import androidx.compose.material.ripple.rememberRipple as materialRememberRipple
@@ -59,6 +60,19 @@ fun Modifier.clickable(
     role: Role? = null,
     onClick: () -> Unit
 ) = foundationClickable(interactionSource, indication, enabled, onClickLabel, role, onClick)
+
+@Composable
+fun Modifier.combinedClickable(
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    enabled: Boolean = true,
+    onClickLabel: String? = null,
+    role: Role? = null,
+    onLongClickLabel: String? = null,
+    onLongClick: (() -> Unit)? = null,
+    onDoubleClick: (() -> Unit)? = null,
+    onClick: () -> Unit
+) = foundationCombinedClickable(interactionSource, indication, enabled, onClickLabel, role, onLongClickLabel, onLongClick, onDoubleClick, onClick)
 
 @Composable
 fun Modifier.toggleable(
@@ -95,6 +109,29 @@ fun Modifier.rippleClickable(
     enabled = enabled,
     onClickLabel = onClickLabel,
     role = role
+)
+
+@Composable
+fun Modifier.rippleCombinedClickable(
+    rippleStyle: RippleStyle = Interaction.rippleStyle,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    enabled: Boolean = true,
+    onClickLabel: String? = null,
+    role: Role? = null,
+    onLongClickLabel: String? = null,
+    onLongClick: (() -> Unit)? = null,
+    onDoubleClick: (() -> Unit)? = null,
+    onClick: () -> Unit
+) = combinedClickable(
+    interactionSource = interactionSource,
+    indication = rememberRipple(rippleStyle),
+    enabled = enabled,
+    onClickLabel = onClickLabel,
+    role = role,
+    onLongClickLabel = onLongClickLabel,
+    onLongClick = onLongClick,
+    onDoubleClick = onDoubleClick,
+    onClick = onClick
 )
 
 @Composable
