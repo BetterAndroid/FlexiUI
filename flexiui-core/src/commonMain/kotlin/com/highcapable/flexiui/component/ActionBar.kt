@@ -24,6 +24,7 @@
 package com.highcapable.flexiui.component
 
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -41,6 +42,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -102,7 +104,7 @@ fun ActionBar(
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
     finishIcon: @Composable (BasicActionBar.() -> Unit)? = null,
-    navigationIcon: @Composable BasicActionBar.() -> Unit,
+    navigationIcon: @Composable (BasicActionBar.() -> Unit)? = null,
     actions: @Composable (BasicActionBar.() -> Unit)? = null
 ) {
     BasicActionBar(
@@ -110,10 +112,10 @@ fun ActionBar(
         modifier = modifier,
         colors = colors,
         style = style,
-        finishIcon = finishIcon,
-        navigationIcon = navigationIcon,
         titleText = titleText,
         subText = subText,
+        finishIcon = finishIcon,
+        navigationIcon = navigationIcon,
         actions = actions
     )
 }
@@ -161,25 +163,61 @@ class BasicActionBar internal constructor(
 ) {
 
     @Composable
-    fun FinishIcon(onClick: () -> Unit) {
-        ActionIcon(onClick = onClick) { Icon(imageVector = Icons.FinishClose) }
-    }
-
-    @Composable
-    fun NavigationIcon(onClick: () -> Unit) {
-        ActionIcon(onClick = onClick) { Icon(imageVector = Icons.ArrowNaviUp) }
-    }
-
-    @Composable
-    fun ActionIcon(
+    fun FinishIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
+        colors: ButtonColors = IconButton.colors,
+        style: ButtonStyle = IconButton.style,
+        enabled: Boolean = true,
+        interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    ) {
+        ActionIconButton(
+            onClick = onClick,
+            modifier = modifier,
+            colors = colors,
+            style = style,
+            enabled = enabled,
+            interactionSource = interactionSource
+        ) { Icon(imageVector = Icons.FinishClose) }
+    }
+
+    @Composable
+    fun NavigationIconButton(
+        onClick: () -> Unit,
+        modifier: Modifier = Modifier,
+        colors: ButtonColors = IconButton.colors,
+        style: ButtonStyle = IconButton.style,
+        enabled: Boolean = true,
+        interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    ) {
+        ActionIconButton(
+            onClick = onClick,
+            modifier = modifier,
+            colors = colors,
+            style = style,
+            enabled = enabled,
+            interactionSource = interactionSource
+        ) { Icon(imageVector = Icons.ArrowNaviUp) }
+    }
+
+    @Composable
+    fun ActionIconButton(
+        onClick: () -> Unit,
+        modifier: Modifier = Modifier,
+        colors: ButtonColors = IconButton.colors,
+        style: ButtonStyle = IconButton.style,
+        enabled: Boolean = true,
+        interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         content: @Composable () -> Unit
     ) {
-        val iconInflateSize = style.actionIconMaxSize + style.actionIconPadding
+        val iconInflateSize = this.style.actionIconMaxSize + this.style.actionIconPadding
         IconButton(
             onClick = onClick,
             modifier = Modifier.size(iconInflateSize).then(modifier),
+            colors = colors,
+            style = style,
+            enabled = enabled,
+            interactionSource = interactionSource,
             content = content
         )
     }
@@ -210,7 +248,7 @@ class BasicActionBar internal constructor(
 
     @Composable
     private fun StartContent() {
-        if (type == ActionBarType.MIDDLE)
+        if (type == ActionBarType.MIDDLE && (finishIcon != null || navigationIcon != null))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(style.contentSpacing),
                 verticalAlignment = Alignment.CenterVertically
