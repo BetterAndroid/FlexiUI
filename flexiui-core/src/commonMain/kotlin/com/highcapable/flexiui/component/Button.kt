@@ -48,6 +48,7 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.borderOrNot
+import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.Interaction
 import com.highcapable.flexiui.interaction.RippleStyle
@@ -243,7 +244,7 @@ private fun defaultButtonStyle() = ButtonStyle(
 @Composable
 @ReadOnlyComposable
 private fun defaultIconButtonColors() = ButtonColors(
-    contentColor = LocalColors.current.themePrimary,
+    contentColor = LocalIconTint.current.orElse() ?: LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
 )
 
