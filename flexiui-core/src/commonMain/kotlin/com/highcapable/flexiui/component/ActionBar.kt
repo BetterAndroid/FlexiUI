@@ -179,8 +179,9 @@ class BasicActionBar internal constructor(
         val iconInflateSize = style.actionIconMaxSize + style.actionIconPadding
         IconButton(
             onClick = onClick,
-            modifier = Modifier.size(iconInflateSize).then(modifier)
-        ) { Box(modifier = Modifier.size(style.actionIconMaxSize)) { content() } }
+            modifier = Modifier.size(iconInflateSize).then(modifier),
+            content = content
+        )
     }
 
     @Composable
@@ -261,7 +262,7 @@ class BasicActionBar internal constructor(
         content: @Composable () -> Unit
     ) {
         CompositionLocalProvider(
-            LocalIconStyle provides LocalIconStyle.current.copy(tint = color),
+            LocalIconStyle provides LocalIconStyle.current.copy(size = style.actionIconMaxSize, tint = color),
             LocalTextStyle provides LocalTextStyle.current.merge(textStyle ?: LocalTextStyle.current).copy(color = color),
             content = content
         )
