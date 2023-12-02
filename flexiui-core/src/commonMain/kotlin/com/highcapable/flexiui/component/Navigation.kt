@@ -55,7 +55,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.extension.orElse
@@ -239,8 +238,8 @@ private fun defaultNavigationColors() = NavigationColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultNavigationStyle() = NavigationStyle(
-    padding = when (LocalInAreaBox.current) {
-        true -> PaddingValues(0.dp)
+    padding = when {
+        LocalInSurface.current || LocalInAreaBox.current -> PaddingValues()
         else -> PaddingValues(
             horizontal = LocalSizes.current.spacingPrimary,
             vertical = LocalSizes.current.spacingSecondary
