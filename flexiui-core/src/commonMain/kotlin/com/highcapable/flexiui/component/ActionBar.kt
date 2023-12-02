@@ -268,7 +268,7 @@ private class ActionBarImpl(
     private fun CenterContent() {
         Column(
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(style.contentSpacing / 2)
+            verticalArrangement = Arrangement.spacedBy(style.contentSpacing / VerticalContentSpacingRatio)
         ) {
             ContentStyle(
                 color = colors.titleTextColor,
@@ -361,3 +361,5 @@ private fun defaultActionBarStyle() = ActionBarStyle(
 )
 
 private val DefaultActionContentMaxWidth = 170.dp
+
+private const val VerticalContentSpacingRatio = 1.6f

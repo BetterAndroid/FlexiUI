@@ -181,7 +181,7 @@ fun NavigationItem(
                 ) {
                     icon()
                     text?.also { content ->
-                        Box(modifier = Modifier.height(currentContentSpacing / 2))
+                        Box(modifier = Modifier.height(currentContentSpacing / VerticalContentSpacingRatio))
                         content()
                     }
                 }
@@ -254,3 +254,5 @@ private fun defaultNavigationStyle() = NavigationStyle(
     ),
     contentShape = withAreaBoxShape()
 )
+
+private const val VerticalContentSpacingRatio = 1.6f
