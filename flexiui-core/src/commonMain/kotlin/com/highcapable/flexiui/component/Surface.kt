@@ -49,7 +49,7 @@ data class SurfaceColors(
 @Composable
 fun Surface(
     modifier: Modifier = Modifier,
-    initializer: Modifier.() -> Modifier = { Modifier },
+    initializer: @Composable Modifier.() -> Modifier = { Modifier },
     colors: SurfaceColors = Surface.colors,
     padding: PaddingValues = Surface.padding,
     content: @Composable BoxScope.() -> Unit
@@ -67,7 +67,7 @@ private fun Modifier.surface(
     colors: SurfaceColors,
     padding: PaddingValues,
     then: Modifier,
-    initializer: Modifier.() -> Modifier
+    initializer: @Composable Modifier.() -> Modifier
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "surface"

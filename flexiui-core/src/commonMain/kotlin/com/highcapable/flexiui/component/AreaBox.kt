@@ -66,7 +66,7 @@ data class AreaBoxStyle(
 @Composable
 fun AreaBox(
     modifier: Modifier = Modifier,
-    initializer: Modifier.() -> Modifier = { Modifier },
+    initializer: @Composable Modifier.() -> Modifier = { Modifier },
     color: Color = AreaBox.color,
     style: AreaBoxStyle = AreaBox.style,
     contentAlignment: Alignment = Alignment.TopStart,
@@ -89,7 +89,7 @@ fun AreaBox(
 @Composable
 fun AreaRow(
     modifier: Modifier = Modifier,
-    initializer: Modifier.() -> Modifier = { Modifier },
+    initializer: @Composable Modifier.() -> Modifier = { Modifier },
     color: Color = AreaBox.color,
     style: AreaBoxStyle = AreaBox.style,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
@@ -112,7 +112,7 @@ fun AreaRow(
 @Composable
 fun AreaColumn(
     modifier: Modifier = Modifier,
-    initializer: Modifier.() -> Modifier = { Modifier },
+    initializer: @Composable Modifier.() -> Modifier = { Modifier },
     color: Color = AreaBox.color,
     style: AreaBoxStyle = AreaBox.style,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
@@ -136,7 +136,7 @@ private fun Modifier.areaBox(
     color: Color,
     style: AreaBoxStyle,
     then: Modifier,
-    initializer: Modifier.() -> Modifier
+    initializer: @Composable Modifier.() -> Modifier
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "areaBox"
