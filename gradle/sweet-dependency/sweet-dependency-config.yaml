@@ -16,7 +16,7 @@ plugins:
     version: 1.9.20
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.6.0-dev1276
+    version: 1.6.0-dev1296
   com.android.application:
     alias: android-application
     version: 8.1.4
