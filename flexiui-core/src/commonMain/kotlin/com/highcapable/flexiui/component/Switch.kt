@@ -33,7 +33,6 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -62,8 +61,8 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.horizontal
 import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.clickable
 import kotlin.math.roundToInt
@@ -77,7 +76,7 @@ data class SwitchColors(
 
 @Immutable
 data class SwitchStyle(
-    val padding: PaddingValues,
+    val padding: ComponentPadding,
     val contentSpacing: Dp,
     val thumbRadius: Dp,
     val thumbGain: Float,
@@ -216,7 +215,7 @@ private fun defaultSwitchColors() = SwitchColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultSwitchStyle() = SwitchStyle(
-    padding = PaddingValues(horizontal = DefaultSwitchPadding),
+    padding = ComponentPadding(horizontal = DefaultSwitchPadding),
     contentSpacing = LocalSizes.current.spacingSecondary,
     thumbRadius = DefaultThumbRadius,
     thumbGain = DefaultThumbGain,

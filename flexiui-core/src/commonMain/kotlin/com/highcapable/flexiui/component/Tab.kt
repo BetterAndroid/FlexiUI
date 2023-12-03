@@ -73,7 +73,7 @@ import androidx.compose.ui.unit.lerp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.horizontal
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.rippleClickable
@@ -89,7 +89,7 @@ data class TabColors(
 
 @Immutable
 data class TabStyle(
-    val contentPadding: PaddingValues,
+    val contentPadding: ComponentPadding,
     val contentShape: Shape,
     val indicatorWidth: Dp,
     val indicatorHeight: Dp,
@@ -445,7 +445,7 @@ private fun defaultTabColors() = TabColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultTabStyle() = TabStyle(
-    contentPadding = PaddingValues(
+    contentPadding = ComponentPadding(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary
     ),

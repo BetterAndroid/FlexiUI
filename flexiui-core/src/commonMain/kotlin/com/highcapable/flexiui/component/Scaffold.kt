@@ -26,7 +26,6 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -34,16 +33,14 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.highcapable.flexiui.extension.bottom
-import com.highcapable.flexiui.extension.calculateEnd
-import com.highcapable.flexiui.extension.calculateStart
-import com.highcapable.flexiui.extension.top
+import androidx.compose.ui.unit.dp
+import com.highcapable.flexiui.extension.ComponentPadding
 
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
     colors: SurfaceColors = Surface.colors,
-    padding: PaddingValues = Surface.padding,
+    padding: ComponentPadding = Surface.padding,
     fitsSystemBars: Boolean = true,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
@@ -52,15 +49,8 @@ fun Scaffold(
     navigation: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    val outBoxPadding = PaddingValues(
-        start = padding.calculateStart(),
-        end = padding.calculateEnd(),
-        bottom = padding.bottom
-    )
-    val inBoxPadding = PaddingValues(
-        top = padding.top,
-        bottom = padding.bottom
-    )
+    val outBoxPadding = padding.copy(top = 0.dp)
+    val inBoxPadding = padding.copy(start = 0.dp, end = 0.dp)
     Surface(
         modifier = if (fitsSystemBars)
             Modifier.systemBarsPadding()

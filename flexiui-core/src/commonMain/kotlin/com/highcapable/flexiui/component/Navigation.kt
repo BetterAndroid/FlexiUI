@@ -57,6 +57,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.Interaction
@@ -74,7 +75,7 @@ data class NavigationColors(
 data class NavigationStyle(
     val boxStyle: AreaBoxStyle,
     val contentSpacing: Dp,
-    val contentPadding: PaddingValues,
+    val contentPadding: ComponentPadding,
     val contentShape: Shape
 )
 
@@ -248,7 +249,7 @@ private fun defaultNavigationColors() = NavigationColors(
 private fun defaultNavigationStyle() = NavigationStyle(
     boxStyle = AreaBox.style,
     contentSpacing = LocalSizes.current.spacingSecondary,
-    contentPadding = PaddingValues(
+    contentPadding = ComponentPadding(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary
     ),

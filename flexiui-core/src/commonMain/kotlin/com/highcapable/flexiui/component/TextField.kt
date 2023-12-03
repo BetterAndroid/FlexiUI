@@ -37,7 +37,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -88,9 +87,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.calculateEnd
-import com.highcapable.flexiui.extension.calculateStart
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.solidColor
 import com.highcapable.flexiui.extension.status
@@ -122,7 +120,7 @@ data class AutoCompleteBoxColors(
 @Immutable
 data class TextFieldStyle(
     val textStyle: TextStyle,
-    val padding: PaddingValues,
+    val padding: ComponentPadding,
     val shape: Shape,
     val borderInactive: BorderStroke,
     val borderActive: BorderStroke,
@@ -742,8 +740,8 @@ private fun Modifier.textFieldPadding(
 ) = composed {
     when {
         !fitStart && !fitEnd -> padding(style.padding)
-        fitStart -> padding(start = style.padding.calculateStart())
-        fitEnd -> padding(end = style.padding.calculateEnd())
+        fitStart -> padding(start = style.padding.start)
+        fitEnd -> padding(end = style.padding.end)
         else -> this
     }
 }
@@ -784,7 +782,7 @@ private fun defaultTextFieldColors() = TextFieldColors(
 @ReadOnlyComposable
 private fun defaultTextFieldStyle() = TextFieldStyle(
     textStyle = LocalTextStyle.current,
-    padding = PaddingValues(LocalSizes.current.spacingSecondary),
+    padding = ComponentPadding(LocalSizes.current.spacingSecondary),
     shape = withAreaBoxShape(),
     borderInactive = defaultTextFieldInactiveBorder(),
     borderActive = defaultTextFieldActiveBorder(),
@@ -800,4 +798,4 @@ private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.b
 private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
 
 private val TextDecorIconSize = 24.dp
-private val TextDecorIconPadding = PaddingValues(2.dp)
+private val TextDecorIconPadding = ComponentPadding(2.dp)

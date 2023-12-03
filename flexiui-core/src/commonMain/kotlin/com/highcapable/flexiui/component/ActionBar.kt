@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.LocalTypography
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.ArrowNaviUp
 import com.highcapable.flexiui.resources.icon.FinishClose
@@ -65,7 +65,7 @@ data class ActionBarColors(
 
 @Immutable
 data class ActionBarStyle(
-    val padding: PaddingValues,
+    val padding: ComponentPadding,
     val contentSpacing: Dp,
     val titleTextStyle: TextStyle,
     val subTextStyle: TextStyle,
@@ -343,8 +343,8 @@ private fun defaultActionBarColors() = ActionBarColors(
 private fun defaultActionBarStyle() = ActionBarStyle(
     padding = when {
         LocalInSurface.current || LocalInAreaBox.current ->
-            PaddingValues(vertical = LocalSizes.current.spacingPrimary)
-        else -> PaddingValues(LocalSizes.current.spacingPrimary)
+            ComponentPadding(vertical = LocalSizes.current.spacingPrimary)
+        else -> ComponentPadding(LocalSizes.current.spacingPrimary)
     },
     contentSpacing = LocalSizes.current.spacingSecondary,
     titleTextStyle = when (LocalActionBarType.current) {

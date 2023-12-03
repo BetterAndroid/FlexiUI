@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -53,11 +52,12 @@ import com.highcapable.flexiui.DefaultShapes
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.borderOrNot
 
 @Immutable
 data class AreaBoxStyle(
-    val padding: PaddingValues,
+    val padding: ComponentPadding,
     val shape: Shape,
     val border: BorderStroke,
     val shadowSize: Dp
@@ -181,7 +181,7 @@ internal fun withAreaBoxShape(
 @Composable
 @ReadOnlyComposable
 private fun defaultAreaBoxStyle() = AreaBoxStyle(
-    padding = PaddingValues(LocalSizes.current.spacingPrimary),
+    padding = ComponentPadding(LocalSizes.current.spacingPrimary),
     shape = LocalAreaBoxShape.current,
     border = defaultAreaBoxBorder(),
     shadowSize = DefaultAreaBoxShadowSize

@@ -27,7 +27,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -47,6 +46,7 @@ import androidx.compose.ui.semantics.Role
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.borderOrNot
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.status
@@ -64,7 +64,7 @@ data class ButtonColors(
 @Immutable
 data class ButtonStyle(
     val rippleStyle: RippleStyle,
-    val padding: PaddingValues,
+    val padding: ComponentPadding,
     val shape: Shape,
     val border: BorderStroke
 )
@@ -243,7 +243,7 @@ private fun defaultButtonColors() =
 @ReadOnlyComposable
 private fun defaultButtonStyle() = ButtonStyle(
     rippleStyle = defaultButtonRippleStyle(),
-    padding = PaddingValues(
+    padding = ComponentPadding(
         horizontal = LocalSizes.current.spacingPrimary,
         vertical = LocalSizes.current.spacingSecondary
     ),
@@ -270,7 +270,7 @@ private fun defaultIconButtonColors() = ButtonColors(
 @ReadOnlyComposable
 private fun defaultIconButtonStyle() = ButtonStyle(
     rippleStyle = defaultIconButtonRippleStyle(),
-    padding = PaddingValues(),
+    padding = ComponentPadding(),
     shape = LocalShapes.current.tertiary,
     border = defaultButtonBorder()
 )

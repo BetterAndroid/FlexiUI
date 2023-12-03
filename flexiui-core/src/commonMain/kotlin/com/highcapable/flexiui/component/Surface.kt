@@ -26,7 +26,6 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -39,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.debugInspectorInfo
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 
 @Immutable
 data class SurfaceColors(
@@ -51,7 +51,7 @@ fun Surface(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
     colors: SurfaceColors = Surface.colors,
-    padding: PaddingValues = Surface.padding,
+    padding: ComponentPadding = Surface.padding,
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
@@ -65,7 +65,7 @@ fun Surface(
 
 private fun Modifier.surface(
     colors: SurfaceColors,
-    padding: PaddingValues,
+    padding: ComponentPadding,
     then: Modifier,
     initializer: @Composable Modifier.() -> Modifier
 ) = composed(
@@ -86,7 +86,7 @@ object Surface {
         @Composable
         @ReadOnlyComposable
         get() = defaultSurfaceColors()
-    val padding: PaddingValues
+    val padding: ComponentPadding
         @Composable
         @ReadOnlyComposable
         get() = defaultSurfacePadding()
@@ -103,4 +103,4 @@ private fun defaultSurfaceColors() = SurfaceColors(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultSurfacePadding() = PaddingValues(LocalSizes.current.spacingPrimary)
+private fun defaultSurfacePadding() = ComponentPadding(LocalSizes.current.spacingPrimary)

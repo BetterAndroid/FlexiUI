@@ -46,7 +46,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -106,10 +105,8 @@ import androidx.compose.ui.window.PopupProperties
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.calculateEnd
-import com.highcapable.flexiui.extension.calculateStart
-import com.highcapable.flexiui.extension.horizontal
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.extension.solidColor
 import com.highcapable.flexiui.extension.status
@@ -138,7 +135,7 @@ data class DropdownMenuColors(
 
 @Immutable
 data class DropdownListStyle(
-    val padding: PaddingValues,
+    val padding: ComponentPadding,
     val shape: Shape,
     val endIconSize: Dp,
     val borderInactive: BorderStroke,
@@ -227,7 +224,7 @@ fun DropdownList(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) },
-            offset = DpOffset(-style.padding.calculateStart(), style.padding.calculateEnd()),
+            offset = DpOffset(-style.padding.start, style.padding.end),
             modifier = Modifier.width(menuMaxWidth).heightIn(max = menuMaxHeight),
             colors = menuColors,
             style = menuStyle,
@@ -568,7 +565,7 @@ private fun defaultDropdownMenuColors() = DropdownMenuColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultDropdownListStyle() = DropdownListStyle(
-    padding = PaddingValues(LocalSizes.current.spacingSecondary),
+    padding = ComponentPadding(LocalSizes.current.spacingSecondary),
     shape = withAreaBoxShape(),
     endIconSize = LocalSizes.current.iconSizeTertiary,
     borderInactive = defaultDropdownListInactiveBorder(),
@@ -581,11 +578,11 @@ private fun defaultDropdownMenuStyle() = DropdownMenuStyle(
     inTransitionDuration = DefaultInTransitionDuration,
     outTransitionDuration = DefaultOutTransitionDuration,
     contentStyle = AreaBox.style.copy(
-        padding = PaddingValues(horizontal = DefaultMenuContentPadding),
+        padding = ComponentPadding(horizontal = DefaultMenuContentPadding),
         shape = LocalShapes.current.secondary
     ),
     borderStyle = AreaBox.style.copy(
-        padding = PaddingValues(LocalSizes.current.spacingTertiary),
+        padding = ComponentPadding(LocalSizes.current.spacingTertiary),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary
     )
