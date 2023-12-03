@@ -13,13 +13,13 @@ repositories:
 plugins:
   org.jetbrains.kotlin.multiplatform:
     alias: kotlin-multiplatform
-    version: 1.9.20
+    version: 1.9.21
   org.jetbrains.compose:
     alias: jetbrains-compose
     version: 1.6.0-dev1296
   com.android.application:
     alias: android-application
-    version: 8.1.4
+    version: 8.2.0
   com.android.library:
     alias: android-library
     version-ref: android-application
@@ -31,19 +31,19 @@ libraries:
   androidx.compose.runtime:
     runtime-android:
       alias: androidx-compose-android
-      version: 1.6.0-beta01
+      version: 1.6.0-beta02
   com.highcapable.betterandroid:
     ui-component:
-      version: 1.0.2
+      version: 1.0.3
     ui-extension:
       version: 1.0.1
     system-extension:
       version: 1.0.0
   androidx.activity:
     activity:
-      version: 1.8.0
+      version: 1.8.1
     activity-compose:
-      version: 1.8.0
+      version: 1.8.1
   androidx.core:
     core-ktx:
       version: 1.12.0
