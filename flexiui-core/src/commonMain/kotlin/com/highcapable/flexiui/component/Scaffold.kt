@@ -23,8 +23,56 @@
 
 package com.highcapable.flexiui.component
 
-// TODO: Scaffold, modeled after Scaffold in Material Design
-//       Also set the global background color to Scaffold
-//       Scaffold creates Surface
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import com.highcapable.flexiui.extension.bottom
+import com.highcapable.flexiui.extension.calculateEnd
+import com.highcapable.flexiui.extension.calculateStart
+import com.highcapable.flexiui.extension.top
 
 // TODO: Linkage BetterAndroid SafeArea (SystemBarsController)
+
+@Composable
+fun Scaffold(
+    modifier: Modifier = Modifier,
+    colors: SurfaceColors = Surface.colors,
+    padding: PaddingValues = Surface.padding,
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    actionBar: @Composable () -> Unit = {},
+    tab: @Composable () -> Unit = {},
+    navigation: @Composable () -> Unit = {},
+    content: @Composable () -> Unit
+) {
+    val outBoxPadding = PaddingValues(
+        start = padding.calculateStart(),
+        end = padding.calculateEnd(),
+        bottom = padding.bottom
+    )
+    val inBoxPadding = PaddingValues(
+        top = padding.top,
+        bottom = padding.bottom
+    )
+    Surface(
+        modifier = modifier,
+        colors = colors,
+        padding = outBoxPadding
+    ) {
+        Column(
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment
+        ) {
+            actionBar()
+            tab()
+            Box(modifier = Modifier.fillMaxSize().padding(inBoxPadding).weight(1f)) { content() }
+            navigation()
+        }
+    }
+}
