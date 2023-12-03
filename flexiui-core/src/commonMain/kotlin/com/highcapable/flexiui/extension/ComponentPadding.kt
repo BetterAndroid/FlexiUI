@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
+// TODO: Decoupling to BetterAndroid
+
 @Stable
 fun ComponentPadding(all: Dp): ComponentPadding = ComponentPaddingImpl(all, all, all, all)
 
