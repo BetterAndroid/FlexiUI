@@ -64,6 +64,7 @@ import com.highcapable.flexiui.interaction.rippleClickable
 
 @Immutable
 data class NavigationColors(
+    val backgroundColor: Color,
     val indicatorColor: Color,
     val selectedContentColor: Color,
     val unselectedContentColor: Color
@@ -71,7 +72,7 @@ data class NavigationColors(
 
 @Immutable
 data class NavigationStyle(
-    val padding: PaddingValues,
+    val boxStyle: AreaBoxStyle,
     val contentSpacing: Dp,
     val contentPadding: PaddingValues,
     val contentShape: Shape
@@ -86,8 +87,10 @@ fun NavigationRow(
     content: @Composable RowScope.() -> Unit
 ) {
     NavigationStyleBox(modifier, horizontal = true, colors, style) {
-        Row(
+        AreaRow(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
+            color = colors.backgroundColor,
+            style = style.boxStyle,
             horizontalArrangement = arrangement,
             verticalAlignment = Alignment.CenterVertically,
             content = content
@@ -104,8 +107,10 @@ fun NavigationColumn(
     content: @Composable ColumnScope.() -> Unit
 ) {
     NavigationStyleBox(modifier, horizontal = false, colors, style) {
-        Column(
+        AreaColumn(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
+            color = colors.backgroundColor,
+            style = style.boxStyle,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = arrangement,
             content = content
@@ -197,7 +202,7 @@ private fun NavigationStyleBox(
     style: NavigationStyle,
     content: @Composable () -> Unit
 ) {
-    Box(modifier = modifier.padding(style.padding)) {
+    Box(modifier = modifier) {
         CompositionLocalProvider(
             LocalHorizontalNavigation provides horizontal,
             LocalNavigationColors provides colors,
@@ -232,6 +237,7 @@ private val LocalNavigationContentShape = compositionLocalOf<Shape?> { null }
 @Composable
 @ReadOnlyComposable
 private fun defaultNavigationColors() = NavigationColors(
+    backgroundColor = AreaBox.color,
     indicatorColor = LocalColors.current.themeTertiary,
     selectedContentColor = LocalColors.current.themePrimary,
     unselectedContentColor = LocalColors.current.textSecondary
@@ -240,11 +246,7 @@ private fun defaultNavigationColors() = NavigationColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultNavigationStyle() = NavigationStyle(
-    padding = when {
-        LocalInSurface.current || LocalInAreaBox.current ->
-            PaddingValues(vertical = LocalSizes.current.spacingPrimary)
-        else -> PaddingValues(LocalSizes.current.spacingPrimary)
-    },
+    boxStyle = AreaBox.style,
     contentSpacing = LocalSizes.current.spacingSecondary,
     contentPadding = PaddingValues(
         horizontal = LocalSizes.current.spacingPrimary,
