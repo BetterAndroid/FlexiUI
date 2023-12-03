@@ -241,11 +241,9 @@ private fun defaultNavigationColors() = NavigationColors(
 @ReadOnlyComposable
 private fun defaultNavigationStyle() = NavigationStyle(
     padding = when {
-        LocalInSurface.current || LocalInAreaBox.current -> PaddingValues()
-        else -> PaddingValues(
-            horizontal = LocalSizes.current.spacingPrimary,
-            vertical = LocalSizes.current.spacingSecondary
-        )
+        LocalInSurface.current || LocalInAreaBox.current ->
+            PaddingValues(vertical = LocalSizes.current.spacingPrimary)
+        else -> PaddingValues(LocalSizes.current.spacingPrimary)
     },
     contentSpacing = LocalSizes.current.spacingSecondary,
     contentPadding = PaddingValues(
