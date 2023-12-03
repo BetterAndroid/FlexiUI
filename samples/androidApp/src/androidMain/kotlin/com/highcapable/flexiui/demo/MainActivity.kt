@@ -24,9 +24,9 @@ package com.highcapable.flexiui.demo
 import MainView
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import com.highcapable.betterandroid.ui.component.activity.AppViewsActivity
+import com.highcapable.betterandroid.ui.component.activity.AppComponentActivity
 
-class MainActivity : AppViewsActivity() {
+class MainActivity : AppComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
