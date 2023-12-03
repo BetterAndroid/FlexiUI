@@ -24,7 +24,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,6 +66,7 @@ import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
 import com.highcapable.flexiui.dynamicColors
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.greenColors
 import com.highcapable.flexiui.isDynamicColorsAvailable
 import com.highcapable.flexiui.orangeColors
@@ -87,7 +87,7 @@ fun App() {
                 Spacer(Modifier.padding(5.dp))
                 AreaColumn(
                     modifier = Modifier.weight(0.18f),
-                    style = AreaBox.style.copy(padding = PaddingValues(3.dp))
+                    style = AreaBox.style.copy(padding = ComponentPadding(3.dp))
                 ) { TabPagerView() }
                 Spacer(Modifier.padding(10.dp))
                 ThemeColorsView(themeColor)
