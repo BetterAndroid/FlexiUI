@@ -233,9 +233,9 @@ private fun defaultSwitchStyle() = SwitchStyle(
 @ReadOnlyComposable
 private fun defaultSwitchBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
 
-private val DefaultSwitchPadding = 3.dp
+private val DefaultSwitchPadding = 3.5.dp
 
-private val DefaultThumbRadius = 7.5.dp
+private val DefaultThumbRadius = 6.5.dp
 private const val DefaultThumbGain = 1.1f
 private val DefaultThumbShadowSize = 0.5.dp
 
