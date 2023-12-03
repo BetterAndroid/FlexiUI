@@ -27,7 +27,6 @@ import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.ContextMenuRepresentation
 import androidx.compose.foundation.ContextMenuState
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.sizeIn
@@ -64,6 +63,7 @@ import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.interaction.rippleClickable
 import java.awt.event.KeyEvent
@@ -208,11 +208,11 @@ internal fun defaultContextMenuColors() = ContextMenuColors(
 @ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
     contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
-        padding = PaddingValues(horizontal = DefaultMenuContentPadding),
+        padding = ComponentPadding(horizontal = DefaultMenuContentPadding),
         shape = LocalShapes.current.secondary
     ),
     borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBox.style.copy(
-        padding = PaddingValues(LocalSizes.current.spacingTertiary),
+        padding = ComponentPadding(LocalSizes.current.spacingTertiary),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary
     )
