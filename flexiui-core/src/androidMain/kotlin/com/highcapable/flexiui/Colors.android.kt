@@ -44,7 +44,7 @@ internal actual val DynamicLightColors
         foregroundSecondary = Color(DynamicColors.materialDynamicNeutral(95)),
         themePrimary = Color(DynamicColors.materialDynamicPrimary(60)),
         themeSecondary = Color(DynamicColors.materialDynamicPrimary(60)).copy(alpha = 0.65f),
-        themeTertiary = Color(DynamicColors.materialDynamicNeutral(60)).copy(alpha = 0.15f),
+        themeTertiary = Color(DynamicColors.materialDynamicPrimary(60)).copy(alpha = 0.15f),
         textPrimary = DefaultLightColors.textPrimary,
         textSecondary = DefaultLightColors.textSecondary,
         isLight = true
