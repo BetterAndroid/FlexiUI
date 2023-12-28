@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="flexi-core-desktop">
-    <output-path>$PROJECT_DIR$/flexi-core/build/libs</output-path>
-    <root id="archive" name="flexi-core-desktop.jar">
-      <element id="module-output" name="FlexiUI.flexi-core.desktopMain" />
-    </root>
-  </artifact>
-</component>
