@@ -98,7 +98,8 @@ fun Button(
             role = Role.Button,
             interactionSource = interactionSource,
             onClick = onClick
-        )
+        ),
+        contentAlignment = Alignment.Center
     ) {
         CompositionLocalProvider(
             LocalIconStyle provides LocalIconStyle.current.copy(tint = colors.contentColor),
