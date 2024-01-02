@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -226,19 +227,39 @@ object IconButton {
         get() = defaultIconButtonStyle()
 }
 
+internal val LocalPrimaryButton = compositionLocalOf { false }
+
 @Composable
 @ReadOnlyComposable
-private fun defaultButtonColors() =
-    when (LocalInAreaBox.current) {
-        true -> ButtonColors(
-            contentColor = LocalColors.current.textPrimary,
-            backgroundColor = LocalColors.current.foregroundSecondary
-        )
-        else -> ButtonColors(
-            contentColor = Color.White,
-            backgroundColor = LocalColors.current.themePrimary
-        )
-    }
+private fun defaultPrimaryButtonColors() = ButtonColors(
+    contentColor = Color.White,
+    backgroundColor = LocalColors.current.themePrimary
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultContentButtonColors() = ButtonColors(
+    contentColor = LocalColors.current.textPrimary,
+    backgroundColor = LocalColors.current.foregroundSecondary
+)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultPrimaryButtonRippleStyle() =
+    Interaction.rippleStyle.copy(color = LocalColors.current.foregroundSecondary)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultContentButtonRippleStyle() =
+    Interaction.rippleStyle.copy(color = LocalColors.current.themeSecondary)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultButtonColors() = when {
+    LocalPrimaryButton.current -> defaultPrimaryButtonColors()
+    LocalInAreaBox.current -> defaultContentButtonColors()
+    else -> defaultPrimaryButtonColors()
+}
 
 @Composable
 @ReadOnlyComposable
@@ -254,11 +275,11 @@ private fun defaultButtonStyle() = ButtonStyle(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultButtonRippleStyle() =
-    Interaction.rippleStyle.copy(color = when (LocalInAreaBox.current) {
-        true -> LocalColors.current.themeSecondary
-        else -> LocalColors.current.foregroundSecondary
-    })
+private fun defaultButtonRippleStyle() = when {
+    LocalPrimaryButton.current -> defaultPrimaryButtonRippleStyle()
+    LocalInAreaBox.current -> defaultContentButtonRippleStyle()
+    else -> defaultPrimaryButtonRippleStyle()
+}
 
 @Composable
 @ReadOnlyComposable
