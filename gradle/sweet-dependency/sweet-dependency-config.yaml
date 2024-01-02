@@ -34,11 +34,15 @@ libraries:
       version: 1.6.0-beta02
   com.highcapable.betterandroid:
     ui-component:
-      version: 1.0.3
+      version: 1.0.4
     ui-extension:
-      version: 1.0.1
+      version: 1.0.2
     system-extension:
+      version: 1.0.1
+    compose-extension:
       version: 1.0.0
+    compose-multiplatform:
+      version: 0.1.0
   androidx.activity:
     activity:
       version: 1.8.1
