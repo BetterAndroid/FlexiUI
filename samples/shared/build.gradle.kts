@@ -25,6 +25,7 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                api(com.highcapable.betterandroid.compose.multiplatform)
                 api(projects.flexiuiCore)
             }
         }

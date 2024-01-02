@@ -7,7 +7,9 @@ plugins {
 group = property.project.groupName
 
 kotlin {
-    androidTarget()
+    androidTarget {
+        publishLibraryVariants("release")
+    }
     jvm("desktop")
     listOf(
         iosX64(),
@@ -25,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(com.highcapable.betterandroid.compose.extension)
             }
         }
         val androidMain by getting

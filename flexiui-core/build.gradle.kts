@@ -7,7 +7,9 @@ plugins {
 group = property.project.groupName
 
 kotlin {
-    androidTarget()
+    androidTarget {
+        publishLibraryVariants("release")
+    }
     jvm("desktop")
     listOf(
         iosX64(),
@@ -34,6 +36,7 @@ kotlin {
                 // TODO: We need to remove this and replace with "material-ripple"
                 implementation(compose.material)
                 implementation(projects.flexiuiResources)
+                api(com.highcapable.betterandroid.compose.extension)
             }
         }
         val androidMain by getting {
