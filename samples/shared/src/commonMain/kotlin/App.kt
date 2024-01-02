@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.flexiui.Colors
 import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.blueColors
@@ -66,7 +67,6 @@ import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.defaultColors
 import com.highcapable.flexiui.dynamicColors
-import com.highcapable.flexiui.extension.ComponentPadding
 import com.highcapable.flexiui.greenColors
 import com.highcapable.flexiui.isDynamicColorsAvailable
 import com.highcapable.flexiui.orangeColors
