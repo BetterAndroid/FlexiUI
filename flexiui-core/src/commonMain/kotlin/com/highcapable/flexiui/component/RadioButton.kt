@@ -52,11 +52,11 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.clickable
+import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.status
-import com.highcapable.flexiui.interaction.clickable
 
 @Immutable
 data class RadioButtonColors(
@@ -97,7 +97,7 @@ fun RadioButton(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentShadow by animateDpAsState(if (selected) style.contentShadowSize else 0.dp)
     val animatedContentAlpha by animateFloatAsState(if (selected) 1f else 0f)
-    Row(modifier = Modifier.status(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.componentState(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier.clickable(
                 interactionSource = interactionSource,

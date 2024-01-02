@@ -419,6 +419,3 @@ fun blueColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when
 }
 
 internal val LocalColors = staticCompositionLocalOf { DefaultLightColors }
-
-@Stable
-val Color.Companion.Translucent get() = Color(0x80000000)

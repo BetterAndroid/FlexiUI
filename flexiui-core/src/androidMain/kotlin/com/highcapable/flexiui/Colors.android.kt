@@ -27,8 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.highcapable.betterandroid.ui.extension.component.base.toMixColor
 import com.highcapable.betterandroid.ui.extension.component.feature.SystemColors
+import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
 
 @Composable
 @ReadOnlyComposable
@@ -39,7 +39,7 @@ internal actual val DynamicLightColors
     @ReadOnlyComposable
     get() = if (SystemColors.isAvailable) Colors(
         backgroundPrimary = Color(DynamicColors.materialDynamicNeutral(95)),
-        backgroundSecondary = Color(DynamicColors.materialDynamicNeutral(95) mix DynamicColors.materialDynamicNeutral(99)),
+        backgroundSecondary = Color(mixColorOf(DynamicColors.materialDynamicNeutral(95), DynamicColors.materialDynamicNeutral(99))),
         foregroundPrimary = Color(DynamicColors.materialDynamicNeutral(99)),
         foregroundSecondary = Color(DynamicColors.materialDynamicNeutral(95)),
         themePrimary = Color(DynamicColors.materialDynamicPrimary(60)),
@@ -55,7 +55,7 @@ internal actual val DynamicDarkColors
     @ReadOnlyComposable
     get() = if (SystemColors.isAvailable) Colors(
         backgroundPrimary = Color(DynamicColors.materialDynamicNeutral(10)),
-        backgroundSecondary = Color(DynamicColors.materialDynamicNeutral(10) mix DynamicColors.materialDynamicNeutral(20)),
+        backgroundSecondary = Color(mixColorOf(DynamicColors.materialDynamicNeutral(10), DynamicColors.materialDynamicNeutral(20))),
         foregroundPrimary = Color(DynamicColors.materialDynamicNeutral(20)),
         foregroundSecondary = Color(DynamicColors.materialDynamicNeutral(30)),
         themePrimary = Color(DynamicColors.materialDynamicSecondary(60)),
@@ -71,7 +71,7 @@ internal actual val DynamicBlackColors
     @ReadOnlyComposable
     get() = if (SystemColors.isAvailable) Colors(
         backgroundPrimary = Color(DynamicColors.materialDynamicNeutral(0)),
-        backgroundSecondary = Color(DynamicColors.materialDynamicNeutral(0) mix DynamicColors.materialDynamicNeutral(10)),
+        backgroundSecondary = Color(mixColorOf(DynamicColors.materialDynamicNeutral(0), DynamicColors.materialDynamicNeutral(10))),
         foregroundPrimary = Color(DynamicColors.materialDynamicNeutral(10)),
         foregroundSecondary = Color(DynamicColors.materialDynamicNeutral(20)),
         themePrimary = Color(DynamicColors.materialDynamicSecondary(60)),
@@ -86,5 +86,3 @@ private val DynamicColors
     @Composable
     @ReadOnlyComposable
     get() = SystemColors.from(LocalContext.current)
-
-private infix fun Int.mix(other: Int) = toMixColor(other)

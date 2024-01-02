@@ -48,8 +48,8 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.isSpecified
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.orElse
 
 @Immutable
 data class IconStyle(
@@ -109,7 +109,7 @@ private fun Modifier.defaultSizeFor(
         style.size.isSpecified ||
             painter.intrinsicSize == Size.Unspecified ||
             painter.intrinsicSize.isInfinite() ->
-            Modifier.size(style.size.orElse() ?: defaultIconSize())
+            Modifier.size(style.size.orNull() ?: defaultIconSize())
         else -> Modifier
     })
 }

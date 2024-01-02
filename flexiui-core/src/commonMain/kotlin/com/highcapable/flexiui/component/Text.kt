@@ -34,9 +34,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.DefaultTypography
 import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.extension.orElse
 
 @Composable
 fun Text(
@@ -79,7 +79,7 @@ fun Text(
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
-    val currentColor = color.orElse() ?: style.color.orElse() ?: Text.color
+    val currentColor = color.orNull() ?: style.color.orNull() ?: Text.color
     BasicText(
         text = text,
         modifier = modifier,

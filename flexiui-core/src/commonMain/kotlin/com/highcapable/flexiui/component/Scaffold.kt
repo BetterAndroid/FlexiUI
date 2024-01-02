@@ -26,22 +26,19 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.highcapable.flexiui.extension.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
     colors: SurfaceColors = Surface.colors,
     padding: ComponentPadding = Surface.padding,
-    fitsSystemBars: Boolean = true,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     actionBar: @Composable () -> Unit = {},
@@ -52,11 +49,7 @@ fun Scaffold(
     val outBoxPadding = padding.copy(top = 0.dp)
     val inBoxPadding = padding.copy(start = 0.dp, end = 0.dp)
     Surface(
-        modifier = if (fitsSystemBars)
-            Modifier.systemBarsPadding()
-                .displayCutoutPadding()
-                .then(modifier)
-        else modifier,
+        modifier = modifier,
         colors = colors,
         padding = outBoxPadding
     ) {

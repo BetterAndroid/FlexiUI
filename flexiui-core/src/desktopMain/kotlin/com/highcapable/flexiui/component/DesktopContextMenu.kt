@@ -60,11 +60,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.orElse
 import com.highcapable.flexiui.interaction.rippleClickable
 import java.awt.event.KeyEvent
 
@@ -200,8 +200,8 @@ val LocalContextMenuStyle = compositionLocalOf {
 @Composable
 @ReadOnlyComposable
 internal fun defaultContextMenuColors() = ContextMenuColors(
-    contentColor = LocalContextMenuColors.current.contentColor.orElse() ?: LocalColors.current.textPrimary,
-    borderColor = LocalContextMenuColors.current.borderColor.orElse() ?: LocalColors.current.backgroundSecondary
+    contentColor = LocalContextMenuColors.current.contentColor.orNull() ?: LocalColors.current.textPrimary,
+    borderColor = LocalContextMenuColors.current.borderColor.orNull() ?: LocalColors.current.backgroundSecondary
 )
 
 @Composable

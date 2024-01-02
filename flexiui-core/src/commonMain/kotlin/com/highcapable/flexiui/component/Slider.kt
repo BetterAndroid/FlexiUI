@@ -61,11 +61,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
+import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.status
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -143,7 +143,7 @@ fun Slider(
             Box(
                 modifier = Modifier.size(trackAdoptWidth, style.trackHeight)
                     .background(colors.trackInactiveColor, style.trackShape)
-                    .borderOrNot(style.trackBorder, style.trackShape)
+                    .borderOrElse(style.trackBorder, style.trackShape)
                     .drawWithContent {
                         drawRoundRect(
                             color = colors.trackActiveColor,
@@ -167,7 +167,7 @@ fun Slider(
                 Box(
                     modifier = Modifier.size(style.trackHeight)
                         .background(colors.stepColor, style.stepShape)
-                        .borderOrNot(style.stepBorder, style.stepShape)
+                        .borderOrElse(style.stepBorder, style.stepShape)
                 )
         }
     }
@@ -180,7 +180,7 @@ fun Slider(
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
                 .background(colors.thumbColor, style.thumbShape)
-                .borderOrNot(style.thumbBorder, style.thumbShape)
+                .borderOrElse(style.thumbBorder, style.thumbShape)
                 .draggable(
                     orientation = Orientation.Horizontal,
                     state = rememberDraggableState { delta ->
@@ -210,7 +210,7 @@ fun Slider(
         )
     }
     Box(
-        modifier = Modifier.status(enabled)
+        modifier = Modifier.componentState(enabled)
             .then(modifier)
             .hoverable(interactionSource, enabled)
             .pointerInput(Unit) {

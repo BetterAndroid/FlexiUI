@@ -70,12 +70,12 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.componentState
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.orElse
-import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.rippleClickable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -203,10 +203,10 @@ fun Tab(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
-    val currentSelectedContentColor = selectedContentColor.orElse()
-        ?: LocalTabSelectedContentColor.current.orElse() ?: Tab.colors.selectedContentColor
-    val currentUnselectedContentColor = unselectedContentColor.orElse()
-        ?: LocalTabUnselectedContentColor.current.orElse() ?: Tab.colors.unselectedContentColor
+    val currentSelectedContentColor = selectedContentColor.orNull()
+        ?: LocalTabSelectedContentColor.current.orNull() ?: Tab.colors.selectedContentColor
+    val currentUnselectedContentColor = unselectedContentColor.orNull()
+        ?: LocalTabUnselectedContentColor.current.orNull() ?: Tab.colors.unselectedContentColor
     val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: Tab.style.contentPadding
     val currentContentShape = contentShape ?: LocalTabContentShape.current ?: Tab.style.contentShape
     val contentColor by animateColorAsState(if (selected) currentSelectedContentColor else currentUnselectedContentColor)
@@ -217,7 +217,7 @@ fun Tab(
         LocalTextStyle provides contentTextStyle
     ) {
         Row(
-            modifier = Modifier.status(enabled)
+            modifier = Modifier.componentState(enabled)
                 .clip(currentContentShape)
                 .then(modifier)
                 .rippleClickable(
@@ -288,7 +288,7 @@ interface TabRowScope {
             properties["indicatorWidth"] = indicatorWidth
         }
     ) {
-        val currentWidth = indicatorWidth.orElse() ?: currentTabPosition.tabWidth
+        val currentWidth = indicatorWidth.orNull() ?: currentTabPosition.tabWidth
         val animatedWidh by animateDpAsState(
             targetValue = currentWidth,
             animationSpec = tween(TabIndicatorDuration, easing = FastOutSlowInEasing)
@@ -322,9 +322,9 @@ interface TabRowScope {
             val currentTab = tabPositions[currentPage]
             val previousTab = tabPositions.getOrNull(currentPage - 1)
             val nextTab = tabPositions.getOrNull(currentPage + 1)
-            val currentWidth = indicatorWidth.orElse() ?: currentTab.tabWidth
-            val nextWidth = indicatorWidth.orElse() ?: nextTab?.tabWidth ?: currentWidth
-            val previousWidth = indicatorWidth.orElse() ?: previousTab?.tabWidth ?: currentWidth
+            val currentWidth = indicatorWidth.orNull() ?: currentTab.tabWidth
+            val nextWidth = indicatorWidth.orNull() ?: nextTab?.tabWidth ?: currentWidth
+            val previousWidth = indicatorWidth.orNull() ?: previousTab?.tabWidth ?: currentWidth
             val fraction = pagerState.currentPageOffsetFraction
             // Calculate the width of the indicator from the current and next / previous tab.
             val movableWidth = when {

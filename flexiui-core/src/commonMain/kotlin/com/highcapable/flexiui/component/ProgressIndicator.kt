@@ -52,8 +52,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.extension.orElse
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.max
@@ -337,9 +337,9 @@ object CircularProgressIndicator {
         @Composable
         @ReadOnlyComposable
         get() = LocalProgressIndicatorColors.current.copy(
-            foregroundColor = LocalProgressIndicatorColors.current.foregroundColor.orElse()
+            foregroundColor = LocalProgressIndicatorColors.current.foregroundColor.orNull()
                 ?: defaultCircularIndicatorColors().foregroundColor,
-            backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orElse()
+            backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orNull()
                 ?: defaultCircularIndicatorColors().backgroundColor
         )
     val style: CircularIndicatorStyle
@@ -353,9 +353,9 @@ object LinearProgressIndicator {
         @Composable
         @ReadOnlyComposable
         get() = LocalProgressIndicatorColors.current.copy(
-            foregroundColor = LocalProgressIndicatorColors.current.foregroundColor.orElse()
+            foregroundColor = LocalProgressIndicatorColors.current.foregroundColor.orNull()
                 ?: defaultLinearIndicatorColors().foregroundColor,
-            backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orElse()
+            backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orNull()
                 ?: defaultLinearIndicatorColors().backgroundColor
         )
     val style: LinearIndicatorStyle

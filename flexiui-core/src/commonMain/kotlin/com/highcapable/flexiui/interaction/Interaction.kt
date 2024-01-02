@@ -23,22 +23,22 @@
 
 package com.highcapable.flexiui.interaction
 
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
+import com.highcapable.betterandroid.compose.extension.ui.clickable
+import com.highcapable.betterandroid.compose.extension.ui.combinedClickable
+import com.highcapable.betterandroid.compose.extension.ui.selectable
+import com.highcapable.betterandroid.compose.extension.ui.toggleable
 import com.highcapable.flexiui.LocalColors
-import androidx.compose.foundation.clickable as foundationClickable
-import androidx.compose.foundation.combinedClickable as foundationCombinedClickable
-import androidx.compose.foundation.selection.selectable as foundationSelectable
-import androidx.compose.foundation.selection.toggleable as foundationToggleable
 import androidx.compose.material.ripple.rememberRipple as materialRememberRipple
 
 @Immutable
@@ -51,70 +51,39 @@ data class RippleStyle(
 @Composable
 fun rememberRipple(style: RippleStyle) = materialRememberRipple(style.bounded, style.radius, style.color)
 
-@Composable
-fun Modifier.clickable(
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication? = null,
-    enabled: Boolean = true,
-    onClickLabel: String? = null,
-    role: Role? = null,
-    onClick: () -> Unit
-) = foundationClickable(interactionSource, indication, enabled, onClickLabel, role, onClick)
-
-@Composable
-fun Modifier.combinedClickable(
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication? = null,
-    enabled: Boolean = true,
-    onClickLabel: String? = null,
-    role: Role? = null,
-    onLongClickLabel: String? = null,
-    onLongClick: (() -> Unit)? = null,
-    onDoubleClick: (() -> Unit)? = null,
-    onClick: () -> Unit
-) = foundationCombinedClickable(interactionSource, indication, enabled, onClickLabel, role, onLongClickLabel, onLongClick, onDoubleClick, onClick)
-
-@Composable
-fun Modifier.toggleable(
-    value: Boolean,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication? = null,
-    enabled: Boolean = true,
-    role: Role? = null,
-    onValueChange: (Boolean) -> Unit
-) = foundationToggleable(value, interactionSource, indication, enabled, role, onValueChange)
-
-@Composable
-fun Modifier.selectable(
-    selected: Boolean,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication? = null,
-    enabled: Boolean = true,
-    role: Role? = null,
-    onClick: () -> Unit
-) = foundationSelectable(selected, interactionSource, indication, enabled, role, onClick)
-
-@Composable
 fun Modifier.rippleClickable(
-    rippleStyle: RippleStyle = Interaction.rippleStyle,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rippleStyle: RippleStyle? = null,
+    interactionSource: MutableInteractionSource? = null,
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
     onClick: () -> Unit
-) = clickable(
-    onClick = onClick,
-    interactionSource = interactionSource,
-    indication = rememberRipple(rippleStyle),
-    enabled = enabled,
-    onClickLabel = onClickLabel,
-    role = role
-)
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "rippleClickable"
+        properties["rippleStyle"] = rippleStyle
+        properties["interactionSource"] = interactionSource
+        properties["enabled"] = enabled
+        properties["onClickLabel"] = onClickLabel
+        properties["role"] = role
+        properties["onClick"] = onClick
+    }
+) {
+    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentIndication = rememberRipple(currentRippleStyle)
+    clickable(
+        onClick = onClick,
+        interactionSource = interactionSource,
+        indication = currentIndication,
+        enabled = enabled,
+        onClickLabel = onClickLabel,
+        role = role
+    )
+}
 
-@Composable
 fun Modifier.rippleCombinedClickable(
-    rippleStyle: RippleStyle = Interaction.rippleStyle,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rippleStyle: RippleStyle? = null,
+    interactionSource: MutableInteractionSource? = null,
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
@@ -122,51 +91,94 @@ fun Modifier.rippleCombinedClickable(
     onLongClick: (() -> Unit)? = null,
     onDoubleClick: (() -> Unit)? = null,
     onClick: () -> Unit
-) = combinedClickable(
-    interactionSource = interactionSource,
-    indication = rememberRipple(rippleStyle),
-    enabled = enabled,
-    onClickLabel = onClickLabel,
-    role = role,
-    onLongClickLabel = onLongClickLabel,
-    onLongClick = onLongClick,
-    onDoubleClick = onDoubleClick,
-    onClick = onClick
-)
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "rippleCombinedClickable"
+        properties["rippleStyle"] = rippleStyle
+        properties["interactionSource"] = interactionSource
+        properties["enabled"] = enabled
+        properties["onClickLabel"] = onClickLabel
+        properties["role"] = role
+        properties["onLongClickLabel"] = onLongClickLabel
+        properties["onLongClick"] = onLongClick
+        properties["onDoubleClick"] = onDoubleClick
+        properties["onClick"] = onClick
+    }
+) {
+    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentIndication = rememberRipple(currentRippleStyle)
+    combinedClickable(
+        onClick = onClick,
+        interactionSource = interactionSource,
+        indication = currentIndication,
+        enabled = enabled,
+        onClickLabel = onClickLabel,
+        role = role,
+        onLongClickLabel = onLongClickLabel,
+        onLongClick = onLongClick,
+        onDoubleClick = onDoubleClick
+    )
+}
 
-@Composable
 fun Modifier.rippleToggleable(
     value: Boolean,
-    rippleStyle: RippleStyle = Interaction.rippleStyle,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rippleStyle: RippleStyle? = null,
+    interactionSource: MutableInteractionSource? = null,
     enabled: Boolean = true,
     role: Role? = null,
     onValueChange: (Boolean) -> Unit
-) = toggleable(
-    value = value,
-    interactionSource = interactionSource,
-    indication = rememberRipple(rippleStyle),
-    enabled = enabled,
-    role = role,
-    onValueChange = onValueChange
-)
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "rippleToggleable"
+        properties["value"] = value
+        properties["rippleStyle"] = rippleStyle
+        properties["interactionSource"] = interactionSource
+        properties["enabled"] = enabled
+        properties["role"] = role
+        properties["onValueChange"] = onValueChange
+    }
+) {
+    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentIndication = rememberRipple(currentRippleStyle)
+    toggleable(
+        value = value,
+        interactionSource = interactionSource,
+        indication = currentIndication,
+        enabled = enabled,
+        role = role,
+        onValueChange = onValueChange
+    )
+}
 
-@Composable
 fun Modifier.rippleSelectable(
     selected: Boolean,
-    rippleStyle: RippleStyle = Interaction.rippleStyle,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    rippleStyle: RippleStyle? = null,
+    interactionSource: MutableInteractionSource? = null,
     enabled: Boolean = true,
     role: Role? = null,
     onClick: () -> Unit
-) = selectable(
-    selected = selected,
-    interactionSource = interactionSource,
-    indication = rememberRipple(rippleStyle),
-    enabled = enabled,
-    role = role,
-    onClick = onClick
-)
+) = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "rippleSelectable"
+        properties["selected"] = selected
+        properties["rippleStyle"] = rippleStyle
+        properties["interactionSource"] = interactionSource
+        properties["enabled"] = enabled
+        properties["role"] = role
+        properties["onClick"] = onClick
+    }
+) {
+    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentIndication = rememberRipple(currentRippleStyle)
+    selectable(
+        selected = selected,
+        interactionSource = interactionSource,
+        indication = currentIndication,
+        enabled = enabled,
+        role = role,
+        onClick = onClick
+    )
+}
 
 object Interaction {
     val rippleStyle: RippleStyle

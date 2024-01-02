@@ -30,11 +30,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.ImageVector
 import com.highcapable.flexiui.resources.Icons
-import com.highcapable.flexiui.resources.builder.buildImageVector
 
 val Icons.Dropdown by lazy {
-    buildImageVector(
+    ImageVector(
         name = "dropdown",
         defaultWidth = 24.dp,
         defaultHeight = 24.dp,

@@ -58,13 +58,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
+import com.highcapable.betterandroid.compose.extension.ui.clickable
+import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.status
-import com.highcapable.flexiui.interaction.clickable
 import kotlin.math.roundToInt
 
 @Immutable
@@ -132,7 +132,7 @@ fun Switch(
                 offsetX = if (checked) 0f else maxOffsetX
                 onCheckedChange(!checked)
             }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
-                .borderOrNot(style.trackBorder, style.trackShape)
+                .borderOrElse(style.trackBorder, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
                 .padding(style.padding),
             verticalAlignment = Alignment.CenterVertically,
@@ -148,7 +148,7 @@ fun Switch(
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
                 .background(colors.thumbColor, style.thumbShape)
-                .borderOrNot(style.thumbBorder, style.thumbShape)
+                .borderOrElse(style.thumbBorder, style.thumbShape)
                 .draggable(
                     enabled = enabled,
                     orientation = Orientation.Horizontal,
@@ -182,7 +182,7 @@ fun Switch(
                 )
         )
     }
-    Row(modifier = Modifier.status(enabled).then(modifier)) {
+    Row(modifier = Modifier.componentState(enabled).then(modifier)) {
         content?.also { content ->
             Row(modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }) {
                 content()

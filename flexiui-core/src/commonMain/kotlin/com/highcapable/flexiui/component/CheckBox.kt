@@ -52,11 +52,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
+import com.highcapable.betterandroid.compose.extension.ui.clickable
+import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.status
-import com.highcapable.flexiui.interaction.clickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.CheckMark
 
@@ -96,7 +96,7 @@ fun CheckBox(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentAlpha by animateFloatAsState(if (checked) 1f else 0f)
     val animatedContentLayer by animateFloatAsState(if (checked) 1f else 0f)
-    Row(modifier = Modifier.status(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.componentState(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier.clickable(
                 interactionSource = interactionSource,
@@ -106,7 +106,7 @@ fun CheckBox(
                 .size(style.strokeSize)
                 .scale(animatedStrokeScale)
                 .background(animatedColor, style.shape)
-                .borderOrNot(style.border, style.shape),
+                .borderOrElse(style.border, style.shape),
             contentAlignment = Alignment.Center
         ) {
             Icon(

@@ -55,11 +55,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.componentState
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.orElse
-import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.Interaction
 import com.highcapable.flexiui.interaction.rippleClickable
 
@@ -136,7 +136,7 @@ fun NavigationItem(
 ) {
     val currentHorizontal = horizontal ?: LocalHorizontalNavigation.current
     val currentColors = colors ?: LocalNavigationColors.current ?: Navigation.colors
-    val currentContentSpacing = contentSpacing.orElse() ?: LocalNavigationContentSpacing.current.orElse() ?: Navigation.style.contentSpacing
+    val currentContentSpacing = contentSpacing.orNull() ?: LocalNavigationContentSpacing.current.orNull() ?: Navigation.style.contentSpacing
     val currentContentPadding = contentPadding ?: LocalNavigationContentPadding.current ?: Navigation.style.contentPadding
     val currentContentShape = contentShape ?: LocalNavigationContentShape.current ?: Navigation.style.contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
@@ -144,7 +144,7 @@ fun NavigationItem(
     val currentIconStyle = LocalIconStyle.current.copy(tint = animatedContentColor)
     val currentTextStyle = LocalTextStyle.current.copy(color = animatedContentColor)
     Box(
-        modifier = Modifier.status(enabled)
+        modifier = Modifier.componentState(enabled)
             .clip(currentContentShape)
             .then(modifier)
             .background(animatedIndicatorColor)

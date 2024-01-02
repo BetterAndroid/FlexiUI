@@ -102,18 +102,18 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
+import com.highcapable.betterandroid.compose.extension.ui.componentState
+import com.highcapable.betterandroid.compose.extension.ui.orNull
+import com.highcapable.betterandroid.compose.extension.ui.solidColor
+import com.highcapable.betterandroid.compose.extension.ui.window.Popup
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.orElse
-import com.highcapable.flexiui.extension.solidColor
-import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.Dropdown
-import com.highcapable.flexiui.window.Popup
 import kotlin.math.max
 import kotlin.math.min
 
@@ -319,11 +319,11 @@ fun DropdownMenuItem(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
-    val currentColor = contentColor.orElse() ?: LocalDropdownMenuContentColor.current.orElse() ?: DropdownMenu.colors.contentColor
-    val currentActiveColor = activeColor.orElse() ?: LocalDropdownMenuActiveColor.current.orElse() ?: DropdownMenu.colors.activeColor
+    val currentColor = contentColor.orNull() ?: LocalDropdownMenuContentColor.current.orNull() ?: DropdownMenu.colors.contentColor
+    val currentActiveColor = activeColor.orNull() ?: LocalDropdownMenuActiveColor.current.orNull() ?: DropdownMenu.colors.activeColor
     val currentStyle = contentStyle ?: LocalDropdownMenuContentStyle.current ?: DropdownMenu.style.contentStyle
     AreaRow(
-        modifier = Modifier.status(enabled)
+        modifier = Modifier.componentState(enabled)
             .then(modifier)
             .fillMaxWidth()
             .sizeIn(
@@ -426,13 +426,13 @@ private fun Modifier.dropdownList(
         properties["border"] = border
     }
 ) {
-    status(enabled)
+    componentState(enabled)
         .focusRequester(focusRequester)
         .focusable(enabled, interactionSource)
         .hoverable(interactionSource, enabled)
         .clip(style.shape)
         .background(colors.backgroundColor, style.shape)
-        .borderOrNot(border, style.shape)
+        .borderOrElse(border, style.shape)
         .then(then)
         .padding(style.padding)
 }

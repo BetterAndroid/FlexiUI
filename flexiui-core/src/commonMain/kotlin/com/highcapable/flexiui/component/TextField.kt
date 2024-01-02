@@ -85,13 +85,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
+import com.highcapable.betterandroid.compose.extension.ui.componentState
+import com.highcapable.betterandroid.compose.extension.ui.orNull
+import com.highcapable.betterandroid.compose.extension.ui.solidColor
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.orElse
-import com.highcapable.flexiui.extension.solidColor
-import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.Backspace
 import com.highcapable.flexiui.resources.icon.ViewerClose
@@ -178,7 +178,7 @@ fun TextField(
         focused || hovered -> style.borderInactive
         else -> style.borderInactive
     }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
-    val textColor = style.textStyle.color.orElse() ?: colors.textColor
+    val textColor = style.textStyle.color.orNull() ?: colors.textColor
     BoxWithConstraints(
         modifier = Modifier.textField(
             enabled = enabled,
@@ -633,7 +633,7 @@ private fun AutoCompleteTextFieldBox(
     DropdownMenu(
         expanded = expanded && textFieldAvailable,
         onDismissRequest = {},
-        modifier = dropdownMenuWidth.orElse()?.let { Modifier.width(it) } ?: Modifier.width(IntrinsicSize.Max),
+        modifier = dropdownMenuWidth.orNull()?.let { Modifier.width(it) } ?: Modifier.width(IntrinsicSize.Max),
         colors = completionColors.menuColors,
         style = completionStyle,
         properties = PopupProperties(focusable = false)
@@ -724,12 +724,12 @@ private fun Modifier.textField(
         properties["border"] = border
     }
 ) {
-    status(enabled)
+    componentState(enabled)
         .focusable(enabled, interactionSource)
         .hoverable(interactionSource, enabled)
         .clip(style.shape)
         .background(colors.backgroundColor, style.shape)
-        .borderOrNot(border, style.shape)
+        .borderOrElse(border, style.shape)
         .then(then)
 }
 

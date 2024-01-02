@@ -43,13 +43,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
+import com.highcapable.betterandroid.compose.extension.ui.componentState
+import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.borderOrNot
-import com.highcapable.flexiui.extension.orElse
-import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.Interaction
 import com.highcapable.flexiui.interaction.RippleStyle
 import com.highcapable.flexiui.interaction.rippleClickable
@@ -196,10 +196,10 @@ private fun Modifier.button(
         properties["style"] = style
     }
 ) {
-    status(enabled)
+    componentState(enabled)
         .clip(style.shape)
         .background(colors.backgroundColor, style.shape)
-        .borderOrNot(style.border, style.shape)
+        .borderOrElse(style.border, style.shape)
         .then(then)
 }
 
@@ -262,7 +262,7 @@ private fun defaultButtonRippleStyle() =
 @Composable
 @ReadOnlyComposable
 private fun defaultIconButtonColors() = ButtonColors(
-    contentColor = LocalIconStyle.current.tint.orElse() ?: LocalColors.current.themePrimary,
+    contentColor = LocalIconStyle.current.tint.orNull() ?: LocalColors.current.themePrimary,
     backgroundColor = Color.Transparent
 )
 

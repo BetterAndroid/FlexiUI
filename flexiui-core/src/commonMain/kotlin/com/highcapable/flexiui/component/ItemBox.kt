@@ -39,10 +39,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.LocalTypography
-import com.highcapable.flexiui.extension.status
 import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.ArrowForward
@@ -82,7 +82,7 @@ fun HorizontalItemBox(
             interactionSource = interactionSource,
             onClick = onClick
         ),
-        initializer = { status(enabled) },
+        initializer = { componentState(enabled) },
         color = colors.backgroundColor,
         style = style.boxStyle
     ) {
@@ -132,7 +132,7 @@ fun VerticalItemBox(
             interactionSource = interactionSource,
             onClick = onClick
         ),
-        initializer = { status(enabled) },
+        initializer = { componentState(enabled) },
         color = colors.backgroundColor,
         style = style.boxStyle,
         horizontalAlignment = Alignment.CenterHorizontally,

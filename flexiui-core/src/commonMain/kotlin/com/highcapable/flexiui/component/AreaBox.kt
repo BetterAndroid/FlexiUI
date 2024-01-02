@@ -48,12 +48,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.flexiui.DefaultShapes
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.extension.ComponentPadding
-import com.highcapable.flexiui.extension.borderOrNot
 
 @Immutable
 data class AreaBoxStyle(
@@ -148,7 +148,7 @@ private fun Modifier.areaBox(
         .shadow(style.shadowSize, style.shape)
         .clip(style.shape)
         .background(color, style.shape)
-        .borderOrNot(style.border, style.shape)
+        .borderOrElse(style.border, style.shape)
         .then(then)
         .padding(style.padding)
 }
