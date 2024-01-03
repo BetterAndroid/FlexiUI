@@ -41,27 +41,29 @@ data class Typography(
 
 internal val LocalTypography = staticCompositionLocalOf { DefaultTypography }
 
+private val DefaultLineHeight = 1.5.em
+
 internal val DefaultTypography = Typography(
     titlePrimary = TextStyle(
         fontSize = 25.sp,
-        lineHeight = 1.5.em,
+        lineHeight = DefaultLineHeight,
         fontWeight = FontWeight.Bold
     ),
     titleSecondary = TextStyle(
         fontSize = 18.sp,
-        lineHeight = 1.2.em,
+        lineHeight = DefaultLineHeight,
         fontWeight = FontWeight.Bold
     ),
     subtitle = TextStyle(
         fontSize = 12.sp,
-        lineHeight = 1.em
+        lineHeight = DefaultLineHeight
     ),
     primary = TextStyle(
         fontSize = 15.sp,
-        lineHeight = 1.2.em
+        lineHeight = DefaultLineHeight
     ),
     secondary = TextStyle(
         fontSize = 12.sp,
-        lineHeight = 1.em
+        lineHeight = DefaultLineHeight
     )
 )
