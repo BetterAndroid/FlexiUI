@@ -264,7 +264,7 @@ private fun ThemeColorsView(themeColor: MutableState<Colors>) {
                         },
                         actived = choosedColorName == name
                     ) { Text(text = name) }
-                if (isDynamicColorsAvailable() && index == 3)
+                if (isDynamicColorsAvailable() && index == 2)
                     DynamicColors.forEach { (name, colors) -> createItem(name, colors) }
                 else createItem(name, colors)
             }
