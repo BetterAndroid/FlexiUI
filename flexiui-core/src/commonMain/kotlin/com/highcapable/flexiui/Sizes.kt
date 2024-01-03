@@ -28,8 +28,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-// TODO: Some sizes will modify in the future
-
+@ExperimentalFlexiUISizesApi
 @Immutable
 data class Sizes(
     val spacingPrimary: Dp,
@@ -62,3 +61,17 @@ internal val DefaultSizes = Sizes(
     borderSizeSecondary = 1.dp,
     borderSizeTertiary = 0.dp
 )
+
+/**
+ * The [Sizes] is experimental, the relevant design specifications for size are still being improved,
+ * this is the old design plan.
+ *
+ * Some sizes will modify in the future.
+ */
+@RequiresOptIn(
+    message = "The Sizes is experimental, the relevant design specifications for size are still being improved, this is the old design plan.\n" +
+        "Some sizes will modify in the future.",
+    level = RequiresOptIn.Level.WARNING
+)
+@MustBeDocumented
+annotation class ExperimentalFlexiUISizesApi
