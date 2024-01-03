@@ -59,9 +59,14 @@ import kotlin.math.abs
 import kotlin.math.max
 
 @Stable
-internal interface IProgressIndicatorStyle {
+interface ProgressIndicatorStyle {
     val strokeWidth: Dp
     val strokeCap: StrokeCap
+}
+
+@Stable
+interface ProgressIndicatorAnimation {
+    val duration: Int
 }
 
 @Immutable
@@ -69,19 +74,29 @@ data class CircularIndicatorStyle(
     override val strokeWidth: Dp,
     override val strokeCap: StrokeCap,
     val radius: Dp,
-    val rotationDuration: Int,
-    val rotationsPerCycle: Int,
-    val startAngleOffset: Float,
-    val baseRotationAngle: Float,
-    val jumpRotationAngle: Float
-) : IProgressIndicatorStyle
+    val animation: CircularIndicatorAnimation
+) : ProgressIndicatorStyle
 
 @Immutable
 data class LinearIndicatorStyle(
     override val strokeWidth: Dp,
     override val strokeCap: StrokeCap,
     val width: Dp,
-    val animationDuration: Int,
+    val animation: LinearIndicatorAnimation
+) : ProgressIndicatorStyle
+
+@Immutable
+data class CircularIndicatorAnimation(
+    override val duration: Int,
+    val rotationsPerCycle: Int,
+    val startAngleOffset: Float,
+    val baseRotationAngle: Float,
+    val jumpRotationAngle: Float
+) : ProgressIndicatorAnimation
+
+@Immutable
+data class LinearIndicatorAnimation(
+    override val duration: Int,
     val firstLineHeadDuration: Int,
     val firstLineTailDuration: Int,
     val secondLineHeadDuration: Int,
@@ -90,7 +105,7 @@ data class LinearIndicatorStyle(
     val firstLineTailDelay: Int,
     val secondLineHeadDelay: Int,
     val secondLineTailDelay: Int
-) : IProgressIndicatorStyle
+) : ProgressIndicatorAnimation
 
 @Immutable
 data class ProgressIndicatorColors(
@@ -128,54 +143,54 @@ fun CircularProgressIndicator(
         val transition = rememberInfiniteTransition()
         val currentRotation by transition.animateValue(
             initialValue = 0,
-            style.rotationsPerCycle,
+            style.animation.rotationsPerCycle,
             Int.VectorConverter,
             infiniteRepeatable(
                 animation = tween(
-                    durationMillis = style.rotationDuration * style.rotationsPerCycle,
+                    durationMillis = style.animation.duration * style.animation.rotationsPerCycle,
                     easing = LinearEasing
                 )
             )
         )
         val baseRotation by transition.animateFloat(
             initialValue = 0f,
-            style.baseRotationAngle,
+            style.animation.baseRotationAngle,
             infiniteRepeatable(
                 animation = tween(
-                    durationMillis = style.rotationDuration,
+                    durationMillis = style.animation.duration,
                     easing = LinearEasing
                 )
             )
         )
-        val headAndTailAnimationDuration = caleHeadAndTailAnimationDuration(style.rotationDuration)
+        val headAndTailAnimationDuration = caleHeadAndTailAnimationDuration(style.animation.duration)
         val endAngle by transition.animateFloat(
             initialValue = 0f,
-            style.jumpRotationAngle,
+            style.animation.jumpRotationAngle,
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
                     0f at 0 with CircularEasing
-                    style.jumpRotationAngle at headAndTailAnimationDuration
+                    style.animation.jumpRotationAngle at headAndTailAnimationDuration
                 }
             )
         )
         val startAngle by transition.animateFloat(
             initialValue = 0f,
-            style.jumpRotationAngle,
+            style.animation.jumpRotationAngle,
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
                     0f at headAndTailAnimationDuration with CircularEasing
-                    style.jumpRotationAngle at durationMillis
+                    style.animation.jumpRotationAngle at durationMillis
                 }
             )
         )
         Canvas(modifier.progressSemantics().size(diameter)) {
             drawCircularIndicatorBackground(colors.backgroundColor, stroke)
-            val rotationAngleOffset = caleRotationAngleOffset(style.baseRotationAngle, style.jumpRotationAngle)
+            val rotationAngleOffset = caleRotationAngleOffset(style.animation.baseRotationAngle, style.animation.jumpRotationAngle)
             val currentRotationAngleOffset = (currentRotation * rotationAngleOffset) % 360f
             val sweep = abs(endAngle - startAngle)
-            val offset = style.startAngleOffset + currentRotationAngleOffset + baseRotation
+            val offset = style.animation.startAngleOffset + currentRotationAngleOffset + baseRotation
             drawIndeterminateCircularIndicator(startAngle + offset, style.strokeWidth, diameter, sweep, colors.foregroundColor, stroke)
         }
     }
@@ -211,9 +226,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animationDuration
-                    0f at style.firstLineHeadDelay with FirstLineHeadEasing
-                    1f at style.firstLineHeadDuration + style.firstLineHeadDelay
+                    durationMillis = style.animation.duration
+                    0f at style.animation.firstLineHeadDelay with FirstLineHeadEasing
+                    1f at style.animation.firstLineHeadDuration + style.animation.firstLineHeadDelay
                 }
             )
         )
@@ -222,9 +237,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animationDuration
-                    0f at style.firstLineTailDelay with FirstLineTailEasing
-                    1f at style.firstLineTailDuration + style.firstLineTailDelay
+                    durationMillis = style.animation.duration
+                    0f at style.animation.firstLineTailDelay with FirstLineTailEasing
+                    1f at style.animation.firstLineTailDuration + style.animation.firstLineTailDelay
                 }
             )
         )
@@ -233,9 +248,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animationDuration
-                    0f at style.secondLineHeadDelay with SecondLineHeadEasing
-                    1f at style.secondLineHeadDuration + style.secondLineHeadDelay
+                    durationMillis = style.animation.duration
+                    0f at style.animation.secondLineHeadDelay with SecondLineHeadEasing
+                    1f at style.animation.secondLineHeadDuration + style.animation.secondLineHeadDelay
                 }
             )
         )
@@ -244,9 +259,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animationDuration
-                    0f at style.secondLineTailDelay with SecondLineTailEasing
-                    1f at style.secondLineTailDuration + style.secondLineTailDelay
+                    durationMillis = style.animation.duration
+                    0f at style.animation.secondLineTailDelay with SecondLineTailEasing
+                    1f at style.animation.secondLineTailDuration + style.animation.secondLineTailDelay
                 }
             )
         )
@@ -388,11 +403,13 @@ private fun defaultCircularIndicatorStyle() = CircularIndicatorStyle(
     strokeWidth = DefaultIndicatorStrokeWidth,
     strokeCap = StrokeCap.Round,
     radius = DefaultCircularIndicatorRadius,
-    rotationDuration = DefaultRotationDuration,
-    rotationsPerCycle = DefaultRotationsPerCycle,
-    startAngleOffset = DefaultStartAngleOffset,
-    baseRotationAngle = DefaultBaseRotationAngle,
-    jumpRotationAngle = DefaultJumpRotationAngle
+    animation = CircularIndicatorAnimation(
+        duration = DefaultRotationDuration,
+        rotationsPerCycle = DefaultRotationsPerCycle,
+        startAngleOffset = DefaultStartAngleOffset,
+        baseRotationAngle = DefaultBaseRotationAngle,
+        jumpRotationAngle = DefaultJumpRotationAngle
+    )
 )
 
 @Composable
@@ -401,15 +418,17 @@ private fun defaultLinearIndicatorStyle() = LinearIndicatorStyle(
     strokeWidth = DefaultIndicatorStrokeWidth,
     strokeCap = StrokeCap.Round,
     width = DefaultLinearIndicatorWidth,
-    animationDuration = DefaultLinearAnimationDuration,
-    firstLineHeadDuration = DefaultFirstLineHeadDuration,
-    firstLineTailDuration = DefaultFirstLineTailDuration,
-    secondLineHeadDuration = DefaultSecondLineHeadDuration,
-    secondLineTailDuration = DefaultSecondLineTailDuration,
-    firstLineHeadDelay = DefaultFirstLineHeadDelay,
-    firstLineTailDelay = DefaultFirstLineTailDelay,
-    secondLineHeadDelay = DefaultSecondLineHeadDelay,
-    secondLineTailDelay = DefaultSecondLineTailDelay
+    animation = LinearIndicatorAnimation(
+        duration = DefaultLinearAnimationDuration,
+        firstLineHeadDuration = DefaultFirstLineHeadDuration,
+        firstLineTailDuration = DefaultFirstLineTailDuration,
+        secondLineHeadDuration = DefaultSecondLineHeadDuration,
+        secondLineTailDuration = DefaultSecondLineTailDuration,
+        firstLineHeadDelay = DefaultFirstLineHeadDelay,
+        firstLineTailDelay = DefaultFirstLineTailDelay,
+        secondLineHeadDelay = DefaultSecondLineHeadDelay,
+        secondLineTailDelay = DefaultSecondLineTailDelay
+    )
 )
 
 private fun caleRotationAngleOffset(baseRotationAngle: Float, jumpRotationAngle: Float) = (baseRotationAngle + jumpRotationAngle) % 360f
