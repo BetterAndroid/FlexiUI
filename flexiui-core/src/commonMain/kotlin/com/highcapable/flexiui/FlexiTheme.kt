@@ -32,7 +32,17 @@ fun FlexiTheme(
     colors: Colors = FlexiTheme.colors,
     shapes: Shapes = FlexiTheme.shapes,
     typography: Typography = FlexiTheme.typography,
-    sizes: Sizes = FlexiTheme.sizes,
+    content: @Composable () -> Unit
+) {
+    FlexiTheme(colors, shapes, typography, FlexiTheme.sizes, content)
+}
+
+@Composable
+fun FlexiTheme(
+    colors: Colors = FlexiTheme.colors,
+    shapes: Shapes = FlexiTheme.shapes,
+    typography: Typography = FlexiTheme.typography,
+    sizes: Sizes,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
