@@ -64,7 +64,7 @@ import com.highcapable.flexiui.interaction.Interaction
 import com.highcapable.flexiui.interaction.rippleClickable
 
 @Immutable
-data class NavigationColors(
+data class NavigationBarColors(
     val backgroundColor: Color,
     val indicatorColor: Color,
     val selectedContentColor: Color,
@@ -72,7 +72,7 @@ data class NavigationColors(
 )
 
 @Immutable
-data class NavigationStyle(
+data class NavigationBarStyle(
     val boxStyle: AreaBoxStyle,
     val contentSpacing: Dp,
     val contentPadding: ComponentPadding,
@@ -82,12 +82,12 @@ data class NavigationStyle(
 @Composable
 fun NavigationRow(
     modifier: Modifier = Modifier,
-    colors: NavigationColors = Navigation.colors,
-    style: NavigationStyle = Navigation.style,
+    colors: NavigationBarColors = NavigationBar.colors,
+    style: NavigationBarStyle = NavigationBar.style,
     arrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
     content: @Composable RowScope.() -> Unit
 ) {
-    NavigationStyleBox(modifier, horizontal = true, colors, style) {
+    NavigationBarStyleBox(modifier, horizontal = true, colors, style) {
         AreaRow(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
             color = colors.backgroundColor,
@@ -102,12 +102,12 @@ fun NavigationRow(
 @Composable
 fun NavigationColumn(
     modifier: Modifier = Modifier,
-    colors: NavigationColors = Navigation.colors,
-    style: NavigationStyle = Navigation.style,
+    colors: NavigationBarColors = NavigationBar.colors,
+    style: NavigationBarStyle = NavigationBar.style,
     arrangement: Arrangement.Vertical = Arrangement.SpaceBetween,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    NavigationStyleBox(modifier, horizontal = false, colors, style) {
+    NavigationBarStyleBox(modifier, horizontal = false, colors, style) {
         AreaColumn(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
             color = colors.backgroundColor,
@@ -120,13 +120,13 @@ fun NavigationColumn(
 }
 
 @Composable
-fun NavigationItem(
+fun NavigationBarItem(
     selected: Boolean,
     onClick: () -> Unit,
     horizontal: Boolean? = null,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: NavigationColors? = null,
+    colors: NavigationBarColors? = null,
     contentSpacing: Dp = Dp.Unspecified,
     contentPadding: PaddingValues? = null,
     contentShape: Shape? = null,
@@ -134,11 +134,11 @@ fun NavigationItem(
     icon: @Composable () -> Unit,
     text: @Composable (() -> Unit)? = null
 ) {
-    val currentHorizontal = horizontal ?: LocalHorizontalNavigation.current
-    val currentColors = colors ?: LocalNavigationColors.current ?: Navigation.colors
-    val currentContentSpacing = contentSpacing.orNull() ?: LocalNavigationContentSpacing.current.orNull() ?: Navigation.style.contentSpacing
-    val currentContentPadding = contentPadding ?: LocalNavigationContentPadding.current ?: Navigation.style.contentPadding
-    val currentContentShape = contentShape ?: LocalNavigationContentShape.current ?: Navigation.style.contentShape
+    val currentHorizontal = horizontal ?: LocalHorizontalNavigationBar.current
+    val currentColors = colors ?: LocalNavigationBarColors.current ?: NavigationBar.colors
+    val currentContentSpacing = contentSpacing.orNull() ?: LocalNavigationBarContentSpacing.current.orNull() ?: NavigationBar.style.contentSpacing
+    val currentContentPadding = contentPadding ?: LocalNavigationBarContentPadding.current ?: NavigationBar.style.contentPadding
+    val currentContentShape = contentShape ?: LocalNavigationBarContentShape.current ?: NavigationBar.style.contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
     val animatedContentColor by animateColorAsState(if (selected) currentColors.selectedContentColor else currentColors.unselectedContentColor)
     val currentIconStyle = LocalIconStyle.current.copy(tint = animatedContentColor)
@@ -196,48 +196,48 @@ fun NavigationItem(
 }
 
 @Composable
-private fun NavigationStyleBox(
+private fun NavigationBarStyleBox(
     modifier: Modifier,
     horizontal: Boolean,
-    colors: NavigationColors,
-    style: NavigationStyle,
+    colors: NavigationBarColors,
+    style: NavigationBarStyle,
     content: @Composable () -> Unit
 ) {
     Box(modifier = modifier) {
         CompositionLocalProvider(
-            LocalHorizontalNavigation provides horizontal,
-            LocalNavigationColors provides colors,
-            LocalNavigationContentPadding provides style.contentPadding,
-            LocalNavigationContentShape provides style.contentShape,
+            LocalHorizontalNavigationBar provides horizontal,
+            LocalNavigationBarColors provides colors,
+            LocalNavigationBarContentPadding provides style.contentPadding,
+            LocalNavigationBarContentShape provides style.contentShape,
             content = content
         )
     }
 }
 
-object Navigation {
-    val colors: NavigationColors
+object NavigationBar {
+    val colors: NavigationBarColors
         @Composable
         @ReadOnlyComposable
-        get() = defaultNavigationColors()
-    val style: NavigationStyle
+        get() = defaultNavigationBarColors()
+    val style: NavigationBarStyle
         @Composable
         @ReadOnlyComposable
-        get() = defaultNavigationStyle()
+        get() = defaultNavigationBarStyle()
 }
 
-private val LocalHorizontalNavigation = compositionLocalOf { true }
+private val LocalHorizontalNavigationBar = compositionLocalOf { true }
 
-private val LocalNavigationColors = compositionLocalOf<NavigationColors?> { null }
+private val LocalNavigationBarColors = compositionLocalOf<NavigationBarColors?> { null }
 
-private val LocalNavigationContentSpacing = compositionLocalOf { Dp.Unspecified }
+private val LocalNavigationBarContentSpacing = compositionLocalOf { Dp.Unspecified }
 
-private val LocalNavigationContentPadding = compositionLocalOf<PaddingValues?> { null }
+private val LocalNavigationBarContentPadding = compositionLocalOf<PaddingValues?> { null }
 
-private val LocalNavigationContentShape = compositionLocalOf<Shape?> { null }
+private val LocalNavigationBarContentShape = compositionLocalOf<Shape?> { null }
 
 @Composable
 @ReadOnlyComposable
-private fun defaultNavigationColors() = NavigationColors(
+private fun defaultNavigationBarColors() = NavigationBarColors(
     backgroundColor = AreaBox.color,
     indicatorColor = LocalColors.current.themeTertiary,
     selectedContentColor = LocalColors.current.themePrimary,
@@ -246,7 +246,7 @@ private fun defaultNavigationColors() = NavigationColors(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultNavigationStyle() = NavigationStyle(
+private fun defaultNavigationBarStyle() = NavigationBarStyle(
     boxStyle = AreaBox.style,
     contentSpacing = LocalSizes.current.spacingSecondary,
     contentPadding = ComponentPadding(
