@@ -14,7 +14,13 @@ sweetDependency {
     isUseDependencyResolutionManagement = false
 }
 sweetProperty {
-    global { sourcesCode { className = "FlexiUI" } }
+    global {
+        sourcesCode {
+            className = "FlexiUI"
+            includeKeys("^project\\..*\$".toRegex())
+            isEnableRestrictedAccess = true
+        }
+    }
     rootProject { all { isEnable = false } }
     project(
         ":samples",

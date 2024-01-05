@@ -3,7 +3,8 @@ plugins {
     autowire(libs.plugins.jetbrains.compose)
 }
 
-group = property.project.sharedApp.packageName
+group = property.project.samples.desktopApp.groupName
+version = property.project.samples.desktopApp.version
 
 kotlin {
     jvm("desktop")
@@ -24,6 +25,6 @@ java {
 
 compose.desktop {
     application {
-        mainClass = "${property.project.sharedApp.packageName}.MainKt"
+        mainClass = "$group.MainKt"
     }
 }

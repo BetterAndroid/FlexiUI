@@ -2,9 +2,11 @@ plugins {
     autowire(libs.plugins.kotlin.multiplatform)
     autowire(libs.plugins.android.library)
     autowire(libs.plugins.jetbrains.compose)
+    autowire(libs.plugins.maven.publish)
 }
 
 group = property.project.groupName
+version = property.project.flexiui.core.version
 
 kotlin {
     androidTarget {
@@ -59,7 +61,7 @@ kotlin {
 }
 
 android {
-    namespace = property.project.groupName
+    namespace = property.project.flexiui.core.namespace
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")

@@ -4,8 +4,6 @@ plugins {
     autowire(libs.plugins.jetbrains.compose)
 }
 
-group = property.project.sharedApp.packageName
-
 kotlin {
     androidTarget()
     jvmToolchain(17)
@@ -19,7 +17,7 @@ kotlin {
 }
 
 android {
-    namespace = property.project.sharedApp.packageName
+    namespace = property.project.samples.androidApp.packageName
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
@@ -27,11 +25,11 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = property.project.sharedApp.packageName
+        applicationId = property.project.samples.androidApp.packageName
         minSdk = property.project.android.minSdk
         targetSdk = property.project.android.targetSdk
-        versionName = property.project.androidApp.versionName
-        versionCode = property.project.androidApp.versionCode
+        versionName = property.project.samples.androidApp.versionName
+        versionCode = property.project.samples.androidApp.versionCode
     }
     buildTypes {
         release {

@@ -21,6 +21,9 @@ plugins:
   com.android.library:
     alias: android-library
     version-ref: android-application
+  com.vanniktech.maven.publish:
+    alias: maven-publish
+    version: 0.26.0
 
 libraries:
   # Use a placeholder for the alpha / beta compose version

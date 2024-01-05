@@ -4,8 +4,6 @@ plugins {
     autowire(libs.plugins.jetbrains.compose)
 }
 
-group = property.project.sharedApp.packageName
-
 kotlin {
     androidTarget()
     jvm("desktop")
@@ -25,19 +23,19 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                api(com.highcapable.betterandroid.compose.multiplatform)
                 api(projects.flexiuiCore)
+                api(com.highcapable.betterandroid.compose.multiplatform)
             }
         }
         val androidMain by getting {
             dependencies {
-                api(com.highcapable.betterandroid.ui.component)
-                api(com.highcapable.betterandroid.ui.extension)
-                api(com.highcapable.betterandroid.system.extension)
                 api(androidx.core.core.ktx)
                 api(androidx.appcompat.appcompat)
                 api(androidx.activity.activity)
                 api(androidx.activity.activity.compose)
+                api(com.highcapable.betterandroid.ui.component)
+                api(com.highcapable.betterandroid.ui.extension)
+                api(com.highcapable.betterandroid.system.extension)
             }
         }
         val desktopMain by getting {
@@ -58,7 +56,7 @@ kotlin {
 }
 
 android {
-    namespace = property.project.sharedApp.packageName
+    namespace = property.project.samples.shared.namespace
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
