@@ -30,8 +30,17 @@ import androidx.compose.runtime.ReadOnlyComposable
 @ReadOnlyComposable
 actual fun isDynamicColorsAvailable() = false
 
-internal actual val DynamicLightColors = DefaultLightColors
+internal actual val DynamicLightColors
+    @Composable
+    @ReadOnlyComposable
+    get() = DefaultLightColors
 
-internal actual val DynamicDarkColors = DefaultDarkColors
+internal actual val DynamicDarkColors
+    @Composable
+    @ReadOnlyComposable
+    get() = DefaultDarkColors
 
-internal actual val DynamicBlackColors = DefaultBlackColors
+internal actual val DynamicBlackColors
+    @Composable
+    @ReadOnlyComposable
+    get() = DefaultBlackColors
