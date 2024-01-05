@@ -28,7 +28,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 
 @Composable
 @ReadOnlyComposable
-actual fun isDynamicColorsAvailable() = false
+actual fun isDynamicColorAvailable() = false
 
 internal actual val DynamicLightColors
     @Composable

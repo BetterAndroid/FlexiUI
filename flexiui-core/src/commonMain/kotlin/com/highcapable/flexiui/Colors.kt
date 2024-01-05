@@ -369,7 +369,7 @@ private val BlueBlackColors = Colors(
 
 @Composable
 @ReadOnlyComposable
-expect fun isDynamicColorsAvailable(): Boolean
+expect fun isDynamicColorAvailable(): Boolean
 
 @Composable
 @ReadOnlyComposable

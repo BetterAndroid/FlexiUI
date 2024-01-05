@@ -32,7 +32,7 @@ import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
 
 @Composable
 @ReadOnlyComposable
-actual fun isDynamicColorsAvailable() = SystemColors.isAvailable
+actual fun isDynamicColorAvailable() = SystemColors.isAvailable
 
 internal actual val DynamicLightColors
     @Composable
