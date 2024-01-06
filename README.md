@@ -1,4 +1,4 @@
-# Flexi UI (Jetpack Compose)
+# Flexi UI for Jetpack Compose
 
 [![GitHub license](https://img.shields.io/github/license/BetterAndroid/FlexiUI?color=blue)](https://github.com/BetterAndroid/FlexiUI/blob/main/LICENSE)
 [![Telegram](https://img.shields.io/badge/discussion-Telegram-blue.svg?logo=telegram)](https://t.me/BetterAndroid)
@@ -20,6 +20,10 @@ This project belongs to the above-mentioned organization, **click the link above
 > After the project is officially released, the code will be pushed from `compose-dev` to the `compose` branch.
 
 You can always contribute your code to this branch (if possible) to improve the project faster.
+
+## Third-Party Open Source Usage Statement
+
+- [Material Design](https://m2.material.io/)
 
 ## License
 
