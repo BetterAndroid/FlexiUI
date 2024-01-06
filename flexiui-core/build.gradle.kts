@@ -19,7 +19,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = projects.flexiuiCore.name
+            baseName = property.project.flexiui.core.iosModuleName
             isStatic = true
         }
     }
