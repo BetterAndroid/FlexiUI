@@ -52,7 +52,7 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.LocalTypography
-import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.ArrowNaviUp
 import com.highcapable.flexiui.resources.icon.FinishClose
 
@@ -222,7 +222,7 @@ interface AppBarScope {
             style = style,
             enabled = enabled,
             interactionSource = interactionSource
-        ) { Icon(imageVector = Icons.FinishClose) }
+        ) { Icon(imageVector = FlexiIcons.FinishClose) }
     }
 
     /**
@@ -250,7 +250,7 @@ interface AppBarScope {
             style = style,
             enabled = enabled,
             interactionSource = interactionSource
-        ) { Icon(imageVector = Icons.ArrowNaviUp) }
+        ) { Icon(imageVector = FlexiIcons.ArrowNaviUp) }
     }
 
     /**

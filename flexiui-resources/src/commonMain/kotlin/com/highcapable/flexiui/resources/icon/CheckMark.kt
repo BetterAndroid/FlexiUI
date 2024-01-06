@@ -31,9 +31,9 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ImageVector
-import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.FlexiIcons
 
-val Icons.CheckMark by lazy {
+val FlexiIcons.CheckMark by lazy {
     ImageVector(
         name = "check_mark",
         defaultWidth = 32.dp,

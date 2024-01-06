@@ -92,7 +92,7 @@ import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.betterandroid.compose.extension.ui.solidColor
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.Backspace
 import com.highcapable.flexiui.resources.icon.ViewerClose
 import com.highcapable.flexiui.resources.icon.ViewerOpen
@@ -483,7 +483,7 @@ fun PasswordTextField(
                     },
                     enabled = enabled,
                     interactionSource = cInteractionSource
-                ) { Icon(imageVector = if (passwordVisible) Icons.ViewerOpen else Icons.ViewerClose) }
+                ) { Icon(imageVector = if (passwordVisible) FlexiIcons.ViewerOpen else FlexiIcons.ViewerClose) }
             }
         }
     )
@@ -650,7 +650,7 @@ fun BackspaceTextField(
                     style = IconButtonDefaults.style.copy(padding = TextDecorIconPadding),
                     enabled = enabled,
                     interactionSource = cInteractionSource
-                ) { Icon(imageVector = Icons.Backspace) }
+                ) { Icon(imageVector = FlexiIcons.Backspace) }
             }
         }
     )

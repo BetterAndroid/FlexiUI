@@ -26,4 +26,4 @@ package com.highcapable.flexiui.resources
 /**
  * The default icon resources for Flexi UI.
  */
-object Icons
+object FlexiIcons

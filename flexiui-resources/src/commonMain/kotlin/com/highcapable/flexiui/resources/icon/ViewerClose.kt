@@ -31,9 +31,9 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ImageVector
-import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.FlexiIcons
 
-val Icons.ViewerClose by lazy {
+val FlexiIcons.ViewerClose by lazy {
     ImageVector(
         name = "viewer_close",
         defaultWidth = 32.dp,

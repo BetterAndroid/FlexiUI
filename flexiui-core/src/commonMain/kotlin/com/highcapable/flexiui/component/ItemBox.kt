@@ -45,7 +45,7 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.LocalTypography
 import com.highcapable.flexiui.interaction.rippleClickable
-import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.ArrowForward
 
 /**
@@ -133,7 +133,7 @@ fun HorizontalItemBox(
                 )
             }
             if (showArrowIcon) Icon(
-                imageVector = Icons.ArrowForward,
+                imageVector = FlexiIcons.ArrowForward,
                 style = IconDefaults.style.copy(
                     size = DefaultArrowIconSize,
                     tint = colors.arrowIconTint

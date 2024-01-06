@@ -57,7 +57,7 @@ import com.highcapable.betterandroid.compose.extension.ui.clickable
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.resources.Icons
+import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.CheckMark
 
 /**
@@ -145,7 +145,7 @@ fun CheckBox(
                         scaleX = animatedContentLayer,
                         scaleY = animatedContentLayer
                     ),
-                imageVector = Icons.CheckMark,
+                imageVector = FlexiIcons.CheckMark,
                 style = IconDefaults.style.copy(tint = colors.contentColor)
             )
         }
