@@ -35,9 +35,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
-                implementation(compose.foundation)
+                // Mark foundation with api like material do.
+                api(compose.foundation)
                 implementation(composeExt.material.ripple)
-                implementation(projects.flexiuiResources)
+                api(projects.flexiuiResources)
                 api(com.highcapable.betterandroid.compose.extension)
             }
         }
