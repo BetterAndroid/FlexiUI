@@ -75,6 +75,7 @@ fun rememberRipple(style: RippleStyle = InteractionDefaults.rippleStyle) =
  * @param onClickLabel the click label.
  * @param role the role.
  * @param onClick the click event.
+ * @return [Modifier]
  */
 fun Modifier.rippleClickable(
     rippleStyle: RippleStyle? = null,
@@ -119,6 +120,7 @@ fun Modifier.rippleClickable(
  * @param onLongClick the long click event.
  * @param onDoubleClick the double click event.
  * @param onClick the click event.
+ * @return [Modifier]
  */
 fun Modifier.rippleCombinedClickable(
     rippleStyle: RippleStyle? = null,
@@ -168,6 +170,7 @@ fun Modifier.rippleCombinedClickable(
  * @param enabled whether to enable the event, default is true.
  * @param role the role.
  * @param onValueChange the value change event.
+ * @return [Modifier]
  */
 fun Modifier.rippleToggleable(
     value: Boolean,
@@ -208,6 +211,7 @@ fun Modifier.rippleToggleable(
  * @param enabled whether to enable the event, default is true.
  * @param role the role.
  * @param onClick the click event.
+ * @return [Modifier]
  */
 fun Modifier.rippleSelectable(
     selected: Boolean,
