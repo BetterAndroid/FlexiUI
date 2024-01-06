@@ -26,6 +26,10 @@ plugins:
     version: 0.26.0
 
 libraries:
+  org.jetbrains.compose.material:
+    material-ripple:
+      alias: composeExt-material-ripple
+      version-ref: <plugins>::jetbrains-compose
   # Use a placeholder for the alpha / beta compose version
   # In the project to use "androidx.compose.android.version" to obtain the version
   # and use the "resolutionStrategy" to replace all the current "stable" versions

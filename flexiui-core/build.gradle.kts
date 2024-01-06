@@ -36,8 +36,7 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                // TODO: We need to remove this and replace with "material-ripple"
-                implementation(compose.material)
+                implementation(composeExt.material.ripple)
                 implementation(projects.flexiuiResources)
                 api(com.highcapable.betterandroid.compose.extension)
             }
