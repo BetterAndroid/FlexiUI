@@ -33,6 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ImageVector
 import com.highcapable.flexiui.resources.FlexiIcons
 
+/**
+ * Returns a [ImageVector] named "viewer_close".
+ * @return [ImageVector]
+ */
 val FlexiIcons.ViewerClose by lazy {
     ImageVector(
         name = "viewer_close",

@@ -33,6 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ImageVector
 import com.highcapable.flexiui.resources.FlexiIcons
 
+/**
+ * Returns a [ImageVector] named "backspace".
+ * @return [ImageVector]
+ */
 val FlexiIcons.Backspace by lazy {
     ImageVector(
         name = "backspace",

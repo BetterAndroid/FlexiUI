@@ -33,6 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ImageVector
 import com.highcapable.flexiui.resources.FlexiIcons
 
+/**
+ * Returns a [ImageVector] named "finish_close".
+ * @return [ImageVector]
+ */
 val FlexiIcons.FinishClose by lazy {
     ImageVector(
         name = "finish_close",

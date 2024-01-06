@@ -33,6 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ImageVector
 import com.highcapable.flexiui.resources.FlexiIcons
 
+/**
+ * Returns a [ImageVector] named "check_mark".
+ * @return [ImageVector]
+ */
 val FlexiIcons.CheckMark by lazy {
     ImageVector(
         name = "check_mark",
