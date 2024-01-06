@@ -23,6 +23,7 @@
 
 package com.highcapable.flexiui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,13 @@ import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.ArrowForward
 
+/**
+ * Colors defines for item box.
+ * @param backgroundColor the background color.
+ * @param titleTextColor the title text color.
+ * @param subTextColor the sub text color.
+ * @param arrowIconTint the arrow icon tint.
+ */
 @Immutable
 data class ItemBoxColors(
     val backgroundColor: Color,
@@ -55,6 +63,13 @@ data class ItemBoxColors(
     val arrowIconTint: Color
 )
 
+/**
+ * Style defines for item box.
+ * @param boxStyle the style of area box.
+ * @param contentSpacing the spacing between the components of content.
+ * @param titleTextStyle the title text style.
+ * @param subTextStyle the sub text style.
+ */
 @Immutable
 data class ItemBoxStyle(
     val boxStyle: AreaBoxStyle,
@@ -63,12 +78,26 @@ data class ItemBoxStyle(
     val subTextStyle: TextStyle
 )
 
+/**
+ * Flexi UI horizontal item box.
+ * @see VerticalItemBox
+ * @param onClick the callback when item is clicked.
+ * @param modifier the [Modifier] to be applied to this item box.
+ * @param colors the colors of item box, default is [ItemBoxDefaults.colors].
+ * @param style the style of item box, default is [ItemBoxDefaults.style].
+ * @param enabled whether this item box is enabled, default is true.
+ * @param showArrowIcon whether show arrow icon, default is true.
+ * @param interactionSource the interaction source of this item box.
+ * @param logoImage the logo image of the [HorizontalItemBox], should typically be [Icon] or [Image].
+ * @param titleText the title text of the [HorizontalItemBox], should typically be [Text].
+ * @param subText the sub text of the [HorizontalItemBox], should typically be [Text].
+ */
 @Composable
 fun HorizontalItemBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ItemBoxColors = ItemBox.colors,
-    style: ItemBoxStyle = ItemBox.style,
+    colors: ItemBoxColors = ItemBoxDefaults.colors,
+    style: ItemBoxStyle = ItemBoxDefaults.style,
     enabled: Boolean = true,
     showArrowIcon: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -105,7 +134,7 @@ fun HorizontalItemBox(
             }
             if (showArrowIcon) Icon(
                 imageVector = Icons.ArrowForward,
-                style = Icon.style.copy(
+                style = IconDefaults.style.copy(
                     size = DefaultArrowIconSize,
                     tint = colors.arrowIconTint
                 )
@@ -114,12 +143,25 @@ fun HorizontalItemBox(
     }
 }
 
+/**
+ * Flexi UI vertical item box.
+ * @see HorizontalItemBox
+ * @param onClick the callback when item is clicked.
+ * @param modifier the [Modifier] to be applied to this item box.
+ * @param colors the colors of item box, default is [ItemBoxDefaults.colors].
+ * @param style the style of item box, default is [ItemBoxDefaults.style].
+ * @param enabled whether this item box is enabled, default is true.
+ * @param interactionSource the interaction source of this item box.
+ * @param logoImage the logo image of the [VerticalItemBox], should typically be [Icon] or [Image].
+ * @param titleText the title text of the [VerticalItemBox], should typically be [Text].
+ * @param subText the sub text of the [VerticalItemBox], should typically be [Text].
+ */
 @Composable
 fun VerticalItemBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ItemBoxColors = ItemBox.colors,
-    style: ItemBoxStyle = ItemBox.style,
+    colors: ItemBoxColors = ItemBoxDefaults.colors,
+    style: ItemBoxStyle = ItemBoxDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     logoImage: @Composable (() -> Unit)? = null,
@@ -167,7 +209,10 @@ private fun ItemBoxContent(
     }
 }
 
-object ItemBox {
+/**
+ * Defaults of item box.
+ */
+object ItemBoxDefaults {
     val colors: ItemBoxColors
         @Composable
         get() = defaultItemBoxColors()
@@ -179,7 +224,7 @@ object ItemBox {
 @Composable
 @ReadOnlyComposable
 private fun defaultItemBoxColors() = ItemBoxColors(
-    backgroundColor = AreaBox.color,
+    backgroundColor = AreaBoxDefaults.color,
     titleTextColor = LocalColors.current.textPrimary,
     subTextColor = LocalColors.current.textSecondary,
     arrowIconTint = LocalColors.current.textSecondary
@@ -188,7 +233,7 @@ private fun defaultItemBoxColors() = ItemBoxColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultItemBoxStyle() = ItemBoxStyle(
-    boxStyle = AreaBox.style,
+    boxStyle = AreaBoxDefaults.style,
     contentSpacing = LocalSizes.current.spacingSecondary,
     titleTextStyle = LocalTypography.current.primary,
     subTextStyle = LocalTypography.current.secondary

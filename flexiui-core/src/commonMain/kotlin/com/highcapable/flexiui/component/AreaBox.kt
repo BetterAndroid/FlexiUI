@@ -55,6 +55,13 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 
+/**
+ * Style defines for area box.
+ * @param padding the padding of content.
+ * @param shape the shape of the box.
+ * @param border the border stroke of the box.
+ * @param shadowSize the shadow size of the box.
+ */
 @Immutable
 data class AreaBoxStyle(
     val padding: ComponentPadding,
@@ -63,12 +70,24 @@ data class AreaBoxStyle(
     val shadowSize: Dp
 )
 
+/**
+ * Flexi UI area box of [Box].
+ * @see AreaRow
+ * @see AreaColumn
+ * @param modifier the [Modifier] to be applied to this area box.
+ * @param initializer the [Modifier] initializer, earlies than [modifier].
+ * @param color the background color of this area box, default is [AreaBoxDefaults.color].
+ * @param style the style of this area box, default is [AreaBoxDefaults.style].
+ * @param contentAlignment the alignment of the content inside this area box, default is [Alignment.TopStart].
+ * @param propagateMinConstraints whether to propagate the min constraints from the content to this area box.
+ * @param content the content of the [AreaBox].
+ */
 @Composable
 fun AreaBox(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    color: Color = AreaBox.color,
-    style: AreaBoxStyle = AreaBox.style,
+    color: Color = AreaBoxDefaults.color,
+    style: AreaBoxStyle = AreaBoxDefaults.style,
     contentAlignment: Alignment = Alignment.TopStart,
     propagateMinConstraints: Boolean = false,
     content: @Composable BoxScope.() -> Unit
@@ -86,12 +105,24 @@ fun AreaBox(
     }
 }
 
+/**
+ * Flexi UI area box of [Row].
+ * @see AreaColumn
+ * @see AreaBox
+ * @param modifier the [Modifier] to be applied to this area row.
+ * @param initializer the [Modifier] initializer, earlies than [modifier].
+ * @param color the background color of this area row, default is [AreaBoxDefaults.color].
+ * @param style the style of this area row, default is [AreaBoxDefaults.style].
+ * @param horizontalArrangement the horizontal arrangement of the content inside this area row, default is [Arrangement.Start].
+ * @param verticalAlignment the vertical alignment of the content inside this area row, default is [Alignment.Top].
+ * @param content the content of the [AreaRow].
+ */
 @Composable
 fun AreaRow(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    color: Color = AreaBox.color,
-    style: AreaBoxStyle = AreaBox.style,
+    color: Color = AreaBoxDefaults.color,
+    style: AreaBoxStyle = AreaBoxDefaults.style,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     content: @Composable RowScope.() -> Unit
@@ -109,12 +140,24 @@ fun AreaRow(
     }
 }
 
+/**
+ * Flexi UI area box of [Column].
+ * @see AreaRow
+ * @see AreaBox
+ * @param modifier the [Modifier] to be applied to this area column.
+ * @param initializer the [Modifier] initializer, earlies than [modifier].
+ * @param color the background color of this area column, default is [AreaBoxDefaults.color].
+ * @param style the style of this area column, default is [AreaBoxDefaults.style].
+ * @param verticalArrangement the vertical arrangement of the content inside this area column, default is [Arrangement.Top].
+ * @param horizontalAlignment the horizontal alignment of the content inside this area column, default is [Alignment.Start].
+ * @param content the content of the [AreaColumn].
+ */
 @Composable
 fun AreaColumn(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    color: Color = AreaBox.color,
-    style: AreaBoxStyle = AreaBox.style,
+    color: Color = AreaBoxDefaults.color,
+    style: AreaBoxStyle = AreaBoxDefaults.style,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable ColumnScope.() -> Unit
@@ -153,7 +196,10 @@ private fun Modifier.areaBox(
         .padding(style.padding)
 }
 
-object AreaBox {
+/**
+ * Defaults of area box.
+ */
+object AreaBoxDefaults {
     val color: Color
         @Composable
         @ReadOnlyComposable

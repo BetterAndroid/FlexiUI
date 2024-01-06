@@ -30,6 +30,10 @@ import androidx.compose.ui.platform.LocalContext
 import com.highcapable.betterandroid.ui.extension.component.feature.SystemColors
 import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
 
+/**
+ * Whether dynamic color is available for current system.
+ * @return [Boolean]
+ */
 @Composable
 @ReadOnlyComposable
 actual fun isDynamicColorAvailable() = SystemColors.isAvailable
@@ -46,8 +50,7 @@ internal actual val DynamicLightColors
         themeSecondary = Color(DynamicColors.materialDynamicPrimary(60)).copy(alpha = 0.65f),
         themeTertiary = Color(DynamicColors.materialDynamicPrimary(60)).copy(alpha = 0.15f),
         textPrimary = DefaultLightColors.textPrimary,
-        textSecondary = DefaultLightColors.textSecondary,
-        isLight = true
+        textSecondary = DefaultLightColors.textSecondary
     ) else DefaultLightColors
 
 internal actual val DynamicDarkColors
@@ -62,8 +65,7 @@ internal actual val DynamicDarkColors
         themeSecondary = Color(DynamicColors.materialDynamicSecondary(60)).copy(alpha = 0.65f),
         themeTertiary = Color(DynamicColors.materialDynamicSecondary(60)).copy(alpha = 0.25f),
         textPrimary = DefaultDarkColors.textPrimary,
-        textSecondary = DefaultDarkColors.textSecondary,
-        isLight = false
+        textSecondary = DefaultDarkColors.textSecondary
     ) else DefaultDarkColors
 
 internal actual val DynamicBlackColors
@@ -78,8 +80,7 @@ internal actual val DynamicBlackColors
         themeSecondary = Color(DynamicColors.materialDynamicSecondary(60)).copy(alpha = 0.65f),
         themeTertiary = Color(DynamicColors.materialDynamicSecondary(60)).copy(alpha = 0.27f),
         textPrimary = DefaultBlackColors.textPrimary,
-        textSecondary = DefaultBlackColors.textSecondary,
-        isLight = false
+        textSecondary = DefaultBlackColors.textSecondary
     ) else DefaultBlackColors
 
 private val DynamicColors

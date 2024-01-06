@@ -27,6 +27,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 
+/**
+ * Customize Flexi UI theme styles.
+ *
+ * Use this function to provide your own theme styles to the content.
+ * @param colors the colors, default is [FlexiTheme.colors].
+ * @param shapes the shapes, default is [FlexiTheme.shapes].
+ * @param typography the typography, default is [FlexiTheme.typography].
+ * @param content the content.
+ */
 @Composable
 fun FlexiTheme(
     colors: Colors = FlexiTheme.colors,
@@ -37,6 +46,17 @@ fun FlexiTheme(
     FlexiTheme(colors, shapes, typography, FlexiTheme.sizes, content)
 }
 
+/**
+ * Customize Flexi UI theme styles.
+ *
+ * Use this function to provide your own theme styles to the content.
+ *
+ * - Note: The [sizes] is experimental for now, its may be change in the future.
+ * @param colors the colors, default is [FlexiTheme.colors].
+ * @param shapes the shapes, default is [FlexiTheme.shapes].
+ * @param sizes the sizes.
+ * @param typography the typography, default is [FlexiTheme.typography].
+ */
 @Composable
 fun FlexiTheme(
     colors: Colors = FlexiTheme.colors,
@@ -53,6 +73,9 @@ fun FlexiTheme(
     ) { FlexiThemeContent(content) }
 }
 
+/**
+ * Defaults of Flexi UI theme styles.
+ */
 object FlexiTheme {
     val colors: Colors
         @Composable

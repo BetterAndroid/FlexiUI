@@ -60,6 +60,12 @@ import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.CheckMark
 
+/**
+ * Colors defines for check box.
+ * @param contentColor the color of the check mark.
+ * @param inactiveColor the color of the unchecked box.
+ * @param activeColor the color of the checked box.
+ */
 @Immutable
 data class CheckBoxColors(
     val contentColor: Color,
@@ -67,6 +73,16 @@ data class CheckBoxColors(
     val activeColor: Color
 )
 
+/**
+ * Style defines for check box.
+ * @param contentSpacing the spacing between the check mark and the content.
+ * @param contentSize the size of the check mark.
+ * @param strokeSize the stroke size.
+ * @param pressedGain the gain when pressed.
+ * @param hoveredGain the gain when hovered.
+ * @param shape the shape.
+ * @param border the border stroke.
+ */
 @Immutable
 data class CheckBoxStyle(
     val contentSpacing: Dp,
@@ -78,13 +94,24 @@ data class CheckBoxStyle(
     val border: BorderStroke
 )
 
+/**
+ * Flexi UI check box.
+ * @param checked the checked state of this check box.
+ * @param onCheckedChange the callback when checked state changed.
+ * @param modifier the [Modifier] to be applied to this check box.
+ * @param colors the colors of this check box, default is [CheckBoxDefaults.colors].
+ * @param style the style of this check box, default is [CheckBoxDefaults.style].
+ * @param enabled whether this check box is enabled, default is true.
+ * @param interactionSource the interaction source of this check box.
+ * @param content the content of the [RowScope] to be applied to the [CheckBox], should typically be [Text].
+ */
 @Composable
 fun CheckBox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: CheckBoxColors = CheckBox.colors,
-    style: CheckBoxStyle = CheckBox.style,
+    colors: CheckBoxColors = CheckBoxDefaults.colors,
+    style: CheckBoxStyle = CheckBoxDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable (RowScope.() -> Unit)? = null
@@ -119,7 +146,7 @@ fun CheckBox(
                         scaleY = animatedContentLayer
                     ),
                 imageVector = Icons.CheckMark,
-                style = Icon.style.copy(tint = colors.contentColor)
+                style = IconDefaults.style.copy(tint = colors.contentColor)
             )
         }
         content?.also { content ->
@@ -131,7 +158,10 @@ fun CheckBox(
     }
 }
 
-object CheckBox {
+/**
+ * Defaults of check box.
+ */
+object CheckBoxDefaults {
     val colors: CheckBoxColors
         @Composable
         @ReadOnlyComposable

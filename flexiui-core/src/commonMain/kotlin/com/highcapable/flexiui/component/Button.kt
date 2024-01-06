@@ -51,17 +51,29 @@ import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.Interaction
+import com.highcapable.flexiui.interaction.InteractionDefaults
 import com.highcapable.flexiui.interaction.RippleStyle
 import com.highcapable.flexiui.interaction.rippleClickable
 import com.highcapable.flexiui.interaction.rippleToggleable
 
+/**
+ * Colors defines for button.
+ * @param contentColor the content color, usually for icon tint and text color.
+ * @param backgroundColor the background color.
+ */
 @Immutable
 data class ButtonColors(
     val contentColor: Color,
     val backgroundColor: Color
 )
 
+/**
+ * Style defines for button.
+ * @param rippleStyle the ripple style of this button.
+ * @param padding the padding of content.
+ * @param shape the shape.
+ * @param border the border stroke.
+ */
 @Immutable
 data class ButtonStyle(
     val rippleStyle: RippleStyle,
@@ -70,12 +82,26 @@ data class ButtonStyle(
     val border: BorderStroke
 )
 
+/**
+ * Flexi UI button.
+ * @see IconButton
+ * @see IconToggleButton
+ * @param onClick the callback when button is clicked.
+ * @param modifier the [Modifier] to be applied to this button.
+ * @param colors the colors of this button, default is [ButtonDefaults.colors].
+ * @param style the style of this button, default is [ButtonDefaults.style].
+ * @param enabled whether this button is enabled, default is true.
+ * @param interactionSource the interaction source of this button.
+ * @param header the header content of the [Button], should typically be [Icon] or [Text].
+ * @param footer the footer content of the [Button], should typically be [Icon] or [Text].
+ * @param content the content of the [Button], should typically be [Icon] or [Text].
+ */
 @Composable
 fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = Button.colors,
-    style: ButtonStyle = Button.style,
+    colors: ButtonColors = ButtonDefaults.colors,
+    style: ButtonStyle = ButtonDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     header: @Composable () -> Unit = {},
@@ -119,12 +145,24 @@ fun Button(
     }
 }
 
+/**
+ * Flexi UI icon button.
+ * @see IconToggleButton
+ * @see Button
+ * @param onClick the callback when button is clicked.
+ * @param modifier the [Modifier] to be applied to this button.
+ * @param colors the colors of this button, default is [IconButtonDefaults.colors].
+ * @param style the style of this button, default is [IconButtonDefaults.style].
+ * @param enabled whether this button is enabled, default is true.
+ * @param interactionSource the interaction source of this button.
+ * @param content the content of the [IconButton], should typically be [Icon].
+ */
 @Composable
 fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = IconButton.colors,
-    style: ButtonStyle = IconButton.style,
+    colors: ButtonColors = IconButtonDefaults.colors,
+    style: ButtonStyle = IconButtonDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
@@ -151,13 +189,26 @@ fun IconButton(
     }
 }
 
+/**
+ * Flexi UI icon toggle button.
+ * @see IconButton
+ * @see Button
+ * @param checked the checked state of this button.
+ * @param onCheckedChange the callback when checked state is changed.
+ * @param modifier the [Modifier] to be applied to this button.
+ * @param colors the colors of this button, default is [IconButtonDefaults.colors].
+ * @param style the style of this button, default is [IconButtonDefaults.style].
+ * @param enabled whether this button is enabled, default is true.
+ * @param interactionSource the interaction source of this button.
+ * @param content the content of the [IconToggleButton], should typically be [Icon].
+ */
 @Composable
 fun IconToggleButton(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = IconButton.colors,
-    style: ButtonStyle = IconButton.style,
+    colors: ButtonColors = IconButtonDefaults.colors,
+    style: ButtonStyle = IconButtonDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
@@ -205,7 +256,10 @@ private fun Modifier.button(
         .then(then)
 }
 
-object Button {
+/**
+ * Defaults of button.
+ */
+object ButtonDefaults {
     val colors: ButtonColors
         @Composable
         @ReadOnlyComposable
@@ -216,7 +270,10 @@ object Button {
         get() = defaultButtonStyle()
 }
 
-object IconButton {
+/**
+ * Defaults of icon button.
+ */
+object IconButtonDefaults {
     val colors: ButtonColors
         @Composable
         @ReadOnlyComposable
@@ -246,12 +303,16 @@ private fun defaultContentButtonColors() = ButtonColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultPrimaryButtonRippleStyle() =
-    Interaction.rippleStyle.copy(color = LocalColors.current.foregroundSecondary)
+    InteractionDefaults.rippleStyle.copy(color = LocalColors.current.foregroundSecondary)
 
 @Composable
 @ReadOnlyComposable
 private fun defaultContentButtonRippleStyle() =
-    Interaction.rippleStyle.copy(color = LocalColors.current.themeSecondary)
+    InteractionDefaults.rippleStyle.copy(color = LocalColors.current.themeSecondary)
+
+@Composable
+@ReadOnlyComposable
+private fun defaultIconButtonRippleStyle() = InteractionDefaults.rippleStyle.copy(bounded = false)
 
 @Composable
 @ReadOnlyComposable
@@ -296,10 +357,6 @@ private fun defaultIconButtonStyle() = ButtonStyle(
     shape = LocalShapes.current.tertiary,
     border = defaultButtonBorder()
 )
-
-@Composable
-@ReadOnlyComposable
-private fun defaultIconButtonRippleStyle() = Interaction.rippleStyle.copy(bounded = false)
 
 @Composable
 @ReadOnlyComposable

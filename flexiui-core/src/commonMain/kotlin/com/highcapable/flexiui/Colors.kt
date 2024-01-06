@@ -29,6 +29,9 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Colors defines for Flexi UI.
+ */
 @Stable
 data class Colors(
     var backgroundPrimary: Color,
@@ -39,8 +42,7 @@ data class Colors(
     var themeSecondary: Color,
     var themeTertiary: Color,
     var textPrimary: Color,
-    var textSecondary: Color,
-    var isLight: Boolean
+    var textSecondary: Color
 )
 
 @get:Composable
@@ -64,8 +66,7 @@ internal val DefaultLightColors = Colors(
     themeSecondary = Color(0xA6777777),
     themeTertiary = Color(0x27777777),
     textPrimary = Color(0xFF323B42),
-    textSecondary = Color(0xFF777777),
-    isLight = true
+    textSecondary = Color(0xFF777777)
 )
 
 internal val DefaultDarkColors = Colors(
@@ -77,8 +78,7 @@ internal val DefaultDarkColors = Colors(
     themeSecondary = Color(0xA6888888),
     themeTertiary = Color(0x40888888),
     textPrimary = Color(0xFFE3E3E3),
-    textSecondary = Color(0xFFBBBBBB),
-    isLight = false
+    textSecondary = Color(0xFFBBBBBB)
 )
 
 internal val DefaultBlackColors = Colors(
@@ -90,8 +90,7 @@ internal val DefaultBlackColors = Colors(
     themeSecondary = Color(0xA65B5B5B),
     themeTertiary = Color(0x455B5B5B),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val RedLightColors = Colors(
@@ -103,8 +102,7 @@ private val RedLightColors = Colors(
     themeSecondary = Color(0xA6FF5545),
     themeTertiary = Color(0x27FF5545),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val PinkLightColors = Colors(
@@ -116,8 +114,7 @@ private val PinkLightColors = Colors(
     themeSecondary = Color(0xA6FF4E7C),
     themeTertiary = Color(0x27FF4E7C),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val PurpleLightColors = Colors(
@@ -129,8 +126,7 @@ private val PurpleLightColors = Colors(
     themeSecondary = Color(0xA6A476FF),
     themeTertiary = Color(0x27A476FF),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val OrangeLightColors = Colors(
@@ -142,8 +138,7 @@ private val OrangeLightColors = Colors(
     themeSecondary = Color(0xA6D27C00),
     themeTertiary = Color(0x27D27C00),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val YellowLightColors = Colors(
@@ -155,8 +150,7 @@ private val YellowLightColors = Colors(
     themeSecondary = Color(0xA6BA8800),
     themeTertiary = Color(0x27BA8800),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val GreenLightColors = Colors(
@@ -168,8 +162,7 @@ private val GreenLightColors = Colors(
     themeSecondary = Color(0xA65B9E7A),
     themeTertiary = Color(0x275B9E7A),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val BlueLightColors = Colors(
@@ -181,8 +174,7 @@ private val BlueLightColors = Colors(
     themeSecondary = Color(0xA60099DF),
     themeTertiary = Color(0x270099DF),
     textPrimary = DefaultLightColors.textPrimary,
-    textSecondary = DefaultLightColors.textSecondary,
-    isLight = true
+    textSecondary = DefaultLightColors.textSecondary
 )
 
 private val RedDarkColors = Colors(
@@ -194,8 +186,7 @@ private val RedDarkColors = Colors(
     themeSecondary = Color(0xA6B9856D),
     themeTertiary = Color(0x40B9856D),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val PinkDarkColors = Colors(
@@ -207,8 +198,7 @@ private val PinkDarkColors = Colors(
     themeSecondary = Color(0xA6BA837B),
     themeTertiary = Color(0x40BA837B),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val PurpleDarkColors = Colors(
@@ -220,8 +210,7 @@ private val PurpleDarkColors = Colors(
     themeSecondary = Color(0xA69F88AD),
     themeTertiary = Color(0x409F88AD),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val OrangeDarkColors = Colors(
@@ -233,8 +222,7 @@ private val OrangeDarkColors = Colors(
     themeSecondary = Color(0xA6AE8B5D),
     themeTertiary = Color(0x40AE8B5D),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val YellowDarkColors = Colors(
@@ -246,8 +234,7 @@ private val YellowDarkColors = Colors(
     themeSecondary = Color(0xA6A18F5C),
     themeTertiary = Color(0x40A18F5C),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val GreenDarkColors = Colors(
@@ -259,8 +246,7 @@ private val GreenDarkColors = Colors(
     themeSecondary = Color(0xA67F9687),
     themeTertiary = Color(0x407F9687),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val BlueDarkColors = Colors(
@@ -272,8 +258,7 @@ private val BlueDarkColors = Colors(
     themeSecondary = Color(0xA68091B1),
     themeTertiary = Color(0x408091B1),
     textPrimary = DefaultDarkColors.textPrimary,
-    textSecondary = DefaultDarkColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultDarkColors.textSecondary
 )
 
 private val RedBlackColors = Colors(
@@ -285,8 +270,7 @@ private val RedBlackColors = Colors(
     themeSecondary = Color(0xA6B9856D),
     themeTertiary = Color(0x45B9856D),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
 private val PinkBlackColors = Colors(
@@ -298,8 +282,7 @@ private val PinkBlackColors = Colors(
     themeSecondary = Color(0xA6BA837B),
     themeTertiary = Color(0x45BA837B),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
 private val PurpleBlackColors = Colors(
@@ -311,8 +294,7 @@ private val PurpleBlackColors = Colors(
     themeSecondary = Color(0xA69F88AD),
     themeTertiary = Color(0x459F88AD),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
 private val OrangeBlackColors = Colors(
@@ -324,8 +306,7 @@ private val OrangeBlackColors = Colors(
     themeSecondary = Color(0xA6AE8B5D),
     themeTertiary = Color(0x45AE8B5D),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
 private val YellowBlackColors = Colors(
@@ -337,8 +318,7 @@ private val YellowBlackColors = Colors(
     themeSecondary = Color(0xA6A18F5C),
     themeTertiary = Color(0x45A18F5C),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
 private val GreenBlackColors = Colors(
@@ -350,8 +330,7 @@ private val GreenBlackColors = Colors(
     themeSecondary = Color(0xA67F9687),
     themeTertiary = Color(0x457F9687),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
 private val BlueBlackColors = Colors(
@@ -363,14 +342,24 @@ private val BlueBlackColors = Colors(
     themeSecondary = Color(0xA68091B1),
     themeTertiary = Color(0x458091B1),
     textPrimary = DefaultBlackColors.textPrimary,
-    textSecondary = DefaultBlackColors.textSecondary,
-    isLight = false
+    textSecondary = DefaultBlackColors.textSecondary
 )
 
+/**
+ * Whether dynamic color is available for current system.
+ * @return [Boolean]
+ */
 @Composable
 @ReadOnlyComposable
 expect fun isDynamicColorAvailable(): Boolean
 
+/**
+ * Returns a dynamic color scheme provided by system.
+ *
+ * You can use [isDynamicColorAvailable] check it first, otherwise it will return default colors.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 @Composable
 @ReadOnlyComposable
 fun dynamicColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
@@ -378,41 +367,81 @@ fun dynamicColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = w
     else -> DynamicLightColors
 }
 
+/**
+ * Returns a default color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun defaultColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) DefaultBlackColors else DefaultDarkColors
     else -> DefaultLightColors
 }
 
+/**
+ * Returns a red color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun redColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) RedBlackColors else RedDarkColors
     else -> RedLightColors
 }
 
+/**
+ * Returns a pink color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun pinkColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) PinkBlackColors else PinkDarkColors
     else -> PinkLightColors
 }
 
+/**
+ * Returns a purple color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun purpleColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) PurpleBlackColors else PurpleDarkColors
     else -> PurpleLightColors
 }
 
+/**
+ * Returns a orange color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun orangeColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) OrangeBlackColors else OrangeDarkColors
     else -> OrangeLightColors
 }
 
+/**
+ * Returns a yellow color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun yellowColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) YellowBlackColors else YellowDarkColors
     else -> YellowLightColors
 }
 
+/**
+ * Returns a green color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun greenColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) GreenBlackColors else GreenDarkColors
     else -> GreenLightColors
 }
 
+/**
+ * Returns a blue color scheme.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ */
 fun blueColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) BlueBlackColors else BlueDarkColors
     else -> BlueLightColors

@@ -60,9 +60,16 @@ import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.Interaction
+import com.highcapable.flexiui.interaction.InteractionDefaults
 import com.highcapable.flexiui.interaction.rippleClickable
 
+/**
+ * Colors defines for navigation bar.
+ * @param backgroundColor the background color.
+ * @param indicatorColor the indicator color.
+ * @param selectedContentColor the selected content color.
+ * @param unselectedContentColor the unselected content color.
+ */
 @Immutable
 data class NavigationBarColors(
     val backgroundColor: Color,
@@ -71,6 +78,13 @@ data class NavigationBarColors(
     val unselectedContentColor: Color
 )
 
+/**
+ * Style defines for navigation bar.
+ * @param boxStyle the style of area box.
+ * @param contentSpacing the spacing between the components of content.
+ * @param contentPadding the padding of content.
+ * @param contentShape the content shape.
+ */
 @Immutable
 data class NavigationBarStyle(
     val boxStyle: AreaBoxStyle,
@@ -79,11 +93,21 @@ data class NavigationBarStyle(
     val contentShape: Shape
 )
 
+/**
+ * Flexi UI horizontal navigation bar.
+ * @see NavigationBarColumn
+ * @see NavigationBarItem
+ * @param modifier the [Modifier] to be applied to this navigation bar.
+ * @param colors the colors of this navigation bar, default is [NavigationBarDefaults.colors].
+ * @param style the style of this navigation bar, default is [NavigationBarDefaults.style].
+ * @param arrangement the horizontal arrangement of this navigation bar, default is [Arrangement.SpaceBetween].
+ * @param content the content of the [NavigationBarRow], should typically be [NavigationBarItem].
+ */
 @Composable
-fun NavigationRow(
+fun NavigationBarRow(
     modifier: Modifier = Modifier,
-    colors: NavigationBarColors = NavigationBar.colors,
-    style: NavigationBarStyle = NavigationBar.style,
+    colors: NavigationBarColors = NavigationBarDefaults.colors,
+    style: NavigationBarStyle = NavigationBarDefaults.style,
     arrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -99,11 +123,21 @@ fun NavigationRow(
     }
 }
 
+/**
+ * Flexi UI vertical navigation bar.
+ * @see NavigationBarRow
+ * @see NavigationBarItem
+ * @param modifier the [Modifier] to be applied to this navigation bar.
+ * @param colors the colors of this navigation bar, default is [NavigationBarDefaults.colors].
+ * @param style the style of this navigation bar, default is [NavigationBarDefaults.style].
+ * @param arrangement the vertical arrangement of this navigation bar, default is [Arrangement.SpaceBetween].
+ * @param content the content of the [NavigationBarColumn], should typically be [NavigationBarItem].
+ */
 @Composable
-fun NavigationColumn(
+fun NavigationBarColumn(
     modifier: Modifier = Modifier,
-    colors: NavigationBarColors = NavigationBar.colors,
-    style: NavigationBarStyle = NavigationBar.style,
+    colors: NavigationBarColors = NavigationBarDefaults.colors,
+    style: NavigationBarStyle = NavigationBarDefaults.style,
     arrangement: Arrangement.Vertical = Arrangement.SpaceBetween,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -119,6 +153,23 @@ fun NavigationColumn(
     }
 }
 
+/**
+ * Flexi UI navigation bar item.
+ * @see NavigationBarRow
+ * @see NavigationBarColumn
+ * @param selected whether this item is selected.
+ * @param onClick the callback when item is clicked.
+ * @param horizontal whether this item is horizontal.
+ * @param modifier the [Modifier] to be applied to this item.
+ * @param enabled whether this item is enabled, default is true.
+ * @param colors the colors of this item.
+ * @param contentSpacing the spacing between the components of content of this item.
+ * @param contentPadding the padding of content of this item.
+ * @param contentShape the content shape of this item.
+ * @param interactionSource the interaction source of this item.
+ * @param icon the icon of the [NavigationBarItem], should typically be [Icon].
+ * @param text the text of the [NavigationBarItem], should typically be [Text].
+ */
 @Composable
 fun NavigationBarItem(
     selected: Boolean,
@@ -135,10 +186,16 @@ fun NavigationBarItem(
     text: @Composable (() -> Unit)? = null
 ) {
     val currentHorizontal = horizontal ?: LocalHorizontalNavigationBar.current
-    val currentColors = colors ?: LocalNavigationBarColors.current ?: NavigationBar.colors
-    val currentContentSpacing = contentSpacing.orNull() ?: LocalNavigationBarContentSpacing.current.orNull() ?: NavigationBar.style.contentSpacing
-    val currentContentPadding = contentPadding ?: LocalNavigationBarContentPadding.current ?: NavigationBar.style.contentPadding
-    val currentContentShape = contentShape ?: LocalNavigationBarContentShape.current ?: NavigationBar.style.contentShape
+    val currentColors = colors ?: LocalNavigationBarColors.current ?: NavigationBarDefaults.colors
+    val currentContentSpacing = contentSpacing.orNull()
+        ?: LocalNavigationBarContentSpacing.current.orNull()
+        ?: NavigationBarDefaults.style.contentSpacing
+    val currentContentPadding = contentPadding
+        ?: LocalNavigationBarContentPadding.current
+        ?: NavigationBarDefaults.style.contentPadding
+    val currentContentShape = contentShape
+        ?: LocalNavigationBarContentShape.current
+        ?: NavigationBarDefaults.style.contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
     val animatedContentColor by animateColorAsState(if (selected) currentColors.selectedContentColor else currentColors.unselectedContentColor)
     val currentIconStyle = LocalIconStyle.current.copy(tint = animatedContentColor)
@@ -149,7 +206,7 @@ fun NavigationBarItem(
             .then(modifier)
             .background(animatedIndicatorColor)
             .rippleClickable(
-                rippleStyle = Interaction.rippleStyle.copy(color = currentColors.indicatorColor),
+                rippleStyle = InteractionDefaults.rippleStyle.copy(color = currentColors.indicatorColor),
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
@@ -214,7 +271,10 @@ private fun NavigationBarStyleBox(
     }
 }
 
-object NavigationBar {
+/**
+ * Defaults of navigation bar.
+ */
+object NavigationBarDefaults {
     val colors: NavigationBarColors
         @Composable
         @ReadOnlyComposable
@@ -238,7 +298,7 @@ private val LocalNavigationBarContentShape = compositionLocalOf<Shape?> { null }
 @Composable
 @ReadOnlyComposable
 private fun defaultNavigationBarColors() = NavigationBarColors(
-    backgroundColor = AreaBox.color,
+    backgroundColor = AreaBoxDefaults.color,
     indicatorColor = LocalColors.current.themeTertiary,
     selectedContentColor = LocalColors.current.themePrimary,
     unselectedContentColor = LocalColors.current.textSecondary
@@ -247,7 +307,7 @@ private fun defaultNavigationBarColors() = NavigationBarColors(
 @Composable
 @ReadOnlyComposable
 private fun defaultNavigationBarStyle() = NavigationBarStyle(
-    boxStyle = AreaBox.style,
+    boxStyle = AreaBoxDefaults.style,
     contentSpacing = LocalSizes.current.spacingSecondary,
     contentPadding = ComponentPadding(
         horizontal = LocalSizes.current.spacingPrimary,

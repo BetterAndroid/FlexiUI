@@ -97,6 +97,19 @@ import com.highcapable.flexiui.resources.icon.Backspace
 import com.highcapable.flexiui.resources.icon.ViewerClose
 import com.highcapable.flexiui.resources.icon.ViewerOpen
 
+/**
+ * Colors defines for text field.
+ * @param textColor the text color.
+ * @param cursorColor the cursor color.
+ * @param selectionColors the selection colors.
+ * @param completionColors the completion colors.
+ * @param placeholderContentColor the placeholder content color, usually for text color.
+ * @param decorInactiveTint the decoration inactive tint.
+ * @param decorActiveTint the decoration active tint.
+ * @param borderInactiveColor the border inactive color.
+ * @param borderActiveColor the border active color.
+ * @param backgroundColor the background color.
+ */
 @Immutable
 data class TextFieldColors(
     val textColor: Color,
@@ -111,12 +124,26 @@ data class TextFieldColors(
     val backgroundColor: Color
 )
 
+/**
+ * Colors defines for auto complete box.
+ * @param highlightContentColor the highlight content color, usually for text color.
+ * @param menuColors the dropdown menu colors.
+ */
 @Immutable
 data class AutoCompleteBoxColors(
     val highlightContentColor: Color,
     val menuColors: DropdownMenuColors
 )
 
+/**
+ * Style defines for text field.
+ * @param textStyle the text style.
+ * @param padding the padding of content.
+ * @param shape the shape.
+ * @param borderInactive the inactive border stroke.
+ * @param borderActive the active border stroke.
+ * @param completionStyle the completion dropdown menu style.
+ */
 @Immutable
 data class TextFieldStyle(
     val textStyle: TextStyle,
@@ -127,6 +154,13 @@ data class TextFieldStyle(
     val completionStyle: DropdownMenuStyle
 )
 
+/**
+ * Options defines for auto complete.
+ * @param checkCase whether to check case, default is true.
+ * @param checkStartSpace whether to check start space, default is true.
+ * @param checkEndSpace whether to check end space, default is true.
+ * @param threshold the threshold, default is 2.
+ */
 @Immutable
 data class AutoCompleteOptions(
     val checkCase: Boolean = true,
@@ -135,14 +169,41 @@ data class AutoCompleteOptions(
     val threshold: Int = 2
 )
 
+/**
+ * Flexi UI text field.
+ * @see TextField
+ * @see PasswordTextField
+ * @see BackspaceTextField
+ * @param value the text field value.
+ * @param onValueChange the text field value change callback.
+ * @param completionValues the auto complete values, when you want to use auto complete.
+ * @param modifier the [Modifier] to be applied to this text field.
+ * @param colors the colors of this text field, default is [TextFieldDefaults.colors].
+ * @param style the style of this text field, default is [TextFieldDefaults.style].
+ * @param enabled whether this text field is enabled, default is true.
+ * @param readOnly whether this text field is read only, default is false.
+ * @param completionOptions the auto complete options.
+ * @param keyboardOptions the keyboard options, default is [KeyboardOptions.Default].
+ * @param keyboardActions the keyboard actions, default is [KeyboardActions.Default].
+ * @param singleLine whether this text field is single line, default is false.
+ * @param maxLines the max lines of this text field, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the min lines of this text field, default is 1.
+ * @param visualTransformation the visual transformation, default is [VisualTransformation.None].
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ * @param focusRequester the focus requester of this text field.
+ * @param interactionSource the interaction source of this text field.
+ * @param header the header of the [TextField], should typically be [Icon] or [Text].
+ * @param placeholder the placeholder of the [TextField], should typically be [Icon] or [Text].
+ * @param footer the footer of the [TextField], should typically be [Icon] or [Text].
+ */
 @Composable
 fun TextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
+    colors: TextFieldColors = TextFieldDefaults.colors,
+    style: TextFieldStyle = TextFieldDefaults.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -257,14 +318,41 @@ fun TextField(
     }
 }
 
+/**
+ * Flexi UI text field.
+ * @see TextField
+ * @see PasswordTextField
+ * @see BackspaceTextField
+ * @param value the value of text.
+ * @param onValueChange the text field value change callback.
+ * @param completionValues the auto complete values, when you want to use auto complete.
+ * @param modifier the [Modifier] to be applied to this text field.
+ * @param colors the colors of this text field, default is [TextFieldDefaults.colors].
+ * @param style the style of this text field, default is [TextFieldDefaults.style].
+ * @param enabled whether this text field is enabled, default is true.
+ * @param readOnly whether this text field is read only, default is false.
+ * @param completionOptions the auto complete options.
+ * @param keyboardOptions the keyboard options, default is [KeyboardOptions.Default].
+ * @param keyboardActions the keyboard actions, default is [KeyboardActions.Default].
+ * @param singleLine whether this text field is single line, default is false.
+ * @param maxLines the max lines of this text field, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the min lines of this text field, default is 1.
+ * @param visualTransformation the visual transformation, default is [VisualTransformation.None].
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ * @param focusRequester the focus requester of this text field.
+ * @param interactionSource the interaction source of this text field.
+ * @param header the header of the [TextField], should typically be [Icon] or [Text].
+ * @param placeholder the placeholder of the [TextField], should typically be [Icon] or [Text].
+ * @param footer the footer of the [TextField], should typically be [Icon] or [Text].
+ */
 @Composable
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
+    colors: TextFieldColors = TextFieldDefaults.colors,
+    style: TextFieldStyle = TextFieldDefaults.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -310,14 +398,37 @@ fun TextField(
     )
 }
 
+/**
+ * Flexi UI password text field.
+ * @see TextField
+ * @see PasswordTextField
+ * @see BackspaceTextField
+ * @param value the text field value.
+ * @param onValueChange the text field value change callback.
+ * @param defaultPasswordVisible the default password visible, default is false.
+ * @param modifier the [Modifier] to be applied to this text field.
+ * @param colors the colors of this text field, default is [TextFieldDefaults.colors].
+ * @param style the style of this text field, default is [TextFieldDefaults.style].
+ * @param enabled whether this text field is enabled, default is true.
+ * @param readOnly whether this text field is read only, default is false.
+ * @param keyboardOptions the keyboard options, default is [KeyboardOptions.Default].
+ * @param keyboardActions the keyboard actions, default is [KeyboardActions.Default].
+ * @param normalVisualTransformation the normal visual transformation, default is [VisualTransformation.None].
+ * @param secretVisualTransformation the secret visual transformation, default is [PasswordVisualTransformation].
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ * @param focusRequester the focus requester of this text field.
+ * @param interactionSource the interaction source of this text field.
+ * @param header the header of the [TextField], should typically be [Icon] or [Text].
+ * @param placeholder the placeholder of the [TextField], should typically be [Icon] or [Text].
+ */
 @Composable
 fun PasswordTextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     defaultPasswordVisible: Boolean = false,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
+    colors: TextFieldColors = TextFieldDefaults.colors,
+    style: TextFieldStyle = TextFieldDefaults.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -364,7 +475,7 @@ fun PasswordTextField(
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
                     modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.Common),
-                    style = IconButton.style.copy(padding = TextDecorIconPadding),
+                    style = IconButtonDefaults.style.copy(padding = TextDecorIconPadding),
                     checked = passwordVisible,
                     onCheckedChange = {
                         passwordVisible = it
@@ -378,14 +489,37 @@ fun PasswordTextField(
     )
 }
 
+/**
+ * Flexi UI password text field.
+ * @see TextField
+ * @see PasswordTextField
+ * @see BackspaceTextField
+ * @param value the value of text.
+ * @param onValueChange the text field value change callback.
+ * @param defaultPasswordVisible the default password visible, default is false.
+ * @param modifier the [Modifier] to be applied to this text field.
+ * @param colors the colors of this text field, default is [TextFieldDefaults.colors].
+ * @param style the style of this text field, default is [TextFieldDefaults.style].
+ * @param enabled whether this text field is enabled, default is true.
+ * @param readOnly whether this text field is read only, default is false.
+ * @param keyboardOptions the keyboard options, default is [KeyboardOptions.Default].
+ * @param keyboardActions the keyboard actions, default is [KeyboardActions.Default].
+ * @param normalVisualTransformation the normal visual transformation, default is [VisualTransformation.None].
+ * @param secretVisualTransformation the secret visual transformation, default is [PasswordVisualTransformation].
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ * @param focusRequester the focus requester of this text field.
+ * @param interactionSource the interaction source of this text field.
+ * @param header the header of the [TextField], should typically be [Icon] or [Text].
+ * @param placeholder the placeholder of the [TextField], should typically be [Icon] or [Text].
+ */
 @Composable
 fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
     defaultPasswordVisible: Boolean = false,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
+    colors: TextFieldColors = TextFieldDefaults.colors,
+    style: TextFieldStyle = TextFieldDefaults.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -423,14 +557,40 @@ fun PasswordTextField(
     )
 }
 
+/**
+ * Flexi UI text field with backspace icon.
+ * @see TextField
+ * @see PasswordTextField
+ * @see BackspaceTextField
+ * @param value the text field value.
+ * @param onValueChange the text field value change callback.
+ * @param completionValues the auto complete values, when you want to use auto complete.
+ * @param modifier the [Modifier] to be applied to this text field.
+ * @param colors the colors of this text field, default is [TextFieldDefaults.colors].
+ * @param style the style of this text field, default is [TextFieldDefaults.style].
+ * @param enabled whether this text field is enabled, default is true.
+ * @param readOnly whether this text field is read only, default is false.
+ * @param completionOptions the auto complete options.
+ * @param keyboardOptions the keyboard options, default is [KeyboardOptions.Default].
+ * @param keyboardActions the keyboard actions, default is [KeyboardActions.Default].
+ * @param singleLine whether this text field is single line, default is false.
+ * @param maxLines the max lines of this text field, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the min lines of this text field, default is 1.
+ * @param visualTransformation the visual transformation, default is [VisualTransformation.None].
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ * @param focusRequester the focus requester of this text field.
+ * @param interactionSource the interaction source of this text field.
+ * @param header the header of the [TextField], should typically be [Icon] or [Text].
+ * @param placeholder the placeholder of the [TextField], should typically be [Icon] or [Text].
+ */
 @Composable
 fun BackspaceTextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
+    colors: TextFieldColors = TextFieldDefaults.colors,
+    style: TextFieldStyle = TextFieldDefaults.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -487,7 +647,7 @@ fun BackspaceTextField(
                         focusRequester.requestFocus()
                     },
                     modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.Common),
-                    style = IconButton.style.copy(padding = TextDecorIconPadding),
+                    style = IconButtonDefaults.style.copy(padding = TextDecorIconPadding),
                     enabled = enabled,
                     interactionSource = cInteractionSource
                 ) { Icon(imageVector = Icons.Backspace) }
@@ -496,14 +656,40 @@ fun BackspaceTextField(
     )
 }
 
+/**
+ * Flexi UI text field with backspace icon.
+ * @see TextField
+ * @see PasswordTextField
+ * @see BackspaceTextField
+ * @param value the value of text.
+ * @param onValueChange the text field value change callback.
+ * @param completionValues the auto complete values, when you want to use auto complete.
+ * @param modifier the [Modifier] to be applied to this text field.
+ * @param colors the colors of this text field, default is [TextFieldDefaults.colors].
+ * @param style the style of this text field, default is [TextFieldDefaults.style].
+ * @param enabled whether this text field is enabled, default is true.
+ * @param readOnly whether this text field is read only, default is false.
+ * @param completionOptions the auto complete options.
+ * @param keyboardOptions the keyboard options, default is [KeyboardOptions.Default].
+ * @param keyboardActions the keyboard actions, default is [KeyboardActions.Default].
+ * @param singleLine whether this text field is single line, default is false.
+ * @param maxLines the max lines of this text field, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the min lines of this text field, default is 1.
+ * @param visualTransformation the visual transformation, default is [VisualTransformation.None].
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ * @param focusRequester the focus requester of this text field.
+ * @param interactionSource the interaction source of this text field.
+ * @param header the header of the [TextField], should typically be [Icon] or [Text].
+ * @param placeholder the placeholder of the [TextField], should typically be [Icon] or [Text].
+ */
 @Composable
 fun BackspaceTextField(
     value: String,
     onValueChange: (String) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextField.colors,
-    style: TextFieldStyle = TextField.style,
+    colors: TextFieldColors = TextFieldDefaults.colors,
+    style: TextFieldStyle = TextFieldDefaults.style,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -563,7 +749,7 @@ private fun AutoCompleteTextFieldBox(
     if (completionValues.isEmpty()) return
     // We need to use some "last" to remember the last using data,
     // because we need to mantain the animation state of the dropdown menu.
-    // This allows the animation to finish playing due to the next composable event.
+    // This allows the animation to finish playing due to the next compostion.
     var lastHandingModified by remember { mutableStateOf(false) }
     var lastMatchedValue by remember { mutableStateOf("") }
     var lastInputLength by remember { mutableStateOf(0) }
@@ -597,9 +783,13 @@ private fun AutoCompleteTextFieldBox(
         lastHandingModified = false
         lastMatchedValue = ""
     } else selection = -1
+
+    /** Collapse the dropdown menu. */
     fun collapse() {
         lastMatchedValue = inputText
     }
+
+    /** Select and collapse the dropdown menu. */
     fun selectAndCollapse(position: Int) {
         if (position < 0) return
         val newValue = TextFieldValue(matchedValues[position], TextRange(matchedValues[position].length))
@@ -746,7 +936,10 @@ private fun Modifier.textFieldPadding(
     }
 }
 
-object TextField {
+/**
+ * Defaults of text field.
+ */
+object TextFieldDefaults {
     val colors: TextFieldColors
         @Composable
         @ReadOnlyComposable
@@ -768,7 +961,7 @@ private fun defaultTextFieldColors() = TextFieldColors(
     ),
     completionColors = AutoCompleteBoxColors(
         highlightContentColor = LocalColors.current.themePrimary,
-        menuColors = DropdownMenu.colors
+        menuColors = DropdownMenuDefaults.colors
     ),
     placeholderContentColor = LocalColors.current.textSecondary,
     decorInactiveTint = LocalColors.current.themeSecondary,
@@ -786,7 +979,7 @@ private fun defaultTextFieldStyle() = TextFieldStyle(
     shape = withAreaBoxShape(),
     borderInactive = defaultTextFieldInactiveBorder(),
     borderActive = defaultTextFieldActiveBorder(),
-    completionStyle = DropdownMenu.style
+    completionStyle = DropdownMenuDefaults.style
 )
 
 @Composable

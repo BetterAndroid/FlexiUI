@@ -67,6 +67,12 @@ import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 import kotlin.math.roundToInt
 
+/**
+ * Colors defines for switch.
+ * @param thumbColor the color of thumb.
+ * @param trackInactive the color of track when switch is inactive.
+ * @param trackActive the color of track when switch is active.
+ */
 @Immutable
 data class SwitchColors(
     val thumbColor: Color,
@@ -74,6 +80,20 @@ data class SwitchColors(
     val trackActive: Color
 )
 
+/**
+ * Style defines for switch.
+ * @param padding the padding between thumb and track.
+ * @param contentSpacing the spacing between content and track.
+ * @param thumbRadius the radius of thumb.
+ * @param thumbGain the gain of thumb when switch is hovered or dragging.
+ * @param thumbShadowSize the shadow size of thumb.
+ * @param thumbShape the shape of thumb.
+ * @param trackShape the shape of track.
+ * @param thumbBorder the border of thumb.
+ * @param trackBorder the border of track.
+ * @param trackWidth the width of track.
+ * @param trackHeight the height of track.
+ */
 @Immutable
 data class SwitchStyle(
     val padding: ComponentPadding,
@@ -89,13 +109,24 @@ data class SwitchStyle(
     val trackHeight: Dp
 )
 
+/**
+ * Flexi UI switch.
+ * @param checked the checked state of switch.
+ * @param onCheckedChange the callback when switch checked state changed.
+ * @param modifier the [Modifier] to be applied to this switch.
+ * @param colors the colors of switch, default is [SwitchDefaults.colors].
+ * @param style the style of switch, default is [SwitchDefaults.style].
+ * @param enabled the enabled state of switch, default is true.
+ * @param interactionSource the interaction source of switch.
+ * @param content the content of the [RowScope] to be applied to the [Switch], should typically be [Text].
+ */
 @Composable
 fun Switch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: SwitchColors = Switch.colors,
-    style: SwitchStyle = Switch.style,
+    colors: SwitchColors = SwitchDefaults.colors,
+    style: SwitchStyle = SwitchDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable (RowScope.() -> Unit)? = null
@@ -112,6 +143,8 @@ fun Switch(
     val animatedOffsetX by animateFloatAsState(offsetX)
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
     var trackColor by remember { mutableStateOf(colors.trackInactive) }
+
+    /** Update the track color of switch. */
     fun updateTrackColor() {
         val fraction = (offsetX / maxOffsetX).coerceIn(0f, 1f)
         trackColor = lerp(colors.trackInactive, colors.trackActive, fraction)
@@ -120,6 +153,7 @@ fun Switch(
     val animatedTrackColor by animateColorAsState(trackColor)
     val efficientDragging = dragging && distance > 5
 
+    /** Build the track of switch. */
     @Composable
     fun Track(content: @Composable RowScope.() -> Unit) {
         Row(
@@ -140,6 +174,7 @@ fun Switch(
         )
     }
 
+    /** Build the thumb of switch. */
     @Composable
     fun Thumb() {
         Box(
@@ -193,7 +228,10 @@ fun Switch(
     }
 }
 
-object Switch {
+/**
+ * Defaults of switch.
+ */
+object SwitchDefaults {
     val colors: SwitchColors
         @Composable
         @ReadOnlyComposable

@@ -56,6 +56,12 @@ import com.highcapable.flexiui.resources.Icons
 import com.highcapable.flexiui.resources.icon.ArrowNaviUp
 import com.highcapable.flexiui.resources.icon.FinishClose
 
+/**
+ * Colors defines for action bar.
+ * @param titleTextColor the title text color.
+ * @param subTextColor the sub text color.
+ * @param actionContentColor the action content color, usually for icon tint and text color.
+ */
 @Immutable
 data class ActionBarColors(
     val titleTextColor: Color,
@@ -63,6 +69,16 @@ data class ActionBarColors(
     val actionContentColor: Color
 )
 
+/**
+ * Style defines for action bar.
+ * @param padding the padding of content.
+ * @param contentSpacing the spacing between the components of content.
+ * @param titleTextStyle the title text style.
+ * @param subTextStyle the sub text style.
+ * @param actionIconSize the size of action icon.
+ * @param actionIconPadding the padding of action icon.
+ * @param actionContentMaxWidth the max width of actions content.
+ */
 @Immutable
 data class ActionBarStyle(
     val padding: ComponentPadding,
@@ -74,6 +90,16 @@ data class ActionBarStyle(
     val actionContentMaxWidth: Dp
 )
 
+/**
+ * Flexi UI large action bar.
+ * @see ActionBarDefaults
+ * @param modifier the [Modifier] to be applied to this action bar.
+ * @param colors the colors of this action bar, default is [ActionBarDefaults.colors].
+ * @param style the style of this action bar, default is [ActionBarDefaults.style].
+ * @param titleText the title text of this action bar, should typically be [Text].
+ * @param subText the sub text of this action bar, should typically be [Text].
+ * @param actions the actions displayed at the end of the action bar, should typically be [ActionBarScope.ActionIconButton].
+ */
 @Composable
 fun TopActionBar(
     modifier: Modifier = Modifier,
@@ -96,6 +122,18 @@ fun TopActionBar(
     )
 }
 
+/**
+ * Flexi UI middle action bar.
+ * @see TopActionBar
+ * @param modifier the [Modifier] to be applied to this action bar.
+ * @param colors the colors of this action bar, default is [ActionBarDefaults.colors].
+ * @param style the style of this action bar, default is [ActionBarDefaults.style].
+ * @param titleText the title text of this action bar, should typically be [Text].
+ * @param subText the sub text of this action bar, should typically be [Text].
+ * @param finishIcon the finish icon displayed at the start of the action bar, should typically be [ActionBarScope.FinishIconButton].
+ * @param navigationIcon the navigation icon displayed at the start of the action bar, should typically be [ActionBarScope.NavigationIconButton].
+ * @param actions the actions displayed at the end of the action bar, should typically be [ActionBarScope.ActionIconButton].
+ */
 @Composable
 fun ActionBar(
     modifier: Modifier = Modifier,
@@ -120,6 +158,9 @@ fun ActionBar(
     )
 }
 
+/**
+ * Basic action bar for internal use.
+ */
 @Composable
 private fun BasicActionBar(
     type: ActionBarType,
@@ -133,8 +174,8 @@ private fun BasicActionBar(
     actions: @Composable (ActionBarScope.() -> Unit)?
 ) {
     CompositionLocalProvider(LocalActionBarType provides type) {
-        val currentColors = colors ?: ActionBar.colors
-        val currentStyle = style ?: ActionBar.style
+        val currentColors = colors ?: ActionBarDefaults.colors
+        val currentStyle = style ?: ActionBarDefaults.style
         Box(modifier = modifier.padding(currentStyle.padding)) {
             ActionBarImpl(
                 type = type,
@@ -150,15 +191,27 @@ private fun BasicActionBar(
     }
 }
 
+/**
+ * A scope for action bar.
+ */
 @Stable
 interface ActionBarScope {
 
+    /**
+     * Action bar's finish icon button.
+     * @param onClick the callback when the icon button is clicked.
+     * @param modifier the [Modifier] to be applied to this icon button.
+     * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
+     * @param style the style of this icon button, default is [IconButtonDefaults.style].
+     * @param enabled whether this icon button is enabled, default is true.
+     * @param interactionSource the interaction source of this icon button.
+     */
     @Composable
     fun FinishIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        colors: ButtonColors = IconButton.colors,
-        style: ButtonStyle = IconButton.style,
+        colors: ButtonColors = IconButtonDefaults.colors,
+        style: ButtonStyle = IconButtonDefaults.style,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     ) {
@@ -172,12 +225,21 @@ interface ActionBarScope {
         ) { Icon(imageVector = Icons.FinishClose) }
     }
 
+    /**
+     * Action bar's navigation icon button.
+     * @param onClick the callback when the icon button is clicked.
+     * @param modifier the [Modifier] to be applied to this icon button.
+     * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
+     * @param style the style of this icon button, default is [IconButtonDefaults.style].
+     * @param enabled whether this icon button is enabled, default is true.
+     * @param interactionSource the interaction source of this icon button.
+     */
     @Composable
     fun NavigationIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        colors: ButtonColors = IconButton.colors,
-        style: ButtonStyle = IconButton.style,
+        colors: ButtonColors = IconButtonDefaults.colors,
+        style: ButtonStyle = IconButtonDefaults.style,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     ) {
@@ -191,12 +253,22 @@ interface ActionBarScope {
         ) { Icon(imageVector = Icons.ArrowNaviUp) }
     }
 
+    /**
+     * Action bar's action icon button.
+     * @param onClick the callback when the icon button is clicked.
+     * @param modifier the [Modifier] to be applied to this icon button.
+     * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
+     * @param style the style of this icon button, default is [IconButtonDefaults.style].
+     * @param enabled whether this icon button is enabled, default is true.
+     * @param interactionSource the interaction source of this icon button.
+     * @param content the content of the [ActionIconButton], should typically be [Icon].
+     */
     @Composable
     fun ActionIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        colors: ButtonColors = IconButton.colors,
-        style: ButtonStyle = IconButton.style,
+        colors: ButtonColors = IconButtonDefaults.colors,
+        style: ButtonStyle = IconButtonDefaults.style,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         content: @Composable () -> Unit
@@ -214,6 +286,9 @@ interface ActionBarScope {
     }
 }
 
+/**
+ * Action bar's implementation.
+ */
 @Immutable
 private class ActionBarImpl(
     val type: ActionBarType,
@@ -226,6 +301,7 @@ private class ActionBarImpl(
     val actions: @Composable (ActionBarScope.() -> Unit)?
 ) : ActionBarScope {
 
+    /** Build action bar's content. */
     @Composable
     fun Content() {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -250,6 +326,7 @@ private class ActionBarImpl(
         }
     }
 
+    /** Build action bar's start content. */
     @Composable
     private fun StartContent() {
         if (type == ActionBarType.MIDDLE && (finishIcon != null || navigationIcon != null))
@@ -264,6 +341,7 @@ private class ActionBarImpl(
             }
     }
 
+    /** Build action bar's center content. */
     @Composable
     private fun CenterContent() {
         Column(
@@ -285,6 +363,7 @@ private class ActionBarImpl(
         }
     }
 
+    /** Build action bar's end content. */
     @Composable
     private fun EndContent() {
         actions?.also { content ->
@@ -297,6 +376,7 @@ private class ActionBarImpl(
         }
     }
 
+    /** Provided the style for action bar's content. */
     @Composable
     private fun ContentStyle(
         color: Color,
@@ -317,7 +397,10 @@ private val ActionBarScope.impl get() = this as? ActionBarImpl? ?: error("Could 
 @Stable
 private enum class ActionBarType { LARGE, MIDDLE }
 
-object ActionBar {
+/**
+ * Defaults of action bar.
+ */
+object ActionBarDefaults {
     val colors: ActionBarColors
         @Composable
         @ReadOnlyComposable

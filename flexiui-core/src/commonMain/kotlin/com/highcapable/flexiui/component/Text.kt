@@ -26,6 +26,7 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
@@ -38,12 +39,26 @@ import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.DefaultTypography
 import com.highcapable.flexiui.LocalColors
 
+/**
+ * Flexi UI basic text.
+ * @see BasicText
+ * @param text the text to be displayed.
+ * @param modifier the [Modifier] to be applied to this text.
+ * @param color the color of the text.
+ * @param style the style of the text.
+ * @param singleLine whether the text should be displayed on a single line, default is false.
+ * @param maxLines the maximum number of lines to display, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the minimum number of lines to display, default is 1.
+ * @param overflow the overflow strategy for displaying the text, default is [TextOverflow.Ellipsis].
+ * @param softWrap whether the text should break at soft line breaks.
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ */
 @Composable
 fun Text(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    style: TextStyle = Text.style,
+    style: TextStyle? = null,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
@@ -65,12 +80,27 @@ fun Text(
     )
 }
 
+/**
+ * Flexi UI basic text.
+ * @see BasicText
+ * @param text the text to be displayed.
+ * @param modifier the [Modifier] to be applied to this text.
+ * @param color the color of the text.
+ * @param style the style of the text.
+ * @param singleLine whether the text should be displayed on a single line, default is false.
+ * @param maxLines the maximum number of lines to display, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the minimum number of lines to display, default is 1.
+ * @param overflow the overflow strategy for displaying the text, default is [TextOverflow.Ellipsis].
+ * @param softWrap whether the text should break at soft line breaks.
+ * @param inlineContent map of tags to [InlineTextContent]s that can be used to add composable content to the text.
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ */
 @Composable
 fun Text(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
-    style: TextStyle = Text.style,
+    style: TextStyle? = null,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
@@ -79,11 +109,12 @@ fun Text(
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
-    val currentColor = color.orNull() ?: style.color.orNull() ?: Text.color
+    val currentStyle = style ?: LocalTextStyle.current
+    val currentColor = color.orNull() ?: currentStyle.color.orNull() ?: defaultTextColor()
     BasicText(
         text = text,
         modifier = modifier,
-        style = style.copy(color = currentColor),
+        style = currentStyle.copy(color = currentColor),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,
@@ -93,21 +124,28 @@ fun Text(
     )
 }
 
-object Text {
-    val color: Color
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTextColor()
-    val style: TextStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalTextStyle.current
+/**
+ * CompositionLocal containing the preferred [TextStyle]
+ * that will be used by text by default.
+ */
+val LocalTextStyle = compositionLocalOf { DefaultTextStyle }
+
+/**
+ * This function is used to set the current value of [LocalTextStyle], merging the given style
+ * with the current style values for any missing attributes. Any [Text] components included in
+ * this component's [content] will be styled with this style unless styled explicitly.
+ * @see LocalTextStyle
+ * @param value the merged text style to set.
+ * @param content the composable content.
+ */
+@Composable
+fun ProvideTextStyle(value: TextStyle, content: @Composable () -> Unit) {
+    val mergedStyle = LocalTextStyle.current.merge(value)
+    CompositionLocalProvider(LocalTextStyle provides mergedStyle, content = content)
 }
 
 @Composable
 @ReadOnlyComposable
 internal fun defaultTextColor() = LocalColors.current.textPrimary
-
-internal val LocalTextStyle = compositionLocalOf { DefaultTextStyle }
 
 private val DefaultTextStyle = DefaultTypography.primary

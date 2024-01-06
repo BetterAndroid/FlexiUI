@@ -58,6 +58,12 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
 
+/**
+ * Colors defines for radio button.
+ * @param contentColor the color of the check mark.
+ * @param inactiveColor the color of the unchecked box.
+ * @param activeColor the color of the checked box.
+ */
 @Immutable
 data class RadioButtonColors(
     val contentColor: Color,
@@ -65,6 +71,16 @@ data class RadioButtonColors(
     val activeColor: Color
 )
 
+/**
+ * Style defines for radio button.
+ * @param contentSpacing the spacing between the check mark and the content.
+ * @param contentRadius the radius of the check mark.
+ * @param strokeRadius the radius of the box.
+ * @param pressedGain the gain when pressed.
+ * @param hoveredGain the gain when hovered.
+ * @param shape the shape.
+ * @param border the border stroke.
+ */
 @Immutable
 data class RadioButtonStyle(
     val contentSpacing: Dp,
@@ -77,13 +93,24 @@ data class RadioButtonStyle(
     val border: BorderStroke
 )
 
+/**
+ * Flexi UI radio button.
+ * @param selected the selected state of this button.
+ * @param onClick the callback when button is clicked.
+ * @param modifier the [Modifier] to be applied to this button.
+ * @param colors the colors of this button, default is [RadioButtonDefaults.colors].
+ * @param style the style of this button, default is [RadioButtonDefaults.style].
+ * @param enabled whether this button is enabled, default is true.
+ * @param interactionSource the interaction source of this button.
+ * @param content the content of the [RowScope] to be applied to the [RadioButton], should typically be [Text].
+ */
 @Composable
 fun RadioButton(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: RadioButtonColors = RadioButton.colors,
-    style: RadioButtonStyle = RadioButton.style,
+    colors: RadioButtonColors = RadioButtonDefaults.colors,
+    style: RadioButtonStyle = RadioButtonDefaults.style,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable (RowScope.() -> Unit)? = null
@@ -126,7 +153,10 @@ fun RadioButton(
     }
 }
 
-object RadioButton {
+/**
+ * Defaults of radio button.
+ */
+object RadioButtonDefaults {
     val colors: RadioButtonColors
         @Composable
         @ReadOnlyComposable

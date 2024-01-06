@@ -80,6 +80,12 @@ import com.highcapable.flexiui.interaction.rippleClickable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Colors defines for tab.
+ * @param indicatorColor the indicator color.
+ * @param selectedContentColor the selected content color.
+ * @param unselectedContentColor the unselected content color.
+ */
 @Immutable
 data class TabColors(
     val indicatorColor: Color,
@@ -87,6 +93,14 @@ data class TabColors(
     val unselectedContentColor: Color
 )
 
+/**
+ * Style defines for tab.
+ * @param contentPadding the content padding.
+ * @param contentShape the content shape.
+ * @param indicatorWidth the indicator width.
+ * @param indicatorHeight the indicator height.
+ * @param indicatorShape the indicator shape.
+ */
 @Immutable
 data class TabStyle(
     val contentPadding: ComponentPadding,
@@ -96,12 +110,23 @@ data class TabStyle(
     val indicatorShape: Shape
 )
 
+/**
+ * Flexi UI fixed tabs.
+ * @see ScrollableTabRow
+ * @see Tab
+ * @param selectedTabIndex the selected tab index.
+ * @param modifier the [Modifier] to be applied to tabs.
+ * @param colors the colors of tabs, default is [TabDefaults.colors].
+ * @param style the style of tabs, default is [TabDefaults.style].
+ * @param indicator the indicator of the [TabRow], see [TabRowScope.TabIndicator].
+ * @param tabs the tabs of the [TabRow], should typically be [Tab].
+ */
 @Composable
 fun TabRow(
     selectedTabIndex: Int = 0,
     modifier: Modifier = Modifier,
-    colors: TabColors = Tab.colors,
-    style: TabStyle = Tab.style,
+    colors: TabColors = TabDefaults.colors,
+    style: TabStyle = TabDefaults.style,
     indicator: @Composable TabRowScope.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
 ) {
@@ -136,12 +161,24 @@ fun TabRow(
     }
 }
 
+/**
+ * Flexi UI scrollable tabs.
+ * @see TabRow
+ * @see Tab
+ * @param selectedTabIndex the selected tab index.
+ * @param modifier the [Modifier] to be applied to tabs.
+ * @param colors the colors of tabs, default is [TabDefaults.colors].
+ * @param style the style of tabs, default is [TabDefaults.style].
+ * @param scrollState the scroll state of tabs.
+ * @param indicator the indicator of the [ScrollableTabRow], see [TabRowScope.TabIndicator].
+ * @param tabs the tabs of the [ScrollableTabRow], should typically be [Tab].
+ */
 @Composable
 fun ScrollableTabRow(
     selectedTabIndex: Int = 0,
     modifier: Modifier = Modifier,
-    colors: TabColors = Tab.colors,
-    style: TabStyle = Tab.style,
+    colors: TabColors = TabDefaults.colors,
+    style: TabStyle = TabDefaults.style,
     scrollState: ScrollState = rememberScrollState(),
     indicator: @Composable TabRowScope.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
@@ -190,6 +227,21 @@ fun ScrollableTabRow(
     }
 }
 
+/**
+ * Flexi UI tab.
+ * @see TabRow
+ * @see ScrollableTabRow
+ * @param selected whether this tab is selected.
+ * @param onClick the callback when this tab is clicked.
+ * @param modifier the [Modifier] to be applied to this tab.
+ * @param selectedContentColor the selected content color.
+ * @param unselectedContentColor the unselected content color.
+ * @param contentPadding the content padding.
+ * @param contentShape the content shape.
+ * @param enabled whether this tab is enabled.
+ * @param interactionSource the interaction source.
+ * @param content the content of the [Tab], should typically be [Icon] or [Text].
+ */
 @Composable
 fun Tab(
     selected: Boolean,
@@ -204,11 +256,11 @@ fun Tab(
     content: @Composable RowScope.() -> Unit
 ) {
     val currentSelectedContentColor = selectedContentColor.orNull()
-        ?: LocalTabSelectedContentColor.current.orNull() ?: Tab.colors.selectedContentColor
+        ?: LocalTabSelectedContentColor.current.orNull() ?: TabDefaults.colors.selectedContentColor
     val currentUnselectedContentColor = unselectedContentColor.orNull()
-        ?: LocalTabUnselectedContentColor.current.orNull() ?: Tab.colors.unselectedContentColor
-    val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: Tab.style.contentPadding
-    val currentContentShape = contentShape ?: LocalTabContentShape.current ?: Tab.style.contentShape
+        ?: LocalTabUnselectedContentColor.current.orNull() ?: TabDefaults.colors.unselectedContentColor
+    val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: TabDefaults.style.contentPadding
+    val currentContentShape = contentShape ?: LocalTabContentShape.current ?: TabDefaults.style.contentShape
     val contentColor by animateColorAsState(if (selected) currentSelectedContentColor else currentUnselectedContentColor)
     val contentIconStyle = LocalIconStyle.current.copy(tint = contentColor)
     val contentTextStyle = LocalTextStyle.current.copy(color = contentColor)
@@ -257,17 +309,41 @@ private fun rememberScrollableTabData(scrollState: ScrollState): ScrollableTabDa
     return remember(scrollState, coroutineScope) { ScrollableTabData(scrollState, coroutineScope) }
 }
 
+/**
+ * Represents the position of a tab.
+ * @param left the left position.
+ * @param width the indicator width.
+ * @param tabWidth the tab width.
+ */
 @Immutable
 data class TabPosition(val left: Dp, val width: Dp, val tabWidth: Dp) {
 
+    /**
+     * Calculates the right of the tab.
+     * @return [Dp]
+     */
     val right get() = left + width
 
+    /**
+     * Calculates the center of the tab.
+     * @param currentWidth the current indicator width.
+     */
     fun calculateCenter(currentWidth: Dp) = left + width / 2 - currentWidth / 2
 }
 
+/**
+ * A scope for tab.
+ */
 @Stable
 interface TabRowScope {
 
+    /**
+     * Tab indicator.
+     * @param modifier the [Modifier] to be applied to this tab indicator.
+     * @param color the color of this tab indicator.
+     * @param height the height of this tab indicator.
+     * @param shape the shape of this tab indicator.
+     */
     @Composable
     fun TabIndicator(
         modifier: Modifier = Modifier,
@@ -278,6 +354,11 @@ interface TabRowScope {
         Box(modifier.height(height).background(color, shape))
     }
 
+    /**
+     * [Modifier] that offsets the tab indicator.
+     * @param currentTabPosition the current tab position.
+     * @param indicatorWidth the indicator width.
+     */
     fun Modifier.tabIndicatorOffset(
         currentTabPosition: TabPosition = impl.tabPositions[impl.selectedTabIndex],
         indicatorWidth: Dp = impl.style.indicatorWidth
@@ -303,6 +384,12 @@ interface TabRowScope {
             .width(animatedWidh)
     }
 
+    /**
+     * [Modifier] that offsets the pager tab indicator.
+     * @param pagerState the pager state.
+     * @param tabPositions the tab positions.
+     * @param indicatorWidth the indicator width.
+     */
     fun Modifier.pagerTabIndicatorOffset(
         pagerState: PagerState,
         tabPositions: List<TabPosition> = impl.tabPositions,
@@ -415,7 +502,10 @@ private class ScrollableTabData(private val scrollState: ScrollState, private va
 @Stable
 private enum class TabSlots { Tabs, TabsAverage, Indicator }
 
-object Tab {
+/**
+ * Defaults of tab.
+ */
+object TabDefaults {
     val colors: TabColors
         @Composable
         @ReadOnlyComposable

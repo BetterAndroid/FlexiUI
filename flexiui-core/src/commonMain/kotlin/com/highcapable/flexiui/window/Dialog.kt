@@ -31,6 +31,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -55,17 +57,40 @@ import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.LocalTypography
 import com.highcapable.flexiui.component.AreaBox
+import com.highcapable.flexiui.component.AreaBoxDefaults
 import com.highcapable.flexiui.component.AreaBoxStyle
+import com.highcapable.flexiui.component.Button
+import com.highcapable.flexiui.component.Icon
+import com.highcapable.flexiui.component.LocalIconStyle
 import com.highcapable.flexiui.component.LocalPrimaryButton
 import com.highcapable.flexiui.component.LocalTextStyle
+import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.utils.SubcomposeRow
 
+/**
+ * Colors defines for flexi dialog.
+ * @param titleTextColor the title text color.
+ * @param titleIconTint the title icon tint.
+ * @param contentTextColor the content text color.
+ */
 @Immutable
 data class FlexiDialogColors(
     val titleTextColor: Color,
+    val titleIconTint: Color,
     val contentTextColor: Color
 )
 
+/**
+ * Style defines for flexi dialog.
+ * @param boxStyle the style of area box.
+ * @param titleTextStyle the title text style.
+ * @param contentTextStyle the content text style.
+ * @param maxWidth the dialog's max width.
+ * @param outPadding the dialog's out padding.
+ * @param titlePadding the title padding.
+ * @param contentPadding the content padding.
+ * @param buttonsSpacing the spacing between buttons.
+ */
 @Immutable
 data class FlexiDialogStyle(
     val boxStyle: AreaBoxStyle,
@@ -78,29 +103,50 @@ data class FlexiDialogStyle(
     val buttonsSpacing: Dp
 )
 
+/**
+ * Flexi UI dialog.
+ * @param visible the visible state of dialog.
+ * @param onDismissRequest the callback when dismiss dialog.
+ * @param modifier the [Modifier] to be applied to this dialog.
+ * @param animated whether to animate the dialog, default is true.
+ * @param colors the colors of dialog, default is [FlexiDialogDefaults.colors].
+ * @param style the style of dialog, default is [FlexiDialogDefaults.style].
+ * @param contentAlignment the alignment of dialog content, default is [Alignment.TopStart].
+ * @param properties the properties of dialog, default is [DefaultDialogProperties].
+ * @param title the title of the [FlexiDialog], should typically be [Icon] or [Text].
+ * @param content the content of the [FlexiDialog].
+ * @param confirmButton the confirm button of the [FlexiDialog], should typically be [Button].
+ * @param cancelButton the cancel button of the [FlexiDialog], should typically be [Button].
+ * @param neutralButton the neutral button of the [FlexiDialog], should typically be [Button].
+ */
 @Composable
 fun FlexiDialog(
     visible: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     animated: Boolean = true,
-    colors: FlexiDialogColors = FlexiDialog.colors,
-    style: FlexiDialogStyle = FlexiDialog.style,
+    colors: FlexiDialogColors = FlexiDialogDefaults.colors,
+    style: FlexiDialogStyle = FlexiDialogDefaults.style,
     contentAlignment: Alignment = Alignment.TopStart,
     properties: DialogPropertiesWrapper = DefaultDialogProperties,
-    title: (@Composable () -> Unit)? = null,
+    title: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
     confirmButton: @Composable (() -> Unit)? = null,
     cancelButton: @Composable (() -> Unit)? = null,
     neutralButton: @Composable (() -> Unit)? = null
 ) {
+    /** Build the content of dialog. */
     @Composable
     fun Content() {
-        title?.also { content ->
-            Box(modifier = Modifier.padding(style.titlePadding)) {
-                CompositionLocalProvider(
-                    LocalTextStyle provides style.titleTextStyle.copy(color = colors.titleTextColor),
-                    content = content
+        title?.also { titleContent ->
+            CompositionLocalProvider(
+                LocalIconStyle provides LocalIconStyle.current.copy(tint = colors.titleIconTint),
+                LocalTextStyle provides style.titleTextStyle.copy(color = colors.titleTextColor)
+            ) {
+                Row(
+                    modifier = Modifier.padding(style.titlePadding),
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = titleContent
                 )
             }
         }
@@ -112,16 +158,17 @@ fun FlexiDialog(
         }
     }
 
+    /** Build the buttons of dialog. */
     @Composable
     fun Buttons() {
         Column(
             modifier = Modifier.padding(top = style.buttonsSpacing),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            neutralButton?.also { content ->
+            neutralButton?.also { button ->
                 SubcomposeRow(
                     modifier = Modifier.fillMaxWidth().padding(bottom = style.buttonsSpacing),
-                    content = content
+                    content = button
                 )
             }
             SubcomposeRow(
@@ -130,10 +177,10 @@ fun FlexiDialog(
                 spacingBetween = style.buttonsSpacing
             ) {
                 cancelButton?.invoke()
-                confirmButton?.also { content ->
+                confirmButton?.also { button ->
                     CompositionLocalProvider(
                         LocalPrimaryButton provides true,
-                        content = content
+                        content = button
                     )
                 }
             }
@@ -157,16 +204,19 @@ fun FlexiDialog(
     }
 }
 
+/**
+ * Basic flexi dialog for internal use.
+ */
 @Composable
-fun BasicFlexiDialog(
+private fun BasicFlexiDialog(
     visible: Boolean,
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier,
-    animated: Boolean = true,
-    boxStyle: AreaBoxStyle = AreaBox.style,
-    maxWidth: Dp = DefaultMaxWidth,
-    contentAlignment: Alignment = Alignment.TopStart,
-    properties: DialogPropertiesWrapper = DefaultDialogProperties,
+    modifier: Modifier,
+    animated: Boolean,
+    boxStyle: AreaBoxStyle,
+    maxWidth: Dp,
+    contentAlignment: Alignment,
+    properties: DialogPropertiesWrapper,
     content: @Composable () -> Unit
 ) {
     val animatedAlpha by animateFloatAsState(if (visible) 1f else 0f, tween(AnimationDuration))
@@ -205,7 +255,10 @@ fun BasicFlexiDialog(
     }
 }
 
-object FlexiDialog {
+/**
+ * Defaults of flexi dialog.
+ */
+object FlexiDialogDefaults {
     val colors: FlexiDialogColors
         @Composable
         @ReadOnlyComposable
@@ -220,13 +273,14 @@ object FlexiDialog {
 @ReadOnlyComposable
 private fun defaultFlexiDialogColors() = FlexiDialogColors(
     titleTextColor = LocalColors.current.textPrimary,
+    titleIconTint = LocalColors.current.textPrimary,
     contentTextColor = LocalColors.current.textSecondary
 )
 
 @Composable
 @ReadOnlyComposable
 private fun defaultFlexiDialogStyle() = FlexiDialogStyle(
-    boxStyle = AreaBox.style.copy(padding = ComponentPadding(LocalSizes.current.spacingSecondary)),
+    boxStyle = AreaBoxDefaults.style.copy(padding = ComponentPadding(LocalSizes.current.spacingSecondary)),
     titleTextStyle = LocalTypography.current.titleSecondary,
     contentTextStyle = LocalTypography.current.primary,
     maxWidth = DefaultMaxWidth,

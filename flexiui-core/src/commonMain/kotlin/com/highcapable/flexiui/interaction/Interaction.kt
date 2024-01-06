@@ -23,6 +23,7 @@
 
 package com.highcapable.flexiui.interaction
 
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -41,6 +42,12 @@ import com.highcapable.betterandroid.compose.extension.ui.toggleable
 import com.highcapable.flexiui.LocalColors
 import androidx.compose.material.ripple.rememberRipple as materialRememberRipple
 
+/**
+ * Style defines for ripple.
+ * @param bounded whether the ripple is bounded.
+ * @param radius the radius.
+ * @param color the color.
+ */
 @Immutable
 data class RippleStyle(
     val bounded: Boolean,
@@ -48,9 +55,26 @@ data class RippleStyle(
     val color: Color
 )
 
+/**
+ * Creates and remember a ripple effect [Indication] with the given [style].
+ * @see materialRememberRipple
+ * @param style the style, default is [InteractionDefaults.rippleStyle].
+ * @return [Indication]
+ */
 @Composable
-fun rememberRipple(style: RippleStyle) = materialRememberRipple(style.bounded, style.radius, style.color)
+fun rememberRipple(style: RippleStyle = InteractionDefaults.rippleStyle) =
+    materialRememberRipple(style.bounded, style.radius, style.color)
 
+/**
+ * The clickable modifier has a ripple effect.
+ * @see Modifier.clickable
+ * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
+ * @param interactionSource the interaction source.
+ * @param enabled whether to enable the event, default is true.
+ * @param onClickLabel the click label.
+ * @param role the role.
+ * @param onClick the click event.
+ */
 fun Modifier.rippleClickable(
     rippleStyle: RippleStyle? = null,
     interactionSource: MutableInteractionSource? = null,
@@ -69,7 +93,7 @@ fun Modifier.rippleClickable(
         properties["onClick"] = onClick
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
     val currentIndication = rememberRipple(currentRippleStyle)
     clickable(
         onClick = onClick,
@@ -81,6 +105,19 @@ fun Modifier.rippleClickable(
     )
 }
 
+/**
+ * The combined clickable modifier has a ripple effect.
+ * @see Modifier.combinedClickable
+ * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
+ * @param interactionSource the interaction source.
+ * @param enabled whether to enable the event, default is true.
+ * @param onClickLabel the click label.
+ * @param role the role.
+ * @param onLongClickLabel the long click label.
+ * @param onLongClick the long click event.
+ * @param onDoubleClick the double click event.
+ * @param onClick the click event.
+ */
 fun Modifier.rippleCombinedClickable(
     rippleStyle: RippleStyle? = null,
     interactionSource: MutableInteractionSource? = null,
@@ -105,7 +142,7 @@ fun Modifier.rippleCombinedClickable(
         properties["onClick"] = onClick
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
     val currentIndication = rememberRipple(currentRippleStyle)
     combinedClickable(
         onClick = onClick,
@@ -120,6 +157,15 @@ fun Modifier.rippleCombinedClickable(
     )
 }
 
+/**
+ * The toggleable modifier has a ripple effect.
+ * @see Modifier.toggleable
+ * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
+ * @param interactionSource the interaction source.
+ * @param enabled whether to enable the event, default is true.
+ * @param role the role.
+ * @param onValueChange the value change event.
+ */
 fun Modifier.rippleToggleable(
     value: Boolean,
     rippleStyle: RippleStyle? = null,
@@ -138,7 +184,7 @@ fun Modifier.rippleToggleable(
         properties["onValueChange"] = onValueChange
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
     val currentIndication = rememberRipple(currentRippleStyle)
     toggleable(
         value = value,
@@ -150,6 +196,15 @@ fun Modifier.rippleToggleable(
     )
 }
 
+/**
+ * The selectable modifier has a ripple effect.
+ * @see Modifier.selectable
+ * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
+ * @param interactionSource the interaction source.
+ * @param enabled whether to enable the event, default is true.
+ * @param role the role.
+ * @param onClick the click event.
+ */
 fun Modifier.rippleSelectable(
     selected: Boolean,
     rippleStyle: RippleStyle? = null,
@@ -168,7 +223,7 @@ fun Modifier.rippleSelectable(
         properties["onClick"] = onClick
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: Interaction.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
     val currentIndication = rememberRipple(currentRippleStyle)
     selectable(
         selected = selected,
@@ -180,13 +235,20 @@ fun Modifier.rippleSelectable(
     )
 }
 
-object Interaction {
+/**
+ * Defaults of interaction.
+ */
+object InteractionDefaults {
     val rippleStyle: RippleStyle
         @Composable
         @ReadOnlyComposable
         get() = LocalRippleStyle.current ?: defaultRippleStyle()
 }
 
+/**
+ * CompositionLocal containing the preferred [RippleStyle]
+ * that will be used by interaction by default.
+ */
 val LocalRippleStyle = compositionLocalOf<RippleStyle?> { null }
 
 @Composable

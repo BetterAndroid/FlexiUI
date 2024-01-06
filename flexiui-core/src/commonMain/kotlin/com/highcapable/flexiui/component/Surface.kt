@@ -40,18 +40,33 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 
+/**
+ * Colors defines for surface.
+ * @param contentColor the content color, usually for the text color.
+ * @param backgroundColor the background color.
+ */
 @Immutable
 data class SurfaceColors(
     val contentColor: Color,
     val backgroundColor: Color
 )
 
+/**
+ * Flexi UI surface.
+ *
+ * A surface have a background color and default padding.
+ * @param modifier the [Modifier] to be applied to this surface.
+ * @param initializer the [Modifier] initializer, earlies than [modifier].
+ * @param colors the colors of surface, default is [SurfaceDefaults.colors].
+ * @param padding the padding of surface, default is [SurfaceDefaults.padding].
+ * @param content the content of the [Surface].
+ */
 @Composable
 fun Surface(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    colors: SurfaceColors = Surface.colors,
-    padding: ComponentPadding = Surface.padding,
+    colors: SurfaceColors = SurfaceDefaults.colors,
+    padding: ComponentPadding = SurfaceDefaults.padding,
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
@@ -81,7 +96,10 @@ private fun Modifier.surface(
         .padding(padding)
 }
 
-object Surface {
+/**
+ * Defaults of surface.
+ */
+object SurfaceDefaults {
     val colors: SurfaceColors
         @Composable
         @ReadOnlyComposable

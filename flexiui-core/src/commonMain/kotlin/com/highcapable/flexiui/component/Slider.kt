@@ -69,6 +69,13 @@ import com.highcapable.flexiui.LocalSizes
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/**
+ * Colors defines for slider.
+ * @param trackInactiveColor the inactive color of track.
+ * @param trackActiveColor the active color of track.
+ * @param thumbColor the color of thumb.
+ * @param stepColor the color of step.
+ */
 @Immutable
 data class SliderColors(
     val trackInactiveColor: Color,
@@ -77,6 +84,20 @@ data class SliderColors(
     val stepColor: Color
 )
 
+/**
+ * Style defines for slider.
+ * @param thumbRadius the radius of thumb.
+ * @param thumbGain the gain of thumb.
+ * @param thumbShadowSize the shadow size of thumb.
+ * @param thumbShape the shape of thumb.
+ * @param stepShape the shape of step.
+ * @param trackShape the shape of track.
+ * @param thumbBorder the border of thumb.
+ * @param stepBorder the border of step.
+ * @param trackBorder the border of track.
+ * @param trackWidth the width of track.
+ * @param trackHeight the height of track.
+ */
 @Immutable
 data class SliderStyle(
     val thumbRadius: Dp,
@@ -92,16 +113,30 @@ data class SliderStyle(
     val trackHeight: Dp
 )
 
+/**
+ * Flexi UI slider.
+ * @param value the value of this slider.
+ * @param onValueChange the callback when the value changed.
+ * @param modifier the [Modifier] to be applied to this slider.
+ * @param colors the colors of this slider, default is [SliderDefaults.colors].
+ * @param style the style of this slider, default is [SliderDefaults.style].
+ * @param enabled whether this slider is enabled, default is true.
+ * @param min the min value of this slider, default is 0f.
+ * @param max the max value of this slider, default is 1f.
+ * @param steps the steps of this slider, default is 0.
+ * @param onValueChangeFinished the callback when the value changed finished.
+ * @param interactionSource the interaction source of this slider.
+ */
 @Composable
 fun Slider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    colors: SliderColors = Slider.colors,
-    style: SliderStyle = Slider.style,
+    colors: SliderColors = SliderDefaults.colors,
+    style: SliderStyle = SliderDefaults.style,
     enabled: Boolean = true,
     min: Float = 0f,
-    max: Float = 100f,
+    max: Float = 1f,
     steps: Int = 0,
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
@@ -119,6 +154,7 @@ fun Slider(
         steppedOffsetXs = List(steps + 2) { index -> index * pOffsetX }
     }
 
+    /** Get the stepped offset X. */
     fun Float.withSteps() =
         if (steps > 0)
             steppedOffsetXs.minByOrNull { abs(it - this) } ?: this
@@ -131,11 +167,13 @@ fun Slider(
     val animatedOffsetX by animateFloatAsState(offsetX)
     val adoptedOffsetX = if (tapped && !dragging) animatedOffsetX else offsetX
 
+    /** Update the value of slider. */
     fun updateValue(offsetX: Float) {
         val newValue = (offsetX / maxOffsetX) * (max - min) + min
         onValueChange(newValue)
     }
 
+    /** Build the track of slider. */
     @Composable
     fun Track(content: @Composable () -> Unit) {
         val cornerSize = (style.trackShape as? CornerBasedShape)?.topStart?.toPx(Size.Zero, LocalDensity.current) ?: 0f
@@ -156,6 +194,7 @@ fun Slider(
         }
     }
 
+    /** Build the step of slider. */
     @Composable
     fun Step() {
         if (steps > 0) Row(
@@ -172,6 +211,7 @@ fun Slider(
         }
     }
 
+    /** Build the thumb of slider. */
     @Composable
     fun Thumb() {
         Box(
@@ -231,7 +271,10 @@ fun Slider(
     }
 }
 
-object Slider {
+/**
+ * Defaults of slider.
+ */
+object SliderDefaults {
     val colors
         @Composable
         @ReadOnlyComposable

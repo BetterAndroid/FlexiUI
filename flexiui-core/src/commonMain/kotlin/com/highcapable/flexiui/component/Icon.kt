@@ -51,31 +51,49 @@ import androidx.compose.ui.unit.isSpecified
 import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalSizes
 
+/**
+ * Style defines for icon.
+ * @param size the size.
+ * @param tint the tint.
+ */
 @Immutable
 data class IconStyle(
     val size: Dp,
     val tint: Color
 )
 
+/**
+ * Flexi UI basic icon.
+ * @param imageVector the vector image to be drawn.
+ * @param contentDescription the content description for this icon.
+ * @param modifier the [Modifier] to be applied to this icon.
+ * @param style the style of this icon, default is [IconDefaults.style].
+ */
 @Composable
 fun Icon(
     imageVector: ImageVector,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
-    style: IconStyle = Icon.style
+    style: IconStyle = IconDefaults.style
 ) {
     val painter = rememberVectorPainter(imageVector)
     Icon(painter, contentDescription, modifier, style)
 }
 
+/**
+ * Flexi UI basic icon.
+ * @param painter the painter to be drawn.
+ * @param contentDescription the content description for this icon.
+ * @param modifier the [Modifier] to be applied to this icon.
+ * @param style the style of this icon, default is [IconDefaults.style].
+ */
 @Composable
 fun Icon(
     painter: Painter,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
-    style: IconStyle = Icon.style
+    style: IconStyle = IconDefaults.style
 ) {
-    // TODO: b/149735981 semantics for content description
     val colorFilter = if (style.tint.isUnspecified) null else ColorFilter.tint(style.tint)
     val semantics = if (contentDescription != null)
         Modifier.semantics {
@@ -114,7 +132,10 @@ private fun Modifier.defaultSizeFor(
     })
 }
 
-object Icon {
+/**
+ * Defaults of icon.
+ */
+object IconDefaults {
     val style: IconStyle
         @Composable
         @ReadOnlyComposable

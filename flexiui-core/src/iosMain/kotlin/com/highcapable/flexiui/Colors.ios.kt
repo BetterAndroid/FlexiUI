@@ -26,6 +26,10 @@ package com.highcapable.flexiui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 
+/**
+ * Whether dynamic color is available for current system.
+ * @return [Boolean]
+ */
 @Composable
 @ReadOnlyComposable
 actual fun isDynamicColorAvailable() = false

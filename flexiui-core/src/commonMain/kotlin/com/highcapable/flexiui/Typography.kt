@@ -30,6 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
+/**
+ * Typography defines for Flexi UI.
+ */
 @Immutable
 data class Typography(
     val titlePrimary: TextStyle,

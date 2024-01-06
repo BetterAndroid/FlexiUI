@@ -68,12 +68,22 @@ import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.interaction.rippleClickable
 import java.awt.event.KeyEvent
 
+/**
+ * Colors defines for the context menu.
+ * @param contentColor the content color, usually for the text color.
+ * @param borderColor the border color.
+ */
 @Immutable
 data class ContextMenuColors(
     val contentColor: Color,
     val borderColor: Color
 )
 
+/**
+ * Style defines for the context menu.
+ * @param contentStyle the content style of area box.
+ * @param borderStyle the border style of area box.
+ */
 @Immutable
 data class ContextMenuStyle(
     val contentStyle: AreaBoxStyle?,
@@ -172,7 +182,10 @@ private fun Modifier.onHover(onHover: (Boolean) -> Unit) = pointerInput(Unit) {
     }
 }
 
-object DesktopContextMenu {
+/**
+ * Defaults of context menu.
+ */
+object DesktopContextMenuDefaults {
     val colors: ContextMenuColors
         @Composable
         @ReadOnlyComposable
@@ -183,6 +196,10 @@ object DesktopContextMenu {
         get() = LocalContextMenuStyle.current
 }
 
+/**
+ * CompositionLocal containing the preferred [ContextMenuColors]
+ * that will be used by context menu by default.
+ */
 val LocalContextMenuColors = compositionLocalOf {
     ContextMenuColors(
         borderColor = Color.Unspecified,
@@ -190,6 +207,10 @@ val LocalContextMenuColors = compositionLocalOf {
     )
 }
 
+/**
+ * CompositionLocal containing the preferred [ContextMenuStyle]
+ * that will be used by context menu by default.
+ */
 val LocalContextMenuStyle = compositionLocalOf {
     ContextMenuStyle(
         contentStyle = null,
@@ -207,11 +228,11 @@ internal fun defaultContextMenuColors() = ContextMenuColors(
 @Composable
 @ReadOnlyComposable
 internal fun defaultContextMenuStyle() = ContextMenuStyle(
-    contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBox.style.copy(
+    contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBoxDefaults.style.copy(
         padding = ComponentPadding(horizontal = DefaultMenuContentPadding),
         shape = LocalShapes.current.secondary
     ),
-    borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBox.style.copy(
+    borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBoxDefaults.style.copy(
         padding = ComponentPadding(LocalSizes.current.spacingTertiary),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary

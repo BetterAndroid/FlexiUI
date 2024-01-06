@@ -30,6 +30,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 
+/**
+ * Shapes defines for Flexi UI.
+ */
 @Immutable
 data class Shapes(
     val primary: CornerBasedShape,

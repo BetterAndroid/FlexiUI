@@ -117,6 +117,14 @@ import com.highcapable.flexiui.resources.icon.Dropdown
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Colors defines for dropdown list.
+ * @param endIconInactiveTint the tint of the end icon when inactive.
+ * @param endIconActiveTint the tint of the end icon when active.
+ * @param borderInactiveColor the color of the border when inactive.
+ * @param borderActiveColor the color of the border when active.
+ * @param backgroundColor the background color.
+ */
 @Immutable
 data class DropdownListColors(
     val endIconInactiveTint: Color,
@@ -126,6 +134,12 @@ data class DropdownListColors(
     val backgroundColor: Color
 )
 
+/**
+ * Colors defines for dropdown menu.
+ * @param contentColor the color of the content.
+ * @param activeColor the color of the active item.
+ * @param borderColor the color of the border.
+ */
 @Immutable
 data class DropdownMenuColors(
     val contentColor: Color,
@@ -133,6 +147,14 @@ data class DropdownMenuColors(
     val borderColor: Color
 )
 
+/**
+ * Style defines for dropdown list.
+ * @param padding the padding of the content.
+ * @param shape the shape.
+ * @param endIconSize the size of the end icon.
+ * @param borderInactive the border stroke when inactive.
+ * @param borderActive the border stroke when active.
+ */
 @Immutable
 data class DropdownListStyle(
     val padding: ComponentPadding,
@@ -142,6 +164,13 @@ data class DropdownListStyle(
     val borderActive: BorderStroke
 )
 
+/**
+ * Style defines for dropdown menu.
+ * @param inTransitionDuration the duration of the in transition.
+ * @param outTransitionDuration the duration of the out transition.
+ * @param contentStyle the content style of area box.
+ * @param borderStyle the brder style of area box.
+ */
 @Immutable
 data class DropdownMenuStyle(
     val inTransitionDuration: Int,
@@ -150,15 +179,33 @@ data class DropdownMenuStyle(
     val borderStyle: AreaBoxStyle
 )
 
+/**
+ * Flexi UI dropdown list.
+ * @see DropdownMenu
+ * @see DropdownMenuItem
+ * @param expanded whether the dropdown menu is expanded.
+ * @param onExpandedChange the callback when the expanded state is changed.
+ * @param modifier the [Modifier] to be applied to this dropdown list.
+ * @param colors the colors of this dropdown list, default is [DropdownListDefaults.colors].
+ * @param style the style of this dropdown list, default is [DropdownListDefaults.style].
+ * @param menuColors the colors of the dropdown menu, default is [DropdownMenuDefaults.colors].
+ * @param menuStyle the style of the dropdown menu, default is [DropdownMenuDefaults.style].
+ * @param enabled whether the dropdown list is enabled, default is true.
+ * @param scrollState the scroll state of the dropdown menu.
+ * @param properties the popup properties.
+ * @param interactionSource the interaction source of the dropdown list.
+ * @param text the text of the [DropdownList], should typically be [Text].
+ * @param content the content of the [DropdownMenu], should typically be [DropdownMenuItem].
+ */
 @Composable
 fun DropdownList(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: DropdownListColors = DropdownList.colors,
-    style: DropdownListStyle = DropdownList.style,
-    menuColors: DropdownMenuColors = DropdownMenu.colors,
-    menuStyle: DropdownMenuStyle = DropdownMenu.style,
+    colors: DropdownListColors = DropdownListDefaults.colors,
+    style: DropdownListStyle = DropdownListDefaults.style,
+    menuColors: DropdownMenuColors = DropdownMenuDefaults.colors,
+    menuStyle: DropdownMenuStyle = DropdownMenuDefaults.style,
     enabled: Boolean = true,
     scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
@@ -218,7 +265,7 @@ fun DropdownList(
                     rotationZ = animatedDirection
                 }.size(style.endIconSize),
                 imageVector = Icons.Dropdown,
-                style = Icon.style.copy(tint = animatedEndIconTint)
+                style = IconDefaults.style.copy(tint = animatedEndIconTint)
             )
         }
         DropdownMenu(
@@ -235,13 +282,27 @@ fun DropdownList(
     }
 }
 
+/**
+ * Flexi UI dropdown menu.
+ * @see DropdownList
+ * @see DropdownMenuItem
+ * @param expanded whether the dropdown menu is expanded.
+ * @param onDismissRequest the callback when the dropdown menu is dismissed.
+ * @param modifier the [Modifier] to be applied to this dropdown menu.
+ * @param colors the colors of this dropdown menu, default is [DropdownMenuDefaults.colors].
+ * @param style the style of this dropdown menu, default is [DropdownMenuDefaults.style].
+ * @param offset the offset of this dropdown menu.
+ * @param scrollState the scroll state of the dropdown menu.
+ * @param properties the popup properties.
+ * @param content the content of the [DropdownMenu], should typically be [DropdownMenuItem].
+ */
 @Composable
 fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: DropdownMenuColors = DropdownMenu.colors,
-    style: DropdownMenuStyle = DropdownMenu.style,
+    colors: DropdownMenuColors = DropdownMenuDefaults.colors,
+    style: DropdownMenuStyle = DropdownMenuDefaults.style,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
@@ -278,6 +339,13 @@ fun DropdownMenu(
     }
 }
 
+/**
+ * A box for manually measuring the size of the dropdown menu.
+ * @see DropdownList
+ * @see DropdownMenu
+ * @param modifier the [Modifier] to be applied to this box.
+ * @param content the content for measuring.
+ */
 @Composable
 fun DropdownMenuBox(
     modifier: Modifier = Modifier,
@@ -307,6 +375,20 @@ fun DropdownMenuBox(
     }
 }
 
+/**
+ * Flexi UI dropdown menu item.
+ * @see DropdownList
+ * @see DropdownMenu
+ * @param onClick the callback when the dropdown menu item is clicked.
+ * @param modifier the [Modifier] to be applied to this dropdown menu item.
+ * @param contentColor the color of the content.
+ * @param activeColor the color of the active item.
+ * @param contentStyle the style of the content.
+ * @param enabled whether the dropdown menu item is enabled, default is true.
+ * @param actived whether the dropdown menu item is actived, default is false.
+ * @param interactionSource the interaction source of the dropdown menu item.
+ * @param content the content of the [DropdownMenuItem], should typically be [Icon] or [Text].
+ */
 @Composable
 fun DropdownMenuItem(
     onClick: () -> Unit,
@@ -319,9 +401,15 @@ fun DropdownMenuItem(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
-    val currentColor = contentColor.orNull() ?: LocalDropdownMenuContentColor.current.orNull() ?: DropdownMenu.colors.contentColor
-    val currentActiveColor = activeColor.orNull() ?: LocalDropdownMenuActiveColor.current.orNull() ?: DropdownMenu.colors.activeColor
-    val currentStyle = contentStyle ?: LocalDropdownMenuContentStyle.current ?: DropdownMenu.style.contentStyle
+    val currentColor = contentColor.orNull()
+        ?: LocalDropdownMenuContentColor.current.orNull()
+        ?: DropdownMenuDefaults.colors.contentColor
+    val currentActiveColor = activeColor.orNull()
+        ?: LocalDropdownMenuActiveColor.current.orNull()
+        ?: DropdownMenuDefaults.colors.activeColor
+    val currentStyle = contentStyle
+        ?: LocalDropdownMenuContentStyle.current
+        ?: DropdownMenuDefaults.style.contentStyle
     AreaRow(
         modifier = Modifier.componentState(enabled)
             .then(modifier)
@@ -354,6 +442,9 @@ internal expect fun DropdownMenuMeasureBox(
     content: @Composable BoxScope.() -> Unit
 )
 
+/**
+ * A scope for dropdown menu box.
+ */
 @Stable
 interface DropdownMenuBoxScope : BoxWithConstraintsScope {
     val menuMaxHeight: Dp
@@ -516,7 +607,10 @@ private data class DropdownMenuPositionProvider(
     }
 }
 
-object DropdownList {
+/**
+ * Defaults of dropdown list.
+ */
+object DropdownListDefaults {
     val colors: DropdownListColors
         @Composable
         @ReadOnlyComposable
@@ -527,7 +621,10 @@ object DropdownList {
         get() = defaultDropdownListStyle()
 }
 
-object DropdownMenu {
+/**
+ * Defaults of dropdown menu.
+ */
+object DropdownMenuDefaults {
     val colors: DropdownMenuColors
         @Composable
         @ReadOnlyComposable
@@ -577,11 +674,11 @@ private fun defaultDropdownListStyle() = DropdownListStyle(
 private fun defaultDropdownMenuStyle() = DropdownMenuStyle(
     inTransitionDuration = DefaultInTransitionDuration,
     outTransitionDuration = DefaultOutTransitionDuration,
-    contentStyle = AreaBox.style.copy(
+    contentStyle = AreaBoxDefaults.style.copy(
         padding = ComponentPadding(horizontal = DefaultMenuContentPadding),
         shape = LocalShapes.current.secondary
     ),
-    borderStyle = AreaBox.style.copy(
+    borderStyle = AreaBoxDefaults.style.copy(
         padding = ComponentPadding(LocalSizes.current.spacingTertiary),
         shadowSize = LocalSizes.current.zoomSizeTertiary,
         shape = LocalShapes.current.primary
