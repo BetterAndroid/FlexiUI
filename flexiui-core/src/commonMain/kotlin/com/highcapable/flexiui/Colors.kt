@@ -358,7 +358,7 @@ expect fun isDynamicColorAvailable(): Boolean
  *
  * You can use [isDynamicColorAvailable] check it first, otherwise it will return default colors.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 @Composable
 @ReadOnlyComposable
@@ -370,7 +370,7 @@ fun dynamicColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = w
 /**
  * Returns a default color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun defaultColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) DefaultBlackColors else DefaultDarkColors
@@ -380,7 +380,7 @@ fun defaultColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = w
 /**
  * Returns a red color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun redColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) RedBlackColors else RedDarkColors
@@ -390,7 +390,7 @@ fun redColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when 
 /**
  * Returns a pink color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun pinkColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) PinkBlackColors else PinkDarkColors
@@ -400,7 +400,7 @@ fun pinkColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when
 /**
  * Returns a purple color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun purpleColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) PurpleBlackColors else PurpleDarkColors
@@ -410,7 +410,7 @@ fun purpleColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = wh
 /**
  * Returns a orange color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun orangeColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) OrangeBlackColors else OrangeDarkColors
@@ -420,7 +420,7 @@ fun orangeColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = wh
 /**
  * Returns a yellow color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun yellowColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) YellowBlackColors else YellowDarkColors
@@ -430,7 +430,7 @@ fun yellowColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = wh
 /**
  * Returns a green color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun greenColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) GreenBlackColors else GreenDarkColors
@@ -440,7 +440,7 @@ fun greenColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = whe
 /**
  * Returns a blue color scheme.
  * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
  */
 fun blueColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
     darkMode -> if (blackDarkMode) BlueBlackColors else BlueDarkColors
