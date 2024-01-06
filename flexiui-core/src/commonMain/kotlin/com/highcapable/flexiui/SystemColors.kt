@@ -47,6 +47,7 @@ expect fun isSystemColorAvailable(): Boolean
  * You can use [isSystemColorAvailable] check it first, otherwise it will return default colors.
  * @param darkMode whether to use dark mode color scheme.
  * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
+ * @return [Colors]
  */
 @Composable
 fun systemColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {

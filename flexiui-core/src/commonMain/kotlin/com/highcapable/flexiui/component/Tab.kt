@@ -356,6 +356,7 @@ interface TabRowScope {
 
     /**
      * [Modifier] that offsets the tab indicator.
+     * @receiver [Modifier]
      * @param currentTabPosition the current tab position.
      * @param indicatorWidth the indicator width.
      */
@@ -386,6 +387,7 @@ interface TabRowScope {
 
     /**
      * [Modifier] that offsets the pager tab indicator.
+     * @receiver [Modifier]
      * @param pagerState the pager state.
      * @param tabPositions the tab positions.
      * @param indicatorWidth the indicator width.

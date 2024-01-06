@@ -68,6 +68,7 @@ fun rememberRipple(style: RippleStyle = InteractionDefaults.rippleStyle) =
 /**
  * The clickable modifier has a ripple effect.
  * @see Modifier.clickable
+ * @receiver [Modifier]
  * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
  * @param interactionSource the interaction source.
  * @param enabled whether to enable the event, default is true.
@@ -108,6 +109,7 @@ fun Modifier.rippleClickable(
 /**
  * The combined clickable modifier has a ripple effect.
  * @see Modifier.combinedClickable
+ * @receiver [Modifier]
  * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
  * @param interactionSource the interaction source.
  * @param enabled whether to enable the event, default is true.
@@ -160,6 +162,7 @@ fun Modifier.rippleCombinedClickable(
 /**
  * The toggleable modifier has a ripple effect.
  * @see Modifier.toggleable
+ * @receiver [Modifier]
  * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
  * @param interactionSource the interaction source.
  * @param enabled whether to enable the event, default is true.
@@ -199,6 +202,7 @@ fun Modifier.rippleToggleable(
 /**
  * The selectable modifier has a ripple effect.
  * @see Modifier.selectable
+ * @receiver [Modifier]
  * @param rippleStyle the ripple style, default is [InteractionDefaults.rippleStyle].
  * @param interactionSource the interaction source.
  * @param enabled whether to enable the event, default is true.
