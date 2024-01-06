@@ -60,8 +60,8 @@ import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.InteractionDefaults
-import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.component.interaction.InteractionDefaults
+import com.highcapable.flexiui.component.interaction.rippleClickable
 
 /**
  * Colors defines for navigation bar.

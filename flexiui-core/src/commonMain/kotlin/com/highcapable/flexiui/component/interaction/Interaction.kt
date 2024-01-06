@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.interaction
+package com.highcapable.flexiui.component.interaction
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource

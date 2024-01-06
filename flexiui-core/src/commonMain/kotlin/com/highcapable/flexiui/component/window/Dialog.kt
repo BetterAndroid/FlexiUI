@@ -21,7 +21,7 @@
  */
 @file:Suppress("unused")
 
-package com.highcapable.flexiui.window
+package com.highcapable.flexiui.component.window
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable

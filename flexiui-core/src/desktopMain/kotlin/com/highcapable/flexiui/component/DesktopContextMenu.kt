@@ -65,7 +65,7 @@ import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.component.interaction.rippleClickable
 import java.awt.event.KeyEvent
 
 /**

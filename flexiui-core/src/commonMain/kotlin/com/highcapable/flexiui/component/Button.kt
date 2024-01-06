@@ -51,10 +51,10 @@ import com.highcapable.betterandroid.compose.extension.ui.orNull
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.InteractionDefaults
-import com.highcapable.flexiui.interaction.RippleStyle
-import com.highcapable.flexiui.interaction.rippleClickable
-import com.highcapable.flexiui.interaction.rippleToggleable
+import com.highcapable.flexiui.component.interaction.InteractionDefaults
+import com.highcapable.flexiui.component.interaction.RippleStyle
+import com.highcapable.flexiui.component.interaction.rippleClickable
+import com.highcapable.flexiui.component.interaction.rippleToggleable
 
 /**
  * Colors defines for button.

@@ -111,7 +111,7 @@ import com.highcapable.betterandroid.compose.extension.ui.window.Popup
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalShapes
 import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.component.interaction.rippleClickable
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.Dropdown
 import kotlin.math.max

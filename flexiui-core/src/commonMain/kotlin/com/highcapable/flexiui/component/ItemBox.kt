@@ -44,7 +44,7 @@ import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.LocalColors
 import com.highcapable.flexiui.LocalSizes
 import com.highcapable.flexiui.LocalTypography
-import com.highcapable.flexiui.interaction.rippleClickable
+import com.highcapable.flexiui.component.interaction.rippleClickable
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.ArrowForward
 
