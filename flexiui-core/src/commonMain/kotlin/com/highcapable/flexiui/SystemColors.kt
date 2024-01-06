@@ -17,34 +17,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/18.
+ * This file is created by fankes on 2024/1/6.
  */
 @file:Suppress("unused")
 
 package com.highcapable.flexiui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
+
+@get:Composable
+internal expect val SystemLightColors: Colors
+
+@get:Composable
+internal expect val SystemDarkColors: Colors
+
+@get:Composable
+internal expect val SystemBlackColors: Colors
 
 /**
- * Whether dynamic color is available for current system.
+ * Whether system color is available.
  * @return [Boolean]
  */
 @Composable
-@ReadOnlyComposable
-actual fun isDynamicColorAvailable() = false
+expect fun isSystemColorAvailable(): Boolean
 
-internal actual val DynamicLightColors
-    @Composable
-    @ReadOnlyComposable
-    get() = DefaultLightColors
-
-internal actual val DynamicDarkColors
-    @Composable
-    @ReadOnlyComposable
-    get() = DefaultDarkColors
-
-internal actual val DynamicBlackColors
-    @Composable
-    @ReadOnlyComposable
-    get() = DefaultBlackColors
+/**
+ * Returns a color scheme provided by system.
+ *
+ * You can use [isSystemColorAvailable] check it first, otherwise it will return default colors.
+ * @param darkMode whether to use dark mode color scheme.
+ * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
+ */
+@Composable
+fun systemColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
+    darkMode -> if (blackDarkMode) SystemBlackColors else SystemDarkColors
+    else -> SystemLightColors
+}

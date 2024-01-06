@@ -23,8 +23,6 @@
 
 package com.highcapable.flexiui
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -44,18 +42,6 @@ data class Colors(
     var textPrimary: Color,
     var textSecondary: Color
 )
-
-@get:Composable
-@get:ReadOnlyComposable
-internal expect val DynamicLightColors: Colors
-
-@get:Composable
-@get:ReadOnlyComposable
-internal expect val DynamicDarkColors: Colors
-
-@get:Composable
-@get:ReadOnlyComposable
-internal expect val DynamicBlackColors: Colors
 
 internal val DefaultLightColors = Colors(
     backgroundPrimary = Color(0xFFF5F5F5),
@@ -344,28 +330,6 @@ private val BlueBlackColors = Colors(
     textPrimary = DefaultBlackColors.textPrimary,
     textSecondary = DefaultBlackColors.textSecondary
 )
-
-/**
- * Whether dynamic color is available for current system.
- * @return [Boolean]
- */
-@Composable
-@ReadOnlyComposable
-expect fun isDynamicColorAvailable(): Boolean
-
-/**
- * Returns a dynamic color scheme provided by system.
- *
- * You can use [isDynamicColorAvailable] check it first, otherwise it will return default colors.
- * @param darkMode whether to use dark mode color scheme.
- * @param blackDarkMode requires [darkMode] is true, whether to use a pure black mode scheme.
- */
-@Composable
-@ReadOnlyComposable
-fun dynamicColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when {
-    darkMode -> if (blackDarkMode) DynamicBlackColors else DynamicDarkColors
-    else -> DynamicLightColors
-}
 
 /**
  * Returns a default color scheme.

@@ -17,34 +17,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/18.
+ * This file is created by fankes on 2024/1/6.
  */
 @file:Suppress("unused")
 
 package com.highcapable.flexiui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
+
+internal actual val SystemLightColors
+    @Composable
+    get() = DefaultLightColors
+
+internal actual val SystemDarkColors
+    @Composable
+    get() = DefaultDarkColors
+
+internal actual val SystemBlackColors
+    @Composable
+    get() = DefaultBlackColors
 
 /**
- * Whether dynamic color is available for current system.
+ * Whether system color is available.
  * @return [Boolean]
  */
 @Composable
-@ReadOnlyComposable
-actual fun isDynamicColorAvailable() = false
-
-internal actual val DynamicLightColors
-    @Composable
-    @ReadOnlyComposable
-    get() = DefaultLightColors
-
-internal actual val DynamicDarkColors
-    @Composable
-    @ReadOnlyComposable
-    get() = DefaultDarkColors
-
-internal actual val DynamicBlackColors
-    @Composable
-    @ReadOnlyComposable
-    get() = DefaultBlackColors
+actual fun isSystemColorAvailable(): Boolean {
+    // Platform iOS: No-op.
+    return false
+}
