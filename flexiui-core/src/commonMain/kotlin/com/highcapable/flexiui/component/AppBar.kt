@@ -57,20 +57,20 @@ import com.highcapable.flexiui.resources.icon.ArrowNaviUp
 import com.highcapable.flexiui.resources.icon.FinishClose
 
 /**
- * Colors defines for action bar.
+ * Colors defines for app bar.
  * @param titleTextColor the title text color.
  * @param subTextColor the sub text color.
  * @param actionContentColor the action content color, usually for icon tint and text color.
  */
 @Immutable
-data class ActionBarColors(
+data class AppBarColors(
     val titleTextColor: Color,
     val subTextColor: Color,
     val actionContentColor: Color
 )
 
 /**
- * Style defines for action bar.
+ * Style defines for app bar.
  * @param padding the padding of content.
  * @param contentSpacing the spacing between the components of content.
  * @param titleTextStyle the title text style.
@@ -80,7 +80,7 @@ data class ActionBarColors(
  * @param actionContentMaxWidth the max width of actions content.
  */
 @Immutable
-data class ActionBarStyle(
+data class AppBarStyle(
     val padding: ComponentPadding,
     val contentSpacing: Dp,
     val titleTextStyle: TextStyle,
@@ -91,26 +91,26 @@ data class ActionBarStyle(
 )
 
 /**
- * Flexi UI large action bar.
- * @see ActionBarDefaults
- * @param modifier the [Modifier] to be applied to this action bar.
- * @param colors the colors of this action bar, default is [ActionBarDefaults.colors].
- * @param style the style of this action bar, default is [ActionBarDefaults.style].
- * @param titleText the title text of this action bar, should typically be [Text].
- * @param subText the sub text of this action bar, should typically be [Text].
- * @param actions the actions displayed at the end of the action bar, should typically be [ActionBarScope.ActionIconButton].
+ * Flexi UI primary app bar.
+ * @see SecondaryAppBar
+ * @param modifier the [Modifier] to be applied to this app bar.
+ * @param colors the colors of this app bar, default is [AppBarDefaults.colors].
+ * @param style the style of this app bar, default is [AppBarDefaults.style].
+ * @param titleText the title text of this app bar, should typically be [Text].
+ * @param subText the sub text of this app bar, should typically be [Text].
+ * @param actions the actions displayed at the end of the app bar, should typically be [AppBarScope.ActionIconButton].
  */
 @Composable
-fun TopActionBar(
+fun PrimaryAppBar(
     modifier: Modifier = Modifier,
-    colors: ActionBarColors? = null,
-    style: ActionBarStyle? = null,
+    colors: AppBarColors? = null,
+    style: AppBarStyle? = null,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
-    actions: @Composable (ActionBarScope.() -> Unit)? = null
+    actions: @Composable (AppBarScope.() -> Unit)? = null
 ) {
-    BasicActionBar(
-        type = ActionBarType.LARGE,
+    BasicAppBar(
+        type = AppBarType.Primary,
         modifier = modifier,
         colors = colors,
         style = style,
@@ -123,30 +123,30 @@ fun TopActionBar(
 }
 
 /**
- * Flexi UI middle action bar.
- * @see TopActionBar
- * @param modifier the [Modifier] to be applied to this action bar.
- * @param colors the colors of this action bar, default is [ActionBarDefaults.colors].
- * @param style the style of this action bar, default is [ActionBarDefaults.style].
- * @param titleText the title text of this action bar, should typically be [Text].
- * @param subText the sub text of this action bar, should typically be [Text].
- * @param finishIcon the finish icon displayed at the start of the action bar, should typically be [ActionBarScope.FinishIconButton].
- * @param navigationIcon the navigation icon displayed at the start of the action bar, should typically be [ActionBarScope.NavigationIconButton].
- * @param actions the actions displayed at the end of the action bar, should typically be [ActionBarScope.ActionIconButton].
+ * Flexi UI secondary app bar.
+ * @see PrimaryAppBar
+ * @param modifier the [Modifier] to be applied to this app bar.
+ * @param colors the colors of this app bar, default is [AppBarDefaults.colors].
+ * @param style the style of this app bar, default is [AppBarDefaults.style].
+ * @param titleText the title text of this app bar, should typically be [Text].
+ * @param subText the sub text of this app bar, should typically be [Text].
+ * @param finishIcon the finish icon displayed at the start of the app bar, should typically be [AppBarScope.FinishIconButton].
+ * @param navigationIcon the navigation icon displayed at the start of the app bar, should typically be [AppBarScope.NavigationIconButton].
+ * @param actions the actions displayed at the end of the app bar, should typically be [AppBarScope.ActionIconButton].
  */
 @Composable
-fun ActionBar(
+fun SecondaryAppBar(
     modifier: Modifier = Modifier,
-    colors: ActionBarColors? = null,
-    style: ActionBarStyle? = null,
+    colors: AppBarColors? = null,
+    style: AppBarStyle? = null,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
-    finishIcon: @Composable (ActionBarScope.() -> Unit)? = null,
-    navigationIcon: @Composable (ActionBarScope.() -> Unit)? = null,
-    actions: @Composable (ActionBarScope.() -> Unit)? = null
+    finishIcon: @Composable (AppBarScope.() -> Unit)? = null,
+    navigationIcon: @Composable (AppBarScope.() -> Unit)? = null,
+    actions: @Composable (AppBarScope.() -> Unit)? = null
 ) {
-    BasicActionBar(
-        type = ActionBarType.MIDDLE,
+    BasicAppBar(
+        type = AppBarType.Secondary,
         modifier = modifier,
         colors = colors,
         style = style,
@@ -159,25 +159,25 @@ fun ActionBar(
 }
 
 /**
- * Basic action bar for internal use.
+ * Basic app bar for internal use.
  */
 @Composable
-private fun BasicActionBar(
-    type: ActionBarType,
+private fun BasicAppBar(
+    type: AppBarType,
     modifier: Modifier,
-    colors: ActionBarColors?,
-    style: ActionBarStyle?,
+    colors: AppBarColors?,
+    style: AppBarStyle?,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)?,
-    finishIcon: @Composable (ActionBarScope.() -> Unit)?,
-    navigationIcon: @Composable (ActionBarScope.() -> Unit)?,
-    actions: @Composable (ActionBarScope.() -> Unit)?
+    finishIcon: @Composable (AppBarScope.() -> Unit)?,
+    navigationIcon: @Composable (AppBarScope.() -> Unit)?,
+    actions: @Composable (AppBarScope.() -> Unit)?
 ) {
-    CompositionLocalProvider(LocalActionBarType provides type) {
-        val currentColors = colors ?: ActionBarDefaults.colors
-        val currentStyle = style ?: ActionBarDefaults.style
+    CompositionLocalProvider(LocalAppBarType provides type) {
+        val currentColors = colors ?: AppBarDefaults.colors
+        val currentStyle = style ?: AppBarDefaults.style
         Box(modifier = modifier.padding(currentStyle.padding)) {
-            ActionBarImpl(
+            AppBarImpl(
                 type = type,
                 colors = currentColors,
                 style = currentStyle,
@@ -192,13 +192,13 @@ private fun BasicActionBar(
 }
 
 /**
- * A scope for action bar.
+ * A scope for app bar.
  */
 @Stable
-interface ActionBarScope {
+interface AppBarScope {
 
     /**
-     * Action bar's finish icon button.
+     * app bar's finish icon button.
      * @param onClick the callback when the icon button is clicked.
      * @param modifier the [Modifier] to be applied to this icon button.
      * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
@@ -226,7 +226,7 @@ interface ActionBarScope {
     }
 
     /**
-     * Action bar's navigation icon button.
+     * app bar's navigation icon button.
      * @param onClick the callback when the icon button is clicked.
      * @param modifier the [Modifier] to be applied to this icon button.
      * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
@@ -254,7 +254,7 @@ interface ActionBarScope {
     }
 
     /**
-     * Action bar's action icon button.
+     * app bar's action icon button.
      * @param onClick the callback when the icon button is clicked.
      * @param modifier the [Modifier] to be applied to this icon button.
      * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
@@ -287,21 +287,21 @@ interface ActionBarScope {
 }
 
 /**
- * Action bar's implementation.
+ * App bar's implementation.
  */
 @Immutable
-private class ActionBarImpl(
-    val type: ActionBarType,
-    val colors: ActionBarColors,
-    val style: ActionBarStyle,
+private class AppBarImpl(
+    val type: AppBarType,
+    val colors: AppBarColors,
+    val style: AppBarStyle,
     val titleText: @Composable () -> Unit,
     val subText: @Composable (() -> Unit)?,
-    val finishIcon: @Composable (ActionBarScope.() -> Unit)?,
-    val navigationIcon: @Composable (ActionBarScope.() -> Unit)?,
-    val actions: @Composable (ActionBarScope.() -> Unit)?
-) : ActionBarScope {
+    val finishIcon: @Composable (AppBarScope.() -> Unit)?,
+    val navigationIcon: @Composable (AppBarScope.() -> Unit)?,
+    val actions: @Composable (AppBarScope.() -> Unit)?
+) : AppBarScope {
 
-    /** Build action bar's content. */
+    /** Build app bar's content. */
     @Composable
     fun Content() {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -326,10 +326,10 @@ private class ActionBarImpl(
         }
     }
 
-    /** Build action bar's start content. */
+    /** Build app bar's start content. */
     @Composable
     private fun StartContent() {
-        if (type == ActionBarType.MIDDLE && (finishIcon != null || navigationIcon != null))
+        if (type == AppBarType.Secondary && (finishIcon != null || navigationIcon != null))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(style.contentSpacing),
                 verticalAlignment = Alignment.CenterVertically
@@ -341,7 +341,7 @@ private class ActionBarImpl(
             }
     }
 
-    /** Build action bar's center content. */
+    /** Build app bar's center content. */
     @Composable
     private fun CenterContent() {
         Column(
@@ -363,7 +363,7 @@ private class ActionBarImpl(
         }
     }
 
-    /** Build action bar's end content. */
+    /** Build app bar's end content. */
     @Composable
     private fun EndContent() {
         actions?.also { content ->
@@ -376,7 +376,7 @@ private class ActionBarImpl(
         }
     }
 
-    /** Provided the style for action bar's content. */
+    /** Provided the style for app bar's content. */
     @Composable
     private fun ContentStyle(
         color: Color,
@@ -392,30 +392,30 @@ private class ActionBarImpl(
 }
 
 @Stable
-private val ActionBarScope.impl get() = this as? ActionBarImpl? ?: error("Could not got ActionBarScope's impl.")
+private val AppBarScope.impl get() = this as? AppBarImpl? ?: error("Could not got AppBarScope's impl.")
 
 @Stable
-private enum class ActionBarType { LARGE, MIDDLE }
+private enum class AppBarType { Primary, Secondary }
 
 /**
- * Defaults of action bar.
+ * Defaults of app bar.
  */
-object ActionBarDefaults {
-    val colors: ActionBarColors
+object AppBarDefaults {
+    val colors: AppBarColors
         @Composable
         @ReadOnlyComposable
-        get() = defaultActionBarColors()
-    val style: ActionBarStyle
+        get() = defaultAppBarColors()
+    val style: AppBarStyle
         @Composable
         @ReadOnlyComposable
-        get() = defaultActionBarStyle()
+        get() = defaultAppBarStyle()
 }
 
-private val LocalActionBarType = compositionLocalOf { ActionBarType.LARGE }
+private val LocalAppBarType = compositionLocalOf { AppBarType.Primary }
 
 @Composable
 @ReadOnlyComposable
-private fun defaultActionBarColors() = ActionBarColors(
+private fun defaultAppBarColors() = AppBarColors(
     titleTextColor = LocalColors.current.textPrimary,
     subTextColor = LocalColors.current.textSecondary,
     actionContentColor = LocalColors.current.textPrimary
@@ -423,21 +423,21 @@ private fun defaultActionBarColors() = ActionBarColors(
 
 @Composable
 @ReadOnlyComposable
-private fun defaultActionBarStyle() = ActionBarStyle(
+private fun defaultAppBarStyle() = AppBarStyle(
     padding = when {
         LocalInSurface.current || LocalInAreaBox.current ->
             ComponentPadding(vertical = LocalSizes.current.spacingPrimary)
         else -> ComponentPadding(LocalSizes.current.spacingPrimary)
     },
     contentSpacing = LocalSizes.current.spacingSecondary,
-    titleTextStyle = when (LocalActionBarType.current) {
-        ActionBarType.LARGE -> LocalTypography.current.titlePrimary
-        ActionBarType.MIDDLE -> LocalTypography.current.titleSecondary
+    titleTextStyle = when (LocalAppBarType.current) {
+        AppBarType.Primary -> LocalTypography.current.titlePrimary
+        AppBarType.Secondary -> LocalTypography.current.titleSecondary
     },
     subTextStyle = LocalTypography.current.subtitle,
-    actionIconSize = when (LocalActionBarType.current) {
-        ActionBarType.LARGE -> LocalSizes.current.iconSizePrimary
-        ActionBarType.MIDDLE -> LocalSizes.current.iconSizeSecondary
+    actionIconSize = when (LocalAppBarType.current) {
+        AppBarType.Primary -> LocalSizes.current.iconSizePrimary
+        AppBarType.Secondary -> LocalSizes.current.iconSizeSecondary
     },
     actionIconPadding = LocalSizes.current.spacingTertiary,
     actionContentMaxWidth = DefaultActionContentMaxWidth

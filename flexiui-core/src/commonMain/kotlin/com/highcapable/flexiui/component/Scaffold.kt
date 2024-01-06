@@ -39,9 +39,9 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 /**
  * Scaffold implements the basic Flexi UI visual layout structure.
  *
- * You can add your own components into [actionBar], [tab], [navigationBar].
- * @see TopActionBar
- * @see ActionBar
+ * You can add your own components into [appBar], [tab], [navigationBar].
+ * @see PrimaryAppBar
+ * @see SecondaryAppBar
  * @see TabRow
  * @see NavigationBarRow
  * @see NavigationBarColumn
@@ -50,9 +50,9 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
  * @param padding the padding of content, default is [SurfaceDefaults.padding].
  * @param verticalArrangement the vertical arrangement of content, default is [Arrangement.Top].
  * @param horizontalAlignment the horizontal alignment of content, default is [Alignment.Start].
- * @param actionBar the action bar, should typically be [TopActionBar] or [ActionBar].
- * @param tab the tab, should typically be [TabRow].
- * @param navigationBar the navigation bar, should typically be [NavigationBarRow] or [NavigationBarColumn].
+ * @param appBar the app bar on top of the screen, should typically be [PrimaryAppBar] or [SecondaryAppBar].
+ * @param tab the tab below the app bar, should typically be [TabRow].
+ * @param navigationBar the navigation bar on bottom of the screen, should typically be [NavigationBarRow] or [NavigationBarColumn].
  * @param content the content of the screen.
  */
 @Composable
@@ -62,7 +62,7 @@ fun Scaffold(
     padding: ComponentPadding = SurfaceDefaults.padding,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    actionBar: @Composable () -> Unit = {},
+    appBar: @Composable () -> Unit = {},
     tab: @Composable () -> Unit = {},
     navigationBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit
@@ -80,7 +80,7 @@ fun Scaffold(
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
-            actionBar()
+            appBar()
             tab()
             Box(modifier = Modifier.fillMaxSize().padding(inBoxPadding).weight(1f)) { content() }
             navigationBar()
