@@ -198,7 +198,7 @@ private fun BasicAppBar(
 interface AppBarScope {
 
     /**
-     * app bar's finish icon button.
+     * App bar's finish icon button.
      * @param onClick the callback when the icon button is clicked.
      * @param modifier the [Modifier] to be applied to this icon button.
      * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
@@ -226,7 +226,7 @@ interface AppBarScope {
     }
 
     /**
-     * app bar's navigation icon button.
+     * App bar's navigation icon button.
      * @param onClick the callback when the icon button is clicked.
      * @param modifier the [Modifier] to be applied to this icon button.
      * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
@@ -254,7 +254,7 @@ interface AppBarScope {
     }
 
     /**
-     * app bar's action icon button.
+     * App bar's action icon button.
      * @param onClick the callback when the icon button is clicked.
      * @param modifier the [Modifier] to be applied to this icon button.
      * @param colors the colors of this icon button, default is [IconButtonDefaults.colors].
