@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
@@ -86,6 +87,7 @@ data class FlexiDialogColors(
  * @param titleTextStyle the title text style.
  * @param contentTextStyle the content text style.
  * @param maxWidth the dialog's max width.
+ * @param maxHeight the dialog's max height.
  * @param outPadding the dialog's out padding.
  * @param titlePadding the title padding.
  * @param contentPadding the content padding.
@@ -97,6 +99,7 @@ data class FlexiDialogStyle(
     val titleTextStyle: TextStyle,
     val contentTextStyle: TextStyle,
     val maxWidth: Dp,
+    val maxHeight: Dp,
     val outPadding: ComponentPadding,
     val titlePadding: ComponentPadding,
     val contentPadding: ComponentPadding,
@@ -193,12 +196,14 @@ fun FlexiDialog(
         animated = animated,
         boxStyle = style.boxStyle,
         maxWidth = style.maxWidth,
+        maxHeight = style.maxHeight,
         contentAlignment = contentAlignment,
         properties = properties
     ) {
         Column {
             val hasButtons = confirmButton != null || cancelButton != null || neutralButton != null
-            Content()
+            // The content should not overlap with the buttons, so it has a weight of 1f.
+            Column(modifier = Modifier.weight(1f, fill = false)) { Content() }
             if (hasButtons) Buttons()
         }
     }
@@ -215,6 +220,7 @@ private fun BasicFlexiDialog(
     animated: Boolean,
     boxStyle: AreaBoxStyle,
     maxWidth: Dp,
+    maxHeight: Dp,
     contentAlignment: Alignment,
     properties: DialogPropertiesWrapper,
     content: @Composable () -> Unit
@@ -247,7 +253,7 @@ private fun BasicFlexiDialog(
             else Modifier.then(modifier)
         ) {
             AreaBox(
-                modifier = Modifier.widthIn(max = maxWidth),
+                modifier = Modifier.widthIn(max = maxWidth).heightIn(max = maxHeight),
                 style = boxStyle,
                 contentAlignment = contentAlignment
             ) { content() }
@@ -284,6 +290,7 @@ private fun defaultFlexiDialogStyle() = FlexiDialogStyle(
     titleTextStyle = LocalTypography.current.titleSecondary,
     contentTextStyle = LocalTypography.current.primary,
     maxWidth = DefaultMaxWidth,
+    maxHeight = DefaultMaxHeight,
     outPadding = ComponentPadding(horizontal = DefaultHorizontalOutPadding),
     titlePadding = ComponentPadding(LocalSizes.current.spacingSecondary),
     contentPadding = ComponentPadding(LocalSizes.current.spacingSecondary),
@@ -294,6 +301,7 @@ private const val AnimationDuration = 250
 private const val AnimationMinmumScale = 0.8f
 
 private val DefaultMaxWidth = 300.dp
+private val DefaultMaxHeight = 500.dp
 private val DefaultHorizontalOutPadding = 50.dp
 
 private const val DefaultScrimOpacity = 0.35f
