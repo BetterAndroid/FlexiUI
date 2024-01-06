@@ -54,8 +54,9 @@ fun FlexiTheme(
  * - Note: The [sizes] is experimental for now, its may be change in the future.
  * @param colors the colors, default is [FlexiTheme.colors].
  * @param shapes the shapes, default is [FlexiTheme.shapes].
- * @param sizes the sizes.
  * @param typography the typography, default is [FlexiTheme.typography].
+ * @param sizes the sizes.
+ * @param content the content.
  */
 @Composable
 fun FlexiTheme(
