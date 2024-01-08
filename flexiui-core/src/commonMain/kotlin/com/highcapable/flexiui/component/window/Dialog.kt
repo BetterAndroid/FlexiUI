@@ -52,6 +52,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.betterandroid.compose.extension.ui.layout.AdaptiveRow
 import com.highcapable.betterandroid.compose.extension.ui.window.Dialog
 import com.highcapable.betterandroid.compose.extension.ui.window.DialogPropertiesWrapper
 import com.highcapable.flexiui.LocalColors
@@ -66,7 +67,6 @@ import com.highcapable.flexiui.component.LocalIconStyle
 import com.highcapable.flexiui.component.LocalPrimaryButton
 import com.highcapable.flexiui.component.LocalTextStyle
 import com.highcapable.flexiui.component.Text
-import com.highcapable.flexiui.utils.SubcomposeRow
 
 /**
  * Colors defines for flexi dialog.
@@ -169,14 +169,13 @@ fun FlexiDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             neutralButton?.also { button ->
-                SubcomposeRow(
+                AdaptiveRow(
                     modifier = Modifier.fillMaxWidth().padding(bottom = style.buttonsSpacing),
                     content = button
                 )
             }
-            SubcomposeRow(
+            AdaptiveRow(
                 modifier = Modifier.fillMaxWidth(),
-                count = if (cancelButton != null) 2 else 1,
                 spacingBetween = style.buttonsSpacing
             ) {
                 cancelButton?.invoke()
