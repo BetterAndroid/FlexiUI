@@ -27,7 +27,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,8 +36,9 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.highcapable.betterandroid.compose.extension.ui.orNull
+import com.highcapable.flexiui.ColorsDescriptor
 import com.highcapable.flexiui.DefaultTypography
-import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.toColor
 
 /**
  * Flexi UI basic text.
@@ -110,7 +111,7 @@ fun Text(
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     val currentStyle = style ?: LocalTextStyle.current
-    val currentColor = color.orNull() ?: currentStyle.color.orNull() ?: defaultTextColor()
+    val currentColor = color.orNull() ?: currentStyle.color.orNull() ?: TextProperties.Color.toColor()
     BasicText(
         text = text,
         modifier = modifier,
@@ -124,9 +125,14 @@ fun Text(
     )
 }
 
+@Stable
+internal object TextProperties {
+    val Color = ColorsDescriptor.TextPrimary
+}
+
 /**
- * CompositionLocal containing the preferred [TextStyle]
- * that will be used by text by default.
+ * Composition local containing the preferred [TextStyle]
+ * that will be used by [Text] by default.
  */
 val LocalTextStyle = compositionLocalOf { DefaultTextStyle }
 
@@ -143,9 +149,5 @@ fun ProvideTextStyle(value: TextStyle, content: @Composable () -> Unit) {
     val mergedStyle = LocalTextStyle.current.merge(value)
     CompositionLocalProvider(LocalTextStyle provides mergedStyle, content = content)
 }
-
-@Composable
-@ReadOnlyComposable
-internal fun defaultTextColor() = LocalColors.current.textPrimary
 
 private val DefaultTextStyle = DefaultTypography.primary

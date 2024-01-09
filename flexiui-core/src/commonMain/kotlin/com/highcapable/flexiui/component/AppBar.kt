@@ -38,9 +38,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,18 +47,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.LocalTypography
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.TypographyDescriptor
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.ArrowNaviUp
 import com.highcapable.flexiui.resources.icon.FinishClose
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toTextStyle
 
 /**
  * Colors defines for app bar.
- * @param titleTextColor the title text color.
- * @param subTextColor the sub text color.
- * @param actionContentColor the action content color, usually for icon tint and text color.
+ * @see AppBarDefaults.colors
  */
 @Immutable
 data class AppBarColors(
@@ -71,13 +71,7 @@ data class AppBarColors(
 
 /**
  * Style defines for app bar.
- * @param padding the padding of content.
- * @param contentSpacing the spacing between the components of content.
- * @param titleTextStyle the title text style.
- * @param subTextStyle the sub text style.
- * @param actionIconSize the size of action icon.
- * @param actionIconPadding the padding of action icon.
- * @param actionContentMaxWidth the max width of actions content.
+ * @see AppBarDefaults.style
  */
 @Immutable
 data class AppBarStyle(
@@ -103,8 +97,8 @@ data class AppBarStyle(
 @Composable
 fun PrimaryAppBar(
     modifier: Modifier = Modifier,
-    colors: AppBarColors? = null,
-    style: AppBarStyle? = null,
+    colors: AppBarColors = AppBarDefaults.colors(),
+    style: AppBarStyle = AppBarDefaults.style(type = AppBarType.Primary),
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
     actions: @Composable (AppBarScope.() -> Unit)? = null
@@ -137,8 +131,8 @@ fun PrimaryAppBar(
 @Composable
 fun SecondaryAppBar(
     modifier: Modifier = Modifier,
-    colors: AppBarColors? = null,
-    style: AppBarStyle? = null,
+    colors: AppBarColors = AppBarDefaults.colors(),
+    style: AppBarStyle = AppBarDefaults.style(type = AppBarType.Secondary),
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)? = null,
     finishIcon: @Composable (AppBarScope.() -> Unit)? = null,
@@ -165,29 +159,25 @@ fun SecondaryAppBar(
 private fun BasicAppBar(
     type: AppBarType,
     modifier: Modifier,
-    colors: AppBarColors?,
-    style: AppBarStyle?,
+    colors: AppBarColors,
+    style: AppBarStyle,
     titleText: @Composable () -> Unit,
     subText: @Composable (() -> Unit)?,
     finishIcon: @Composable (AppBarScope.() -> Unit)?,
     navigationIcon: @Composable (AppBarScope.() -> Unit)?,
     actions: @Composable (AppBarScope.() -> Unit)?
 ) {
-    CompositionLocalProvider(LocalAppBarType provides type) {
-        val currentColors = colors ?: AppBarDefaults.colors
-        val currentStyle = style ?: AppBarDefaults.style
-        Box(modifier = modifier.padding(currentStyle.padding)) {
-            AppBarImpl(
-                type = type,
-                colors = currentColors,
-                style = currentStyle,
-                titleText = titleText,
-                subText = subText,
-                finishIcon = finishIcon,
-                navigationIcon = navigationIcon,
-                actions = actions
-            ).Content()
-        }
+    Box(modifier = modifier.padding(style.padding)) {
+        AppBarImpl(
+            type = type,
+            colors = colors,
+            style = style,
+            titleText = titleText,
+            subText = subText,
+            finishIcon = finishIcon,
+            navigationIcon = navigationIcon,
+            actions = actions
+        ).Content()
     }
 }
 
@@ -210,8 +200,8 @@ interface AppBarScope {
     fun FinishIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        colors: ButtonColors = IconButtonDefaults.colors,
-        style: ButtonStyle = IconButtonDefaults.style,
+        colors: ButtonColors = IconButtonDefaults.colors(),
+        style: ButtonStyle = IconButtonDefaults.style(),
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     ) {
@@ -238,8 +228,8 @@ interface AppBarScope {
     fun NavigationIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        colors: ButtonColors = IconButtonDefaults.colors,
-        style: ButtonStyle = IconButtonDefaults.style,
+        colors: ButtonColors = IconButtonDefaults.colors(),
+        style: ButtonStyle = IconButtonDefaults.style(),
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     ) {
@@ -267,8 +257,8 @@ interface AppBarScope {
     fun ActionIconButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        colors: ButtonColors = IconButtonDefaults.colors,
-        style: ButtonStyle = IconButtonDefaults.style,
+        colors: ButtonColors = IconButtonDefaults.colors(),
+        style: ButtonStyle = IconButtonDefaults.style(),
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         content: @Composable () -> Unit
@@ -394,55 +384,99 @@ private class AppBarImpl(
 @Stable
 private val AppBarScope.impl get() = this as? AppBarImpl? ?: error("Could not got AppBarScope's impl.")
 
+/**
+ * App bar's type definition.
+ */
 @Stable
-private enum class AppBarType { Primary, Secondary }
+enum class AppBarType {
+    /** @see PrimaryAppBar */
+    Primary,
+
+    /** @see SecondaryAppBar */
+    Secondary
+}
 
 /**
  * Defaults of app bar.
  */
 object AppBarDefaults {
-    val colors: AppBarColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAppBarColors()
-    val style: AppBarStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAppBarStyle()
+
+    /**
+     * Creates a [AppBarColors] with the default values.
+     * @param titleTextColor the title text color.
+     * @param subTextColor the sub text color.
+     * @param actionContentColor the action content color, usually for icon tint and text color.
+     * @return [AppBarColors]
+     */
+    @Composable
+    fun colors(
+        titleTextColor: Color = AppBarProperties.TitleTextColor.toColor(),
+        subTextColor: Color = AppBarProperties.SubTextColor.toColor(),
+        actionContentColor: Color = AppBarProperties.ActionContentColor.toColor()
+    ) = AppBarColors(
+        titleTextColor = titleTextColor,
+        subTextColor = subTextColor,
+        actionContentColor = actionContentColor
+    )
+
+    /**
+     * Creates a [AppBarStyle] with the default values.
+     * @param type the type of app bar.
+     * @param padding the padding of content.
+     * @param contentSpacing the spacing between the components of content.
+     * @param titleTextStyle the title text style.
+     * @param subTextStyle the sub text style.
+     * @param actionIconSize the size of action icon.
+     * @param actionIconPadding the padding of action icon.
+     * @param actionContentMaxWidth the max width of actions content.
+     * @return [AppBarStyle]
+     */
+    @Composable
+    fun style(
+        type: AppBarType,
+        padding: ComponentPadding = when {
+            LocalInSurface.current || LocalInAreaBox.current ->
+                AppBarProperties.InBoxPadding
+            else -> AppBarProperties.Padding
+        }.toPadding(),
+        contentSpacing: Dp = AppBarProperties.ContentSpacing.toDp(),
+        titleTextStyle: TextStyle = when (type) {
+            AppBarType.Primary -> AppBarProperties.PrimaryTitleTextStyle
+            AppBarType.Secondary -> AppBarProperties.SecondaryTitleTextStyle
+        }.toTextStyle(),
+        subTextStyle: TextStyle = AppBarProperties.SubTextStyle.toTextStyle(),
+        actionIconSize: Dp = when (type) {
+            AppBarType.Primary -> AppBarProperties.PrimaryActionIconSize
+            AppBarType.Secondary -> AppBarProperties.SecondaryActionIconSize
+        }.toDp(),
+        actionIconPadding: Dp = AppBarProperties.ActionIconPadding.toDp(),
+        actionContentMaxWidth: Dp = AppBarProperties.ActionContentMaxWidth
+    ) = AppBarStyle(
+        padding = padding,
+        contentSpacing = contentSpacing,
+        titleTextStyle = titleTextStyle,
+        subTextStyle = subTextStyle,
+        actionIconSize = actionIconSize,
+        actionIconPadding = actionIconPadding,
+        actionContentMaxWidth = actionContentMaxWidth
+    )
 }
 
-private val LocalAppBarType = compositionLocalOf { AppBarType.Primary }
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAppBarColors() = AppBarColors(
-    titleTextColor = LocalColors.current.textPrimary,
-    subTextColor = LocalColors.current.textSecondary,
-    actionContentColor = LocalColors.current.textPrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAppBarStyle() = AppBarStyle(
-    padding = when {
-        LocalInSurface.current || LocalInAreaBox.current ->
-            ComponentPadding(vertical = LocalSizes.current.spacingPrimary)
-        else -> ComponentPadding(LocalSizes.current.spacingPrimary)
-    },
-    contentSpacing = LocalSizes.current.spacingSecondary,
-    titleTextStyle = when (LocalAppBarType.current) {
-        AppBarType.Primary -> LocalTypography.current.titlePrimary
-        AppBarType.Secondary -> LocalTypography.current.titleSecondary
-    },
-    subTextStyle = LocalTypography.current.subtitle,
-    actionIconSize = when (LocalAppBarType.current) {
-        AppBarType.Primary -> LocalSizes.current.iconSizePrimary
-        AppBarType.Secondary -> LocalSizes.current.iconSizeSecondary
-    },
-    actionIconPadding = LocalSizes.current.spacingTertiary,
-    actionContentMaxWidth = DefaultActionContentMaxWidth
-)
-
-private val DefaultActionContentMaxWidth = 170.dp
+@Stable
+internal object AppBarProperties {
+    val TitleTextColor = ColorsDescriptor.TextPrimary
+    val SubTextColor = ColorsDescriptor.TextSecondary
+    val ActionContentColor = ColorsDescriptor.TextPrimary
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingPrimary)
+    val InBoxPadding = PaddingDescriptor(vertical = SizesDescriptor.SpacingPrimary)
+    val ContentSpacing = SizesDescriptor.SpacingSecondary
+    val PrimaryTitleTextStyle = TypographyDescriptor.TitlePrimary
+    val SecondaryTitleTextStyle = TypographyDescriptor.TitleSecondary
+    val SubTextStyle = TypographyDescriptor.Subtitle
+    val PrimaryActionIconSize = SizesDescriptor.IconSizePrimary
+    val SecondaryActionIconSize = SizesDescriptor.IconSizeSecondary
+    val ActionIconPadding = SizesDescriptor.SpacingTertiary
+    val ActionContentMaxWidth = 170.dp
+}
 
 private const val VerticalContentSpacingRatio = 1.6f

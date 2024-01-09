@@ -78,18 +78,38 @@ fun FlexiTheme(
  * Defaults of Flexi UI theme styles.
  */
 object FlexiTheme {
+
+    /**
+     * Retrieves the current [Colors] at the call site's position in the hierarchy.
+     * @return [Colors]
+     */
     val colors: Colors
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
+
+    /**
+     * Retrieves the current [Shapes] at the call site's position in the hierarchy.
+     * @return [Shapes]
+     */
     val shapes: Shapes
         @Composable
         @ReadOnlyComposable
         get() = LocalShapes.current
+
+    /**
+     * Retrieves the current [Typography] at the call site's position in the hierarchy.
+     * @return [Typography]
+     */
     val typography: Typography
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
+
+    /**
+     * Retrieves the current [Sizes] at the call site's position in the hierarchy.
+     * @return [Sizes]
+     */
     val sizes: Sizes
         @Composable
         @ReadOnlyComposable

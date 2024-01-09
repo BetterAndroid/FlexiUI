@@ -26,7 +26,6 @@ package com.highcapable.flexiui.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.hoverable
@@ -50,7 +49,6 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -89,26 +87,19 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.betterandroid.compose.extension.ui.orNull
-import com.highcapable.betterandroid.compose.extension.ui.solidColor
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.Backspace
 import com.highcapable.flexiui.resources.icon.ViewerClose
 import com.highcapable.flexiui.resources.icon.ViewerOpen
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
 
 /**
  * Colors defines for text field.
- * @param textColor the text color.
- * @param cursorColor the cursor color.
- * @param selectionColors the selection colors.
- * @param completionColors the completion colors.
- * @param placeholderContentColor the placeholder content color, usually for text color.
- * @param decorInactiveTint the decoration inactive tint.
- * @param decorActiveTint the decoration active tint.
- * @param borderInactiveColor the border inactive color.
- * @param borderActiveColor the border active color.
- * @param backgroundColor the background color.
+ * @see TextFieldDefaults.colors
  */
 @Immutable
 data class TextFieldColors(
@@ -125,7 +116,22 @@ data class TextFieldColors(
 )
 
 /**
+ * Style defines for text field.
+ * @see TextFieldDefaults.style
+ */
+@Immutable
+data class TextFieldStyle(
+    val textStyle: TextStyle,
+    val completionStyle: DropdownMenuStyle,
+    val padding: ComponentPadding,
+    val shape: Shape,
+    val borderInactiveWith: Dp,
+    val borderActiveWith: Dp
+)
+
+/**
  * Colors defines for auto complete box.
+ * @see TextFieldDefaults.colors
  * @param highlightContentColor the highlight content color, usually for text color.
  * @param menuColors the dropdown menu colors.
  */
@@ -133,25 +139,6 @@ data class TextFieldColors(
 data class AutoCompleteBoxColors(
     val highlightContentColor: Color,
     val menuColors: DropdownMenuColors
-)
-
-/**
- * Style defines for text field.
- * @param textStyle the text style.
- * @param padding the padding of content.
- * @param shape the shape.
- * @param borderInactive the inactive border stroke.
- * @param borderActive the active border stroke.
- * @param completionStyle the completion dropdown menu style.
- */
-@Immutable
-data class TextFieldStyle(
-    val textStyle: TextStyle,
-    val padding: ComponentPadding,
-    val shape: Shape,
-    val borderInactive: BorderStroke,
-    val borderActive: BorderStroke,
-    val completionStyle: DropdownMenuStyle
 )
 
 /**
@@ -202,8 +189,8 @@ fun TextField(
     onValueChange: (TextFieldValue) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors,
-    style: TextFieldStyle = TextFieldDefaults.style,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    style: TextFieldStyle = TextFieldDefaults.style(),
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -228,24 +215,21 @@ fun TextField(
         else -> colors.decorInactiveTint
     })
     val animatedBorderColor by animateColorAsState(when {
-        focused || hovered -> style.borderActive.solidColor
-        else -> style.borderInactive.solidColor
+        focused || hovered -> colors.borderActiveColor
+        else -> colors.borderInactiveColor
     })
     val animatedBorderWidth by animateDpAsState(when {
-        focused -> style.borderActive.width
-        else -> style.borderInactive.width
+        focused -> style.borderActiveWith
+        else -> style.borderInactiveWith
     })
-    val border = when {
-        focused || hovered -> style.borderInactive
-        else -> style.borderInactive
-    }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     val textColor = style.textStyle.color.orNull() ?: colors.textColor
     BoxWithConstraints(
         modifier = Modifier.textField(
             enabled = enabled,
             colors = colors,
             style = style,
-            border = border,
+            borderColor = animatedBorderColor,
+            borderWidth = animatedBorderWidth,
             interactionSource = interactionSource,
             then = modifier
         ).pointerHoverState(TextFieldPointerState.Text)
@@ -351,8 +335,8 @@ fun TextField(
     onValueChange: (String) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors,
-    style: TextFieldStyle = TextFieldDefaults.style,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    style: TextFieldStyle = TextFieldDefaults.style(),
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -427,8 +411,8 @@ fun PasswordTextField(
     onValueChange: (TextFieldValue) -> Unit,
     defaultPasswordVisible: Boolean = false,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors,
-    style: TextFieldStyle = TextFieldDefaults.style,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    style: TextFieldStyle = TextFieldDefaults.style(),
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -475,7 +459,7 @@ fun PasswordTextField(
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
                     modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.Common),
-                    style = IconButtonDefaults.style.copy(padding = TextDecorIconPadding),
+                    style = IconButtonDefaults.style(padding = TextDecorIconPadding),
                     checked = passwordVisible,
                     onCheckedChange = {
                         passwordVisible = it
@@ -518,8 +502,8 @@ fun PasswordTextField(
     onValueChange: (String) -> Unit,
     defaultPasswordVisible: Boolean = false,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors,
-    style: TextFieldStyle = TextFieldDefaults.style,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    style: TextFieldStyle = TextFieldDefaults.style(),
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -589,8 +573,8 @@ fun BackspaceTextField(
     onValueChange: (TextFieldValue) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors,
-    style: TextFieldStyle = TextFieldDefaults.style,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    style: TextFieldStyle = TextFieldDefaults.style(),
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -647,7 +631,7 @@ fun BackspaceTextField(
                         focusRequester.requestFocus()
                     },
                     modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.Common),
-                    style = IconButtonDefaults.style.copy(padding = TextDecorIconPadding),
+                    style = IconButtonDefaults.style(padding = TextDecorIconPadding),
                     enabled = enabled,
                     interactionSource = cInteractionSource
                 ) { Icon(imageVector = FlexiIcons.Backspace) }
@@ -688,8 +672,8 @@ fun BackspaceTextField(
     onValueChange: (String) -> Unit,
     completionValues: List<String> = emptyList(),
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.colors,
-    style: TextFieldStyle = TextFieldDefaults.style,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    style: TextFieldStyle = TextFieldDefaults.style(),
     enabled: Boolean = true,
     readOnly: Boolean = false,
     completionOptions: AutoCompleteOptions = AutoCompleteOptions(),
@@ -883,9 +867,10 @@ private fun TextFieldDecorationBox(
 
 @Composable
 private fun TextFieldStyle(colors: TextFieldColors, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalTextSelectionColors provides colors.selectionColors) {
-        content()
-    }
+    CompositionLocalProvider(
+        LocalTextSelectionColors provides colors.selectionColors,
+        content = content
+    )
 }
 
 internal expect fun Modifier.pointerHoverState(state: TextFieldPointerState): Modifier
@@ -902,7 +887,8 @@ private fun Modifier.textField(
     enabled: Boolean,
     colors: TextFieldColors,
     style: TextFieldStyle,
-    border: BorderStroke,
+    borderColor: Color,
+    borderWidth: Dp,
     interactionSource: MutableInteractionSource,
     then: Modifier
 ) = composed(
@@ -911,7 +897,8 @@ private fun Modifier.textField(
         properties["enabled"] = enabled
         properties["colors"] = colors
         properties["style"] = style
-        properties["border"] = border
+        properties["borderColor"] = borderColor
+        properties["borderWidth"] = borderWidth
     }
 ) {
     componentState(enabled)
@@ -919,7 +906,7 @@ private fun Modifier.textField(
         .hoverable(interactionSource, enabled)
         .clip(style.shape)
         .background(colors.backgroundColor, style.shape)
-        .borderOrElse(border, style.shape)
+        .borderOrElse(borderWidth, borderColor, style.shape)
         .then(then)
 }
 
@@ -940,55 +927,97 @@ private fun Modifier.textFieldPadding(
  * Defaults of text field.
  */
 object TextFieldDefaults {
-    val colors: TextFieldColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTextFieldColors()
-    val style: TextFieldStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTextFieldStyle()
+
+    /**
+     * Creates a [TextFieldColors] with the default values.
+     * @param textColor the text color.
+     * @param cursorColor the cursor color.
+     * @param selectionColors the selection colors.
+     * @param completionColors the completion colors.
+     * @param placeholderContentColor the placeholder content color, usually for text color.
+     * @param decorInactiveTint the decoration inactive tint.
+     * @param decorActiveTint the decoration active tint.
+     * @param borderInactiveColor the border inactive color.
+     * @param borderActiveColor the border active color.
+     * @param backgroundColor the background color.
+     * @return [TextFieldColors]
+     */
+    @Composable
+    fun colors(
+        textColor: Color = TextFieldProperties.TextColor.toColor(),
+        cursorColor: Color = TextFieldProperties.CursorColor.toColor(),
+        selectionColors: TextSelectionColors = TextSelectionColors(
+            handleColor = TextFieldProperties.SelectionHandleColor.toColor(),
+            backgroundColor = TextFieldProperties.SelectionBackgroundColor.toColor()
+        ),
+        completionColors: AutoCompleteBoxColors = AutoCompleteBoxColors(
+            highlightContentColor = TextFieldProperties.CompletionHighlightContentColor.toColor(),
+            menuColors = DropdownMenuDefaults.colors()
+        ),
+        placeholderContentColor: Color = TextFieldProperties.PlaceholderContentColor.toColor(),
+        decorInactiveTint: Color = TextFieldProperties.DecorInactiveTint.toColor(),
+        decorActiveTint: Color = TextFieldProperties.DecorActiveTint.toColor(),
+        borderInactiveColor: Color = TextFieldProperties.BorderInactiveColor.toColor(),
+        borderActiveColor: Color = TextFieldProperties.BorderActiveColor.toColor(),
+        backgroundColor: Color = TextFieldProperties.BackgroundColor
+    ) = TextFieldColors(
+        textColor = textColor,
+        cursorColor = cursorColor,
+        selectionColors = selectionColors,
+        completionColors = completionColors,
+        placeholderContentColor = placeholderContentColor,
+        decorInactiveTint = decorInactiveTint,
+        decorActiveTint = decorActiveTint,
+        borderInactiveColor = borderInactiveColor,
+        borderActiveColor = borderActiveColor,
+        backgroundColor = backgroundColor
+    )
+
+    /**
+     * Creates a [TextFieldStyle] with the default values.
+     * @param textStyle the text style.
+     * @param completionStyle the completion style.
+     * @param padding the padding of content.
+     * @param shape the shape.
+     * @param borderInactiveWith the inactive border width.
+     * @param borderActiveWith the active border width.
+     * @return [TextFieldStyle]
+     */
+    @Composable
+    fun style(
+        textStyle: TextStyle = LocalTextStyle.current,
+        completionStyle: DropdownMenuStyle = DropdownMenuDefaults.style(),
+        padding: ComponentPadding = TextFieldProperties.Padding.toPadding(),
+        shape: Shape = AreaBoxDefaults.childShape(),
+        borderInactiveWith: Dp = TextFieldProperties.BorderInactiveWith.toDp(),
+        borderActiveWith: Dp = TextFieldProperties.BorderActiveWith.toDp()
+    ) = TextFieldStyle(
+        textStyle = textStyle,
+        completionStyle = completionStyle,
+        padding = padding,
+        shape = shape,
+        borderInactiveWith = borderInactiveWith,
+        borderActiveWith = borderActiveWith
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultTextFieldColors() = TextFieldColors(
-    textColor = defaultTextColor(),
-    cursorColor = LocalColors.current.themePrimary,
-    selectionColors = TextSelectionColors(
-        handleColor = LocalColors.current.themePrimary,
-        backgroundColor = LocalColors.current.themeSecondary
-    ),
-    completionColors = AutoCompleteBoxColors(
-        highlightContentColor = LocalColors.current.themePrimary,
-        menuColors = DropdownMenuDefaults.colors
-    ),
-    placeholderContentColor = LocalColors.current.textSecondary,
-    decorInactiveTint = LocalColors.current.themeSecondary,
-    decorActiveTint = LocalColors.current.themePrimary,
-    borderInactiveColor = LocalColors.current.themeSecondary,
-    borderActiveColor = LocalColors.current.themePrimary,
-    backgroundColor = Color.Transparent
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultTextFieldStyle() = TextFieldStyle(
-    textStyle = LocalTextStyle.current,
-    padding = ComponentPadding(LocalSizes.current.spacingSecondary),
-    shape = withAreaBoxShape(),
-    borderInactive = defaultTextFieldInactiveBorder(),
-    borderActive = defaultTextFieldActiveBorder(),
-    completionStyle = DropdownMenuDefaults.style
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultTextFieldInactiveBorder() = BorderStroke(LocalSizes.current.borderSizeSecondary, LocalColors.current.themeSecondary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultTextFieldActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
+@Stable
+internal object TextFieldProperties {
+    val TextColor = TextProperties.Color
+    val CursorColor = ColorsDescriptor.ThemePrimary
+    val SelectionHandleColor = ColorsDescriptor.ThemePrimary
+    val SelectionBackgroundColor = ColorsDescriptor.ThemeSecondary
+    val CompletionHighlightContentColor = ColorsDescriptor.ThemePrimary
+    val PlaceholderContentColor = ColorsDescriptor.TextSecondary
+    val DecorInactiveTint = ColorsDescriptor.ThemeSecondary
+    val DecorActiveTint = ColorsDescriptor.ThemePrimary
+    val BorderInactiveColor = ColorsDescriptor.ThemeSecondary
+    val BorderActiveColor = ColorsDescriptor.ThemePrimary
+    val BackgroundColor = Color.Transparent
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingSecondary)
+    val BorderInactiveWith = SizesDescriptor.BorderSizeSecondary
+    val BorderActiveWith = SizesDescriptor.BorderSizePrimary
+}
 
 private val TextDecorIconSize = 24.dp
 private val TextDecorIconPadding = ComponentPadding(2.dp)

@@ -19,12 +19,11 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package com.highcapable.flexiui.component
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -42,7 +41,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,40 +62,33 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.componentState
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
  * Colors defines for slider.
- * @param trackInactiveColor the inactive color of track.
- * @param trackActiveColor the active color of track.
- * @param thumbColor the color of thumb.
- * @param stepColor the color of step.
+ * @see SliderDefaults.colors
  */
 @Immutable
 data class SliderColors(
-    val trackInactiveColor: Color,
-    val trackActiveColor: Color,
     val thumbColor: Color,
-    val stepColor: Color
+    val stepColor: Color,
+    val thumbBorderColor: Color,
+    val stepBorderColor: Color,
+    val trackBorderColor: Color,
+    val trackInactiveColor: Color,
+    val trackActiveColor: Color
 )
 
 /**
  * Style defines for slider.
- * @param thumbRadius the radius of thumb.
- * @param thumbGain the gain of thumb.
- * @param thumbShadowSize the shadow size of thumb.
- * @param thumbShape the shape of thumb.
- * @param stepShape the shape of step.
- * @param trackShape the shape of track.
- * @param thumbBorder the border of thumb.
- * @param stepBorder the border of step.
- * @param trackBorder the border of track.
- * @param trackWidth the width of track.
- * @param trackHeight the height of track.
+ * @see SliderDefaults.style
  */
 @Immutable
 data class SliderStyle(
@@ -106,11 +98,11 @@ data class SliderStyle(
     val thumbShape: Shape,
     val stepShape: Shape,
     val trackShape: Shape,
-    val thumbBorder: BorderStroke,
-    val stepBorder: BorderStroke,
-    val trackBorder: BorderStroke,
     val trackWidth: Dp,
-    val trackHeight: Dp
+    val trackHeight: Dp,
+    val thumbBorderWidth: Dp,
+    val stepBorderWidth: Dp,
+    val trackBorderWidth: Dp
 )
 
 /**
@@ -132,8 +124,8 @@ fun Slider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
-    colors: SliderColors = SliderDefaults.colors,
-    style: SliderStyle = SliderDefaults.style,
+    colors: SliderColors = SliderDefaults.colors(),
+    style: SliderStyle = SliderDefaults.style(),
     enabled: Boolean = true,
     min: Float = 0f,
     max: Float = 1f,
@@ -181,7 +173,7 @@ fun Slider(
             Box(
                 modifier = Modifier.size(trackAdoptWidth, style.trackHeight)
                     .background(colors.trackInactiveColor, style.trackShape)
-                    .borderOrElse(style.trackBorder, style.trackShape)
+                    .borderOrElse(style.trackBorderWidth, colors.trackBorderColor, style.trackShape)
                     .drawWithContent {
                         drawRoundRect(
                             color = colors.trackActiveColor,
@@ -206,7 +198,7 @@ fun Slider(
                 Box(
                     modifier = Modifier.size(style.trackHeight)
                         .background(colors.stepColor, style.stepShape)
-                        .borderOrElse(style.stepBorder, style.stepShape)
+                        .borderOrElse(style.stepBorderWidth, colors.stepBorderColor, style.stepShape)
                 )
         }
     }
@@ -220,7 +212,7 @@ fun Slider(
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
                 .background(colors.thumbColor, style.thumbShape)
-                .borderOrElse(style.thumbBorder, style.thumbShape)
+                .borderOrElse(style.thumbBorderWidth, colors.thumbBorderColor, style.thumbShape)
                 .draggable(
                     orientation = Orientation.Horizontal,
                     state = rememberDraggableState { delta ->
@@ -275,48 +267,98 @@ fun Slider(
  * Defaults of slider.
  */
 object SliderDefaults {
-    val colors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSliderColors()
-    val style
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSliderStyle()
+
+    /**
+     * Creates a [SliderColors] with the default values.
+     * @param thumbColor the color of thumb.
+     * @param stepColor the color of step.
+     * @param thumbBorderColor the border color of thumb.
+     * @param stepBorderColor the border color of step.
+     * @param trackBorderColor the border color of track.
+     * @param trackInactiveColor the inactive color of track.
+     * @param trackActiveColor the active color of track.
+     * @return [SliderColors]
+     */
+    @Composable
+    fun colors(
+        thumbColor: Color = SliderProperties.ThumbColor.toColor(),
+        stepColor: Color = SliderProperties.StepColor.toColor(),
+        thumbBorderColor: Color = SliderProperties.ThumbBorderColor.toColor(),
+        stepBorderColor: Color = SliderProperties.StepBorderColor.toColor(),
+        trackBorderColor: Color = SliderProperties.TrackBorderColor.toColor(),
+        trackInactiveColor: Color = SliderProperties.TrackInactiveColor.toColor(),
+        trackActiveColor: Color = SliderProperties.TrackActiveColor.toColor()
+    ) = SliderColors(
+        thumbColor = thumbColor,
+        stepColor = stepColor,
+        thumbBorderColor = thumbBorderColor,
+        stepBorderColor = stepBorderColor,
+        trackBorderColor = trackBorderColor,
+        trackInactiveColor = trackInactiveColor,
+        trackActiveColor = trackActiveColor
+    )
+
+    /**
+     * Creates a [SliderStyle] with the default values.
+     * @param thumbRadius the radius of thumb.
+     * @param thumbGain the gain of thumb.
+     * @param thumbShadowSize the shadow size of thumb.
+     * @param thumbShape the shape of thumb.
+     * @param stepShape the shape of step.
+     * @param trackShape the shape of track.
+     * @param trackWidth the width of track.
+     * @param trackHeight the height of track.
+     * @param thumbBorderWidth the border width of thumb.
+     * @param stepBorderWidth the border width of step.
+     * @param trackBorderWidth the border width of track.
+     * @return [SliderStyle]
+     */
+    @Composable
+    fun style(
+        thumbRadius: Dp = SliderProperties.ThumbRadius,
+        thumbGain: Float = SliderProperties.ThumbGain,
+        thumbShadowSize: Dp = SliderProperties.ThumbShadowSize,
+        thumbShape: Shape = SliderProperties.ThumbShape.toShape(),
+        stepShape: Shape = SliderProperties.StepShape.toShape(),
+        trackShape: Shape = SliderProperties.TrackShape.toShape(),
+        trackWidth: Dp = SliderProperties.TrackWidth,
+        trackHeight: Dp = SliderProperties.TrackHeight,
+        thumbBorderWidth: Dp = SliderProperties.ThumbBorderWidth.toDp(),
+        stepBorderWidth: Dp = SliderProperties.StepBorderWidth.toDp(),
+        trackBorderWidth: Dp = SliderProperties.TrackBorderWidth.toDp()
+    ) = SliderStyle(
+        thumbRadius = thumbRadius,
+        thumbGain = thumbGain,
+        thumbShadowSize = thumbShadowSize,
+        thumbShape = thumbShape,
+        stepShape = stepShape,
+        trackShape = trackShape,
+        trackWidth = trackWidth,
+        trackHeight = trackHeight,
+        thumbBorderWidth = thumbBorderWidth,
+        stepBorderWidth = stepBorderWidth,
+        trackBorderWidth = trackBorderWidth
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultSliderColors() = SliderColors(
-    trackInactiveColor = LocalColors.current.themeTertiary,
-    trackActiveColor = LocalColors.current.themePrimary,
-    thumbColor = LocalColors.current.themePrimary,
-    stepColor = LocalColors.current.themeSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSliderStyle() = SliderStyle(
-    thumbRadius = DefaultThumbRadius,
-    thumbGain = DefaultThumbGain,
-    thumbShadowSize = DefaultThumbShadowSize,
-    thumbShape = LocalShapes.current.tertiary,
-    stepShape = LocalShapes.current.tertiary,
-    trackShape = LocalShapes.current.primary,
-    thumbBorder = defaultSliderBorder(),
-    stepBorder = defaultSliderBorder(),
-    trackBorder = defaultSliderBorder(),
-    trackWidth = DefaultTrackWidth,
-    trackHeight = DefaultTrackHeight
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSliderBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-private val DefaultThumbRadius = 10.dp
-private const val DefaultThumbGain = 1.1f
-private val DefaultThumbShadowSize = 0.5.dp
-
-private val DefaultTrackWidth = 240.dp
-private val DefaultTrackHeight = 4.dp
+@Stable
+internal object SliderProperties {
+    val ThumbColor = ColorsDescriptor.ThemePrimary
+    val StepColor = ColorsDescriptor.ThemeSecondary
+    val ThumbBorderColor = ColorsDescriptor.TextPrimary
+    val StepBorderColor = ColorsDescriptor.TextPrimary
+    val TrackBorderColor = ColorsDescriptor.TextPrimary
+    val TrackInactiveColor = ColorsDescriptor.ThemeTertiary
+    val TrackActiveColor = ColorsDescriptor.ThemePrimary
+    val ThumbRadius = 10.dp
+    const val ThumbGain = 1.1f
+    val ThumbShadowSize = 0.5.dp
+    val ThumbShape = ShapesDescriptor.Tertiary
+    val StepShape = ShapesDescriptor.Tertiary
+    val TrackShape = ShapesDescriptor.Primary
+    val TrackWidth = 240.dp
+    val TrackHeight = 4.dp
+    val ThumbBorderWidth = SizesDescriptor.BorderSizeTertiary
+    val StepBorderWidth = SizesDescriptor.BorderSizeTertiary
+    val TrackBorderWidth = SizesDescriptor.BorderSizeTertiary
+}

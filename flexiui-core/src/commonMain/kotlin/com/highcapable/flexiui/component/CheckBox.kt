@@ -19,13 +19,12 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package com.highcapable.flexiui.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -39,7 +38,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,33 +54,28 @@ import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.clickable
 import com.highcapable.betterandroid.compose.extension.ui.componentState
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.CheckMark
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
 
 /**
  * Colors defines for check box.
- * @param contentColor the color of the check mark.
- * @param inactiveColor the color of the unchecked box.
- * @param activeColor the color of the checked box.
+ * @see CheckBoxDefaults.colors
  */
 @Immutable
 data class CheckBoxColors(
     val contentColor: Color,
     val inactiveColor: Color,
-    val activeColor: Color
+    val activeColor: Color,
+    val borderColor: Color
 )
 
 /**
  * Style defines for check box.
- * @param contentSpacing the spacing between the check mark and the content.
- * @param contentSize the size of the check mark.
- * @param strokeSize the stroke size.
- * @param pressedGain the gain when pressed.
- * @param hoveredGain the gain when hovered.
- * @param shape the shape.
- * @param border the border stroke.
+ * @see CheckBoxDefaults.style
  */
 @Immutable
 data class CheckBoxStyle(
@@ -91,7 +85,7 @@ data class CheckBoxStyle(
     val pressedGain: Float,
     val hoveredGain: Float,
     val shape: Shape,
-    val border: BorderStroke
+    val borderWidth: Dp
 )
 
 /**
@@ -110,8 +104,8 @@ fun CheckBox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: CheckBoxColors = CheckBoxDefaults.colors,
-    style: CheckBoxStyle = CheckBoxDefaults.style,
+    colors: CheckBoxColors = CheckBoxDefaults.colors(),
+    style: CheckBoxStyle = CheckBoxDefaults.style(),
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable (RowScope.() -> Unit)? = null
@@ -133,7 +127,7 @@ fun CheckBox(
                 .size(style.strokeSize)
                 .scale(animatedStrokeScale)
                 .background(animatedColor, style.shape)
-                .borderOrElse(style.border, style.shape),
+                .borderOrElse(style.borderWidth, colors.borderColor, style.shape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -146,7 +140,7 @@ fun CheckBox(
                         scaleY = animatedContentLayer
                     ),
                 imageVector = FlexiIcons.CheckMark,
-                style = IconDefaults.style.copy(tint = colors.contentColor)
+                style = IconDefaults.style(tint = colors.contentColor)
             )
         }
         content?.also { content ->
@@ -162,44 +156,70 @@ fun CheckBox(
  * Defaults of check box.
  */
 object CheckBoxDefaults {
-    val colors: CheckBoxColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultCheckBoxColors()
-    val style: CheckBoxStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultCheckBoxStyle()
+
+    /**
+     * Creates a [CheckBoxColors] with the default values.
+     * @param contentColor the color of the check mark.
+     * @param inactiveColor the color of the unchecked box.
+     * @param activeColor the color of the checked box.
+     * @param borderColor the color of the border.
+     * @return [CheckBoxColors]
+     */
+    @Composable
+    fun colors(
+        contentColor: Color = CheckBoxProperties.ContentColor,
+        inactiveColor: Color = CheckBoxProperties.InactiveColor.toColor(),
+        activeColor: Color = CheckBoxProperties.ActiveColor.toColor(),
+        borderColor: Color = CheckBoxProperties.BorderColor.toColor()
+    ) = CheckBoxColors(
+        contentColor = contentColor,
+        inactiveColor = inactiveColor,
+        activeColor = activeColor,
+        borderColor = borderColor
+    )
+
+    /**
+     * Creates a [CheckBoxStyle] with the default values.
+     * @param contentSpacing the spacing between the check mark and the content.
+     * @param contentSize the size of the check mark.
+     * @param strokeSize the stroke size.
+     * @param pressedGain the gain when pressed.
+     * @param hoveredGain the gain when hovered.
+     * @param shape the shape.
+     * @param borderWidth the border width.
+     * @return [CheckBoxStyle]
+     */
+    @Composable
+    fun style(
+        contentSpacing: Dp = CheckBoxProperties.ContentSpacing.toDp(),
+        contentSize: Dp = CheckBoxProperties.ContentSize,
+        strokeSize: Dp = CheckBoxProperties.StrokeSize,
+        pressedGain: Float = CheckBoxProperties.PressedGain,
+        hoveredGain: Float = CheckBoxProperties.HoveredGain,
+        shape: Shape = CheckBoxProperties.Shape,
+        borderWidth: Dp = CheckBoxProperties.BorderWidth.toDp()
+    ) = CheckBoxStyle(
+        contentSpacing = contentSpacing,
+        contentSize = contentSize,
+        strokeSize = strokeSize,
+        pressedGain = pressedGain,
+        hoveredGain = hoveredGain,
+        shape = shape,
+        borderWidth = borderWidth
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultCheckBoxColors() = CheckBoxColors(
-    contentColor = Color.White,
-    inactiveColor = LocalColors.current.themeTertiary,
-    activeColor = LocalColors.current.themePrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultCheckBoxStyle() = CheckBoxStyle(
-    contentSpacing = LocalSizes.current.spacingSecondary,
-    contentSize = DefaultContentSize,
-    strokeSize = DefaultStrokeSize,
-    pressedGain = DefaultPressedGain,
-    hoveredGain = DefaultHoveredGain,
-    shape = DefaultCheckBoxShape,
-    border = defaultCheckBoxBorder()
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultCheckBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-private val DefaultContentSize = 13.dp
-private val DefaultStrokeSize = 20.dp
-
-private val DefaultCheckBoxShape = RoundedCornerShape(4.dp)
-
-private const val DefaultPressedGain = 0.9f
-private const val DefaultHoveredGain = 1.1f
+@Stable
+internal object CheckBoxProperties {
+    val ContentColor = Color.White
+    val InactiveColor = ColorsDescriptor.ThemeTertiary
+    val ActiveColor = ColorsDescriptor.ThemePrimary
+    val BorderColor = ColorsDescriptor.TextPrimary
+    val ContentSpacing = SizesDescriptor.SpacingSecondary
+    val ContentSize = 13.dp
+    val StrokeSize = 20.dp
+    const val PressedGain = 0.9f
+    const val HoveredGain = 1.1f
+    val Shape: Shape = RoundedCornerShape(4.dp)
+    val BorderWidth = SizesDescriptor.BorderSizeTertiary
+}

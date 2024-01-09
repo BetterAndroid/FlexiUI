@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/8.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ObjectPropertyName")
 
 package com.highcapable.flexiui.component
 
@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -52,14 +51,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.highcapable.betterandroid.compose.extension.ui.orNull
-import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.toColor
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.max
 
 /**
  * Style interface for progress indicator.
+ * @see CircularIndicatorStyle
+ * @see LinearIndicatorStyle
  */
 @Stable
 interface ProgressIndicatorStyle {
@@ -69,6 +70,8 @@ interface ProgressIndicatorStyle {
 
 /**
  * Animation interface for progress indicator.
+ * @see CircularIndicatorAnimation
+ * @see LinearIndicatorAnimation
  */
 @Stable
 interface ProgressIndicatorAnimation {
@@ -76,33 +79,36 @@ interface ProgressIndicatorAnimation {
 }
 
 /**
+ * Colors defines for progress indicator.
+ * @see CircularIndicatorDefaults.colors
+ * @see LinearIndicatorDefaults.colors
+ */
+@Immutable
+data class ProgressIndicatorColors(
+    val foregroundColor: Color,
+    val backgroundColor: Color
+)
+
+/**
  * Style defines for circular progress indicator.
- * @param strokeWidth the stroke width of indicator.
- * @param strokeCap the stroke cap of indicator.
- * @param radius the radius of indicator.
- * @param animation the animation of indicator.
+ * @see CircularIndicatorDefaults.style
  */
 @Immutable
 data class CircularIndicatorStyle(
     override val strokeWidth: Dp,
     override val strokeCap: StrokeCap,
-    val radius: Dp,
-    val animation: CircularIndicatorAnimation
+    val radius: Dp
 ) : ProgressIndicatorStyle
 
 /**
  * Style defines for linear progress indicator.
- * @param strokeWidth the stroke width of indicator.
- * @param strokeCap the stroke cap of indicator.
- * @param width the width of indicator.
- * @param animation the animation of indicator.
+ * @see LinearIndicatorDefaults.style
  */
 @Immutable
 data class LinearIndicatorStyle(
     override val strokeWidth: Dp,
     override val strokeCap: StrokeCap,
-    val width: Dp,
-    val animation: LinearIndicatorAnimation
+    val width: Dp
 ) : ProgressIndicatorStyle
 
 /**
@@ -148,17 +154,6 @@ data class LinearIndicatorAnimation(
 ) : ProgressIndicatorAnimation
 
 /**
- * Colors defines for progress indicator.
- * @param foregroundColor the foreground color of indicator.
- * @param backgroundColor the background color of indicator.
- */
-@Immutable
-data class ProgressIndicatorColors(
-    val foregroundColor: Color,
-    val backgroundColor: Color
-)
-
-/**
  * Flexi UI circular progress indicator.
  * @see LinearProgressIndicator
  * @param modifier the [Modifier] to be applied to this indicator.
@@ -166,8 +161,9 @@ data class ProgressIndicatorColors(
  * @param min the min of indicator, default is 0f.
  * @param max the max of indicator, default is 1f.
  * @param indeterminate the indeterminate of indicator, default is false.
- * @param colors the colors of indicator, default is [CircularIndicatorDefaults.colors].
- * @param style the style of indicator, default is [CircularIndicatorDefaults.style].
+ * @param animation the animation of indicator.
+ * @param colors the colors of indicator.
+ * @param style the style of indicator.
  */
 @Composable
 fun CircularProgressIndicator(
@@ -176,11 +172,14 @@ fun CircularProgressIndicator(
     min: Float = 0f,
     max: Float = 1f,
     indeterminate: Boolean = progress < min,
-    colors: ProgressIndicatorColors = CircularIndicatorDefaults.colors,
-    style: CircularIndicatorStyle = CircularIndicatorDefaults.style
+    animation: CircularIndicatorAnimation = DefaultCircularIndicatorAnimation,
+    colors: ProgressIndicatorColors? = null,
+    style: CircularIndicatorStyle? = null
 ) {
-    val diameter = style.radius * 2
-    val stroke = with(LocalDensity.current) { Stroke(width = style.strokeWidth.toPx(), cap = style.strokeCap) }
+    val currentColors = colors ?: LocalProgressIndicatorColors.current ?: CircularIndicatorDefaults.colors()
+    val currentStyle = style ?: LocalProgressIndicatorStyle.current as? CircularIndicatorStyle? ?: CircularIndicatorDefaults.style()
+    val diameter = currentStyle.radius * 2
+    val stroke = with(LocalDensity.current) { Stroke(width = currentStyle.strokeWidth.toPx(), cap = currentStyle.strokeCap) }
 
     /** Build determinate progress indicator. */
     @Composable
@@ -190,8 +189,8 @@ fun CircularProgressIndicator(
         Canvas(modifier.progressSemantics(normalizedProgress).size(diameter)) {
             val startAngle = 270f
             val sweep = normalizedProgress * 360f
-            drawCircularIndicatorBackground(colors.backgroundColor, stroke)
-            drawCircularIndicator(startAngle, sweep, colors.foregroundColor, stroke)
+            drawCircularIndicatorBackground(currentColors.backgroundColor, stroke)
+            drawCircularIndicator(startAngle, sweep, currentColors.foregroundColor, stroke)
         }
     }
 
@@ -201,55 +200,55 @@ fun CircularProgressIndicator(
         val transition = rememberInfiniteTransition()
         val currentRotation by transition.animateValue(
             initialValue = 0,
-            style.animation.rotationsPerCycle,
+            animation.rotationsPerCycle,
             Int.VectorConverter,
             infiniteRepeatable(
                 animation = tween(
-                    durationMillis = style.animation.duration * style.animation.rotationsPerCycle,
+                    durationMillis = animation.duration * animation.rotationsPerCycle,
                     easing = LinearEasing
                 )
             )
         )
         val baseRotation by transition.animateFloat(
             initialValue = 0f,
-            style.animation.baseRotationAngle,
+            animation.baseRotationAngle,
             infiniteRepeatable(
                 animation = tween(
-                    durationMillis = style.animation.duration,
+                    durationMillis = animation.duration,
                     easing = LinearEasing
                 )
             )
         )
-        val headAndTailAnimationDuration = caleHeadAndTailAnimationDuration(style.animation.duration)
+        val headAndTailAnimationDuration = caleHeadAndTailAnimationDuration(animation.duration)
         val endAngle by transition.animateFloat(
             initialValue = 0f,
-            style.animation.jumpRotationAngle,
+            animation.jumpRotationAngle,
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
                     0f at 0 with CircularEasing
-                    style.animation.jumpRotationAngle at headAndTailAnimationDuration
+                    animation.jumpRotationAngle at headAndTailAnimationDuration
                 }
             )
         )
         val startAngle by transition.animateFloat(
             initialValue = 0f,
-            style.animation.jumpRotationAngle,
+            animation.jumpRotationAngle,
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
                     0f at headAndTailAnimationDuration with CircularEasing
-                    style.animation.jumpRotationAngle at durationMillis
+                    animation.jumpRotationAngle at durationMillis
                 }
             )
         )
         Canvas(modifier.progressSemantics().size(diameter)) {
-            drawCircularIndicatorBackground(colors.backgroundColor, stroke)
-            val rotationAngleOffset = caleRotationAngleOffset(style.animation.baseRotationAngle, style.animation.jumpRotationAngle)
+            drawCircularIndicatorBackground(currentColors.backgroundColor, stroke)
+            val rotationAngleOffset = caleRotationAngleOffset(animation.baseRotationAngle, animation.jumpRotationAngle)
             val currentRotationAngleOffset = (currentRotation * rotationAngleOffset) % 360f
             val sweep = abs(endAngle - startAngle)
-            val offset = style.animation.startAngleOffset + currentRotationAngleOffset + baseRotation
-            drawIndeterminateCircularIndicator(startAngle + offset, style.strokeWidth, diameter, sweep, colors.foregroundColor, stroke)
+            val offset = animation.startAngleOffset + currentRotationAngleOffset + baseRotation
+            drawIndeterminateCircularIndicator(startAngle + offset, currentStyle.strokeWidth, diameter, sweep, currentColors.foregroundColor, stroke)
         }
     }
     if (indeterminate) Indeterminate() else Determinate()
@@ -263,8 +262,9 @@ fun CircularProgressIndicator(
  * @param min the min of indicator, default is 0f.
  * @param max the max of indicator, default is 1f.
  * @param indeterminate the indeterminate of indicator, default is false.
- * @param colors the colors of indicator, default is [LinearIndicatorDefaults.colors].
- * @param style the style of indicator, default is [LinearIndicatorDefaults.style].
+ * @param animation the animation of indicator.
+ * @param colors the colors of indicator.
+ * @param style the style of indicator.
  */
 @Composable
 fun LinearProgressIndicator(
@@ -273,18 +273,22 @@ fun LinearProgressIndicator(
     min: Float = 0f,
     max: Float = 1f,
     indeterminate: Boolean = progress < min,
-    colors: ProgressIndicatorColors = LinearIndicatorDefaults.colors,
-    style: LinearIndicatorStyle = LinearIndicatorDefaults.style
+    animation: LinearIndicatorAnimation = DefaultLinearIndicatorAnimation,
+    colors: ProgressIndicatorColors? = null,
+    style: LinearIndicatorStyle? = null
 ) {
+    val currentColors = colors ?: LocalProgressIndicatorColors.current ?: CircularIndicatorDefaults.colors()
+    val currentStyle = style ?: LocalProgressIndicatorStyle.current as? LinearIndicatorStyle? ?: LinearIndicatorDefaults.style()
+
     /** Build determinate progress indicator. */
     @Composable
     fun Determinate() {
         val coercedProgress = progress.coerceIn(min, max)
         val normalizedProgress = (coercedProgress - min) / (max - min)
-        Canvas(modifier.progressSemantics(normalizedProgress).size(style.width, style.strokeWidth)) {
+        Canvas(modifier.progressSemantics(normalizedProgress).size(currentStyle.width, currentStyle.strokeWidth)) {
             val strokeWidth = size.height
-            drawLinearIndicatorBackground(colors.backgroundColor, strokeWidth, style.strokeCap)
-            drawLinearIndicator(startFraction = 0f, normalizedProgress, colors.foregroundColor, strokeWidth, style.strokeCap)
+            drawLinearIndicatorBackground(currentColors.backgroundColor, strokeWidth, currentStyle.strokeCap)
+            drawLinearIndicator(startFraction = 0f, normalizedProgress, currentColors.foregroundColor, strokeWidth, currentStyle.strokeCap)
         }
     }
 
@@ -297,9 +301,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animation.duration
-                    0f at style.animation.firstLineHeadDelay with FirstLineHeadEasing
-                    1f at style.animation.firstLineHeadDuration + style.animation.firstLineHeadDelay
+                    durationMillis = animation.duration
+                    0f at animation.firstLineHeadDelay with FirstLineHeadEasing
+                    1f at animation.firstLineHeadDuration + animation.firstLineHeadDelay
                 }
             )
         )
@@ -308,9 +312,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animation.duration
-                    0f at style.animation.firstLineTailDelay with FirstLineTailEasing
-                    1f at style.animation.firstLineTailDuration + style.animation.firstLineTailDelay
+                    durationMillis = animation.duration
+                    0f at animation.firstLineTailDelay with FirstLineTailEasing
+                    1f at animation.firstLineTailDuration + animation.firstLineTailDelay
                 }
             )
         )
@@ -319,9 +323,9 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animation.duration
-                    0f at style.animation.secondLineHeadDelay with SecondLineHeadEasing
-                    1f at style.animation.secondLineHeadDuration + style.animation.secondLineHeadDelay
+                    durationMillis = animation.duration
+                    0f at animation.secondLineHeadDelay with SecondLineHeadEasing
+                    1f at animation.secondLineHeadDuration + animation.secondLineHeadDelay
                 }
             )
         )
@@ -330,19 +334,19 @@ fun LinearProgressIndicator(
             targetValue = 1f,
             infiniteRepeatable(
                 animation = keyframes {
-                    durationMillis = style.animation.duration
-                    0f at style.animation.secondLineTailDelay with SecondLineTailEasing
-                    1f at style.animation.secondLineTailDuration + style.animation.secondLineTailDelay
+                    durationMillis = animation.duration
+                    0f at animation.secondLineTailDelay with SecondLineTailEasing
+                    1f at animation.secondLineTailDuration + animation.secondLineTailDelay
                 }
             )
         )
-        Canvas(modifier.progressSemantics().size(style.width, style.strokeWidth)) {
+        Canvas(modifier.progressSemantics().size(currentStyle.width, currentStyle.strokeWidth)) {
             val strokeWidth = size.height
-            drawLinearIndicatorBackground(colors.backgroundColor, strokeWidth, style.strokeCap)
+            drawLinearIndicatorBackground(currentColors.backgroundColor, strokeWidth, currentStyle.strokeCap)
             if (firstLineHead - firstLineTail > 0)
-                drawLinearIndicator(firstLineHead, firstLineTail, colors.foregroundColor, strokeWidth, style.strokeCap)
+                drawLinearIndicator(firstLineHead, firstLineTail, currentColors.foregroundColor, strokeWidth, currentStyle.strokeCap)
             if (secondLineHead - secondLineTail > 0)
-                drawLinearIndicator(secondLineHead, secondLineTail, colors.foregroundColor, strokeWidth, style.strokeCap)
+                drawLinearIndicator(secondLineHead, secondLineTail, currentColors.foregroundColor, strokeWidth, currentStyle.strokeCap)
         }
     }
     if (indeterminate) Indeterminate() else Determinate()
@@ -422,100 +426,107 @@ private fun DrawScope.drawLinearIndicator(
  * Defaults of circular progress indicator.
  */
 object CircularIndicatorDefaults {
-    val colors: ProgressIndicatorColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalProgressIndicatorColors.current.copy(
-            foregroundColor = LocalProgressIndicatorColors.current.foregroundColor.orNull()
-                ?: defaultCircularIndicatorColors().foregroundColor,
-            backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orNull()
-                ?: defaultCircularIndicatorColors().backgroundColor
-        )
-    val style: CircularIndicatorStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultCircularIndicatorStyle()
+
+    /**
+     * Creates a [ProgressIndicatorColors] with the default values.
+     * @param foregroundColor the foreground color of indicator.
+     * @param backgroundColor the background color of indicator.
+     * @return [ProgressIndicatorColors]
+     */
+    @Composable
+    fun colors(
+        foregroundColor: Color = CircularIndicatorProperties.ForegroundColor.toColor(),
+        backgroundColor: Color = CircularIndicatorProperties.BackgroundColor
+    ) = ProgressIndicatorColors(
+        foregroundColor = foregroundColor,
+        backgroundColor = backgroundColor
+    )
+
+    /**
+     * Creates a [CircularIndicatorStyle] with the default values.
+     * @param strokeWidth the stroke width of indicator.
+     * @param strokeCap the stroke cap of indicator.
+     * @param radius the radius of indicator.
+     * @return [CircularIndicatorStyle]
+     */
+    @Composable
+    fun style(
+        strokeWidth: Dp = CircularIndicatorProperties.StrokeWidth,
+        strokeCap: StrokeCap = CircularIndicatorProperties._StrokeCap,
+        radius: Dp = CircularIndicatorProperties.Radius
+    ) = CircularIndicatorStyle(
+        strokeWidth = strokeWidth,
+        strokeCap = strokeCap,
+        radius = radius
+    )
 }
 
 /**
  * Defaults of linear progress indicator.
  */
 object LinearIndicatorDefaults {
-    val colors: ProgressIndicatorColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalProgressIndicatorColors.current.copy(
-            foregroundColor = LocalProgressIndicatorColors.current.foregroundColor.orNull()
-                ?: defaultLinearIndicatorColors().foregroundColor,
-            backgroundColor = LocalProgressIndicatorColors.current.backgroundColor.orNull()
-                ?: defaultLinearIndicatorColors().backgroundColor
-        )
-    val style: LinearIndicatorStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultLinearIndicatorStyle()
+
+    /**
+     * Creates a [ProgressIndicatorColors] with the default values.
+     * @param foregroundColor the foreground color of indicator.
+     * @param backgroundColor the background color of indicator.
+     * @return [ProgressIndicatorColors]
+     */
+    @Composable
+    fun colors(
+        foregroundColor: Color = LinearIndicatorProperties.ForegroundColor.toColor(),
+        backgroundColor: Color = LinearIndicatorProperties.BackgroundColor.toColor()
+    ) = ProgressIndicatorColors(
+        foregroundColor = foregroundColor,
+        backgroundColor = backgroundColor
+    )
+
+    /**
+     * Creates a [LinearIndicatorStyle] with the default values.
+     * @param strokeWidth the stroke width of indicator.
+     * @param strokeCap the stroke cap of indicator.
+     * @param width the width of indicator.
+     * @return [LinearIndicatorStyle]
+     */
+    @Composable
+    fun style(
+        strokeWidth: Dp = LinearIndicatorProperties.StrokeWidth,
+        strokeCap: StrokeCap = LinearIndicatorProperties._StrokeCap,
+        width: Dp = LinearIndicatorProperties.Width
+    ) = LinearIndicatorStyle(
+        strokeWidth = strokeWidth,
+        strokeCap = strokeCap,
+        width = width
+    )
 }
 
-internal val LocalProgressIndicatorColors = compositionLocalOf { DefaultProgressIndicatorColors }
+@Stable
+internal object CircularIndicatorProperties {
+    val ForegroundColor = ColorsDescriptor.ThemePrimary
+    val BackgroundColor = Color.Transparent
+    val StrokeWidth = 4.dp
+    val _StrokeCap = StrokeCap.Round
+    val Radius = 20.dp
+}
 
-private val DefaultProgressIndicatorColors = ProgressIndicatorColors(Color.Unspecified, Color.Unspecified)
+@Stable
+internal object LinearIndicatorProperties {
+    val ForegroundColor = ColorsDescriptor.ThemePrimary
+    val BackgroundColor = ColorsDescriptor.ThemeTertiary
+    val StrokeWidth = 4.dp
+    val _StrokeCap = StrokeCap.Round
+    val Width = 240.dp
+}
 
-@Composable
-@ReadOnlyComposable
-private fun defaultCircularIndicatorColors() = ProgressIndicatorColors(
-    foregroundColor = LocalColors.current.themePrimary,
-    backgroundColor = Color.Transparent
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultLinearIndicatorColors() = ProgressIndicatorColors(
-    foregroundColor = LocalColors.current.themePrimary,
-    backgroundColor = LocalColors.current.themeTertiary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultCircularIndicatorStyle() = CircularIndicatorStyle(
-    strokeWidth = DefaultIndicatorStrokeWidth,
-    strokeCap = StrokeCap.Round,
-    radius = DefaultCircularIndicatorRadius,
-    animation = CircularIndicatorAnimation(
-        duration = DefaultRotationDuration,
-        rotationsPerCycle = DefaultRotationsPerCycle,
-        startAngleOffset = DefaultStartAngleOffset,
-        baseRotationAngle = DefaultBaseRotationAngle,
-        jumpRotationAngle = DefaultJumpRotationAngle
-    )
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultLinearIndicatorStyle() = LinearIndicatorStyle(
-    strokeWidth = DefaultIndicatorStrokeWidth,
-    strokeCap = StrokeCap.Round,
-    width = DefaultLinearIndicatorWidth,
-    animation = LinearIndicatorAnimation(
-        duration = DefaultLinearAnimationDuration,
-        firstLineHeadDuration = DefaultFirstLineHeadDuration,
-        firstLineTailDuration = DefaultFirstLineTailDuration,
-        secondLineHeadDuration = DefaultSecondLineHeadDuration,
-        secondLineTailDuration = DefaultSecondLineTailDuration,
-        firstLineHeadDelay = DefaultFirstLineHeadDelay,
-        firstLineTailDelay = DefaultFirstLineTailDelay,
-        secondLineHeadDelay = DefaultSecondLineHeadDelay,
-        secondLineTailDelay = DefaultSecondLineTailDelay
-    )
-)
+internal val LocalProgressIndicatorColors = compositionLocalOf<ProgressIndicatorColors?> { null }
+internal val LocalProgressIndicatorStyle = compositionLocalOf<ProgressIndicatorStyle?> { null }
 
 private fun caleRotationAngleOffset(baseRotationAngle: Float, jumpRotationAngle: Float) = (baseRotationAngle + jumpRotationAngle) % 360f
 
 private fun caleHeadAndTailAnimationDuration(rotationDuration: Int) = (rotationDuration * 0.5).toInt()
 
-private val DefaultIndicatorStrokeWidth = 4.dp
-private val DefaultLinearIndicatorWidth = 240.dp
-private val DefaultCircularIndicatorRadius = 20.dp
 private const val DefaultLinearAnimationDuration = 1800
+private const val DefaultRotationAnimationDuration = 1332
 
 private const val DefaultFirstLineHeadDuration = 750
 private const val DefaultFirstLineTailDuration = 850
@@ -528,7 +539,6 @@ private const val DefaultSecondLineHeadDelay = 1000
 private const val DefaultSecondLineTailDelay = 1267
 
 private const val DefaultRotationsPerCycle = 5
-private const val DefaultRotationDuration = 1332
 private const val DefaultStartAngleOffset = -90f
 private const val DefaultBaseRotationAngle = 286f
 private const val DefaultJumpRotationAngle = 290f
@@ -538,3 +548,23 @@ private val FirstLineTailEasing = CubicBezierEasing(0.4f, 0f, 1f, 1f)
 private val SecondLineHeadEasing = CubicBezierEasing(0f, 0f, 0.65f, 1f)
 private val SecondLineTailEasing = CubicBezierEasing(0.1f, 0f, 0.45f, 1f)
 private val CircularEasing = CubicBezierEasing(0.4f, 0f, 0.2f, 1f)
+
+private val DefaultLinearIndicatorAnimation = LinearIndicatorAnimation(
+    duration = DefaultLinearAnimationDuration,
+    firstLineHeadDuration = DefaultFirstLineHeadDuration,
+    firstLineTailDuration = DefaultFirstLineTailDuration,
+    secondLineHeadDuration = DefaultSecondLineHeadDuration,
+    secondLineTailDuration = DefaultSecondLineTailDuration,
+    firstLineHeadDelay = DefaultFirstLineHeadDelay,
+    firstLineTailDelay = DefaultFirstLineTailDelay,
+    secondLineHeadDelay = DefaultSecondLineHeadDelay,
+    secondLineTailDelay = DefaultSecondLineTailDelay
+)
+
+private val DefaultCircularIndicatorAnimation = CircularIndicatorAnimation(
+    duration = DefaultRotationAnimationDuration,
+    rotationsPerCycle = DefaultRotationsPerCycle,
+    startAngleOffset = DefaultStartAngleOffset,
+    baseRotationAngle = DefaultBaseRotationAngle,
+    jumpRotationAngle = DefaultJumpRotationAngle
+)

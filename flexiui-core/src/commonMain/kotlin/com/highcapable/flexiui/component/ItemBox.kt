@@ -32,50 +32,52 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.componentState
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.LocalTypography
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.TypographyDescriptor
 import com.highcapable.flexiui.component.interaction.rippleClickable
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.ArrowForward
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
+import com.highcapable.flexiui.toTextStyle
 
 /**
  * Colors defines for item box.
- * @param backgroundColor the background color.
- * @param titleTextColor the title text color.
- * @param subTextColor the sub text color.
- * @param arrowIconTint the arrow icon tint.
+ * @see ItemBoxDefaults.colors
  */
 @Immutable
 data class ItemBoxColors(
     val backgroundColor: Color,
     val titleTextColor: Color,
     val subTextColor: Color,
-    val arrowIconTint: Color
+    val arrowIconTint: Color,
+    val borderColor: Color
 )
 
 /**
  * Style defines for item box.
- * @param boxStyle the style of area box.
- * @param contentSpacing the spacing between the components of content.
- * @param titleTextStyle the title text style.
- * @param subTextStyle the sub text style.
+ * @see ItemBoxDefaults.style
  */
 @Immutable
 data class ItemBoxStyle(
-    val boxStyle: AreaBoxStyle,
     val contentSpacing: Dp,
     val titleTextStyle: TextStyle,
-    val subTextStyle: TextStyle
+    val subTextStyle: TextStyle,
+    val shape: Shape,
+    val borderWidth: Dp,
+    val shadowSize: Dp
 )
 
 /**
@@ -96,8 +98,8 @@ data class ItemBoxStyle(
 fun HorizontalItemBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ItemBoxColors = ItemBoxDefaults.colors,
-    style: ItemBoxStyle = ItemBoxDefaults.style,
+    colors: ItemBoxColors = ItemBoxDefaults.colors(),
+    style: ItemBoxStyle = ItemBoxDefaults.style(),
     enabled: Boolean = true,
     showArrowIcon: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -112,8 +114,15 @@ fun HorizontalItemBox(
             onClick = onClick
         ),
         initializer = { componentState(enabled) },
-        color = colors.backgroundColor,
-        style = style.boxStyle
+        colors = AreaBoxDefaults.colors(
+            backgroundColor = colors.backgroundColor,
+            borderColor = colors.borderColor
+        ),
+        style = AreaBoxDefaults.style(
+            shape = style.shape,
+            borderWidth = style.borderWidth,
+            shadowSize = style.shadowSize
+        )
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -134,7 +143,7 @@ fun HorizontalItemBox(
             }
             if (showArrowIcon) Icon(
                 imageVector = FlexiIcons.ArrowForward,
-                style = IconDefaults.style.copy(
+                style = IconDefaults.style(
                     size = DefaultArrowIconSize,
                     tint = colors.arrowIconTint
                 )
@@ -160,8 +169,8 @@ fun HorizontalItemBox(
 fun VerticalItemBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ItemBoxColors = ItemBoxDefaults.colors,
-    style: ItemBoxStyle = ItemBoxDefaults.style,
+    colors: ItemBoxColors = ItemBoxDefaults.colors(),
+    style: ItemBoxStyle = ItemBoxDefaults.style(),
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     logoImage: @Composable (() -> Unit)? = null,
@@ -175,8 +184,15 @@ fun VerticalItemBox(
             onClick = onClick
         ),
         initializer = { componentState(enabled) },
-        color = colors.backgroundColor,
-        style = style.boxStyle,
+        colors = AreaBoxDefaults.colors(
+            backgroundColor = colors.backgroundColor,
+            borderColor = colors.borderColor
+        ),
+        style = AreaBoxDefaults.style(
+            shape = style.shape,
+            borderWidth = style.borderWidth,
+            shadowSize = style.shadowSize
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(style.contentSpacing / VerticalContentSpacingRatio)
     ) {
@@ -213,31 +229,73 @@ private fun ItemBoxContent(
  * Defaults of item box.
  */
 object ItemBoxDefaults {
-    val colors: ItemBoxColors
-        @Composable
-        get() = defaultItemBoxColors()
-    val style: ItemBoxStyle
-        @Composable
-        get() = defaultItemBoxStyle()
+
+    /**
+     * Creates a [ItemBoxColors] with the default values.
+     * @param backgroundColor the background color.
+     * @param titleTextColor the title text color.
+     * @param subTextColor the sub text color.
+     * @param arrowIconTint the arrow icon tint.
+     * @param borderColor the border color.
+     * @return [ItemBoxColors]
+     */
+    @Composable
+    fun colors(
+        backgroundColor: Color = ItemBoxProperties.BackgroundColor.toColor(),
+        titleTextColor: Color = ItemBoxProperties.TitleTextColor.toColor(),
+        subTextColor: Color = ItemBoxProperties.SubTextColor.toColor(),
+        arrowIconTint: Color = ItemBoxProperties.ArrowIconTint.toColor(),
+        borderColor: Color = ItemBoxProperties.BorderColor.toColor()
+    ) = ItemBoxColors(
+        backgroundColor = backgroundColor,
+        titleTextColor = titleTextColor,
+        subTextColor = subTextColor,
+        arrowIconTint = arrowIconTint,
+        borderColor = borderColor
+    )
+
+    /**
+     * Creates a [ItemBoxStyle] with the default values.
+     * @param contentSpacing the spacing between the components of content.
+     * @param titleTextStyle the title text style.
+     * @param subTextStyle the sub text style.
+     * @param shape the shape.
+     * @param borderWidth the border width.
+     * @param shadowSize the shadow size.
+     * @return [ItemBoxStyle]
+     */
+    @Composable
+    fun style(
+        contentSpacing: Dp = ItemBoxProperties.ContentSpacing.toDp(),
+        titleTextStyle: TextStyle = ItemBoxProperties.TitleTextStyle.toTextStyle(),
+        subTextStyle: TextStyle = ItemBoxProperties.SubTextStyle.toTextStyle(),
+        shape: Shape = ItemBoxProperties.Shape.toShape(),
+        borderWidth: Dp = ItemBoxProperties.BorderWidth.toDp(),
+        shadowSize: Dp = ItemBoxProperties.ShadowSize
+    ) = ItemBoxStyle(
+        contentSpacing = contentSpacing,
+        titleTextStyle = titleTextStyle,
+        subTextStyle = subTextStyle,
+        shape = shape,
+        borderWidth = borderWidth,
+        shadowSize = shadowSize
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultItemBoxColors() = ItemBoxColors(
-    backgroundColor = AreaBoxDefaults.color,
-    titleTextColor = LocalColors.current.textPrimary,
-    subTextColor = LocalColors.current.textSecondary,
-    arrowIconTint = LocalColors.current.textSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultItemBoxStyle() = ItemBoxStyle(
-    boxStyle = AreaBoxDefaults.style,
-    contentSpacing = LocalSizes.current.spacingSecondary,
-    titleTextStyle = LocalTypography.current.primary,
-    subTextStyle = LocalTypography.current.secondary
-)
+@Stable
+internal object ItemBoxProperties {
+    val BackgroundColor = AreaBoxProperties.BackgroundColor
+    val TitleTextColor = ColorsDescriptor.TextPrimary
+    val SubTextColor = ColorsDescriptor.TextSecondary
+    val ArrowIconTint = ColorsDescriptor.TextSecondary
+    val BorderColor = AreaBoxProperties.BorderColor
+    val ContentSpacing = SizesDescriptor.SpacingSecondary
+    val TitleTextStyle = TypographyDescriptor.Primary
+    val SubTextStyle = TypographyDescriptor.Secondary
+    val Shape = AreaBoxProperties.Shape
+    val BorderWidth = AreaBoxProperties.BorderWidth
+    val ShadowSize = AreaBoxProperties.ShadowSize
+}
 
 private val DefaultArrowIconSize = 15.dp
 

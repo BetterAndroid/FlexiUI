@@ -44,7 +44,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -58,21 +58,23 @@ import androidx.compose.ui.unit.Dp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.betterandroid.compose.extension.ui.orNull
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.component.interaction.InteractionDefaults
 import com.highcapable.flexiui.component.interaction.rippleClickable
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
 
 /**
  * Colors defines for navigation bar.
- * @param backgroundColor the background color.
- * @param indicatorColor the indicator color.
- * @param selectedContentColor the selected content color.
- * @param unselectedContentColor the unselected content color.
+ * @see NavigationBarDefaults.colors
  */
 @Immutable
 data class NavigationBarColors(
     val backgroundColor: Color,
+    val borderColor: Color,
     val indicatorColor: Color,
     val selectedContentColor: Color,
     val unselectedContentColor: Color
@@ -80,14 +82,14 @@ data class NavigationBarColors(
 
 /**
  * Style defines for navigation bar.
- * @param boxStyle the style of area box.
- * @param contentSpacing the spacing between the components of content.
- * @param contentPadding the padding of content.
- * @param contentShape the content shape.
+ * @see NavigationBarDefaults.style
  */
 @Immutable
 data class NavigationBarStyle(
-    val boxStyle: AreaBoxStyle,
+    val padding: ComponentPadding,
+    val shape: Shape,
+    val borderWidth: Dp,
+    val shadowSize: Dp,
     val contentSpacing: Dp,
     val contentPadding: ComponentPadding,
     val contentShape: Shape
@@ -106,16 +108,24 @@ data class NavigationBarStyle(
 @Composable
 fun NavigationBarRow(
     modifier: Modifier = Modifier,
-    colors: NavigationBarColors = NavigationBarDefaults.colors,
-    style: NavigationBarStyle = NavigationBarDefaults.style,
+    colors: NavigationBarColors = NavigationBarDefaults.colors(),
+    style: NavigationBarStyle = NavigationBarDefaults.style(),
     arrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
     content: @Composable RowScope.() -> Unit
 ) {
     NavigationBarStyleBox(modifier, horizontal = true, colors, style) {
         AreaRow(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
-            color = colors.backgroundColor,
-            style = style.boxStyle,
+            colors = AreaBoxDefaults.colors(
+                backgroundColor = colors.backgroundColor,
+                borderColor = colors.borderColor
+            ),
+            style = AreaBoxDefaults.style(
+                padding = style.padding,
+                shape = style.shape,
+                borderWidth = style.borderWidth,
+                shadowSize = style.shadowSize
+            ),
             horizontalArrangement = arrangement,
             verticalAlignment = Alignment.CenterVertically,
             content = content
@@ -136,16 +146,24 @@ fun NavigationBarRow(
 @Composable
 fun NavigationBarColumn(
     modifier: Modifier = Modifier,
-    colors: NavigationBarColors = NavigationBarDefaults.colors,
-    style: NavigationBarStyle = NavigationBarDefaults.style,
+    colors: NavigationBarColors = NavigationBarDefaults.colors(),
+    style: NavigationBarStyle = NavigationBarDefaults.style(),
     arrangement: Arrangement.Vertical = Arrangement.SpaceBetween,
     content: @Composable ColumnScope.() -> Unit
 ) {
     NavigationBarStyleBox(modifier, horizontal = false, colors, style) {
         AreaColumn(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
-            color = colors.backgroundColor,
-            style = style.boxStyle,
+            colors = AreaBoxDefaults.colors(
+                backgroundColor = colors.backgroundColor,
+                borderColor = colors.borderColor
+            ),
+            style = AreaBoxDefaults.style(
+                padding = style.padding,
+                shape = style.shape,
+                borderWidth = style.borderWidth,
+                shadowSize = style.shadowSize
+            ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = arrangement,
             content = content
@@ -186,16 +204,16 @@ fun NavigationBarItem(
     text: @Composable (() -> Unit)? = null
 ) {
     val currentHorizontal = horizontal ?: LocalHorizontalNavigationBar.current
-    val currentColors = colors ?: LocalNavigationBarColors.current ?: NavigationBarDefaults.colors
+    val currentColors = colors ?: LocalNavigationBarColors.current ?: NavigationBarDefaults.colors()
     val currentContentSpacing = contentSpacing.orNull()
         ?: LocalNavigationBarContentSpacing.current.orNull()
-        ?: NavigationBarDefaults.style.contentSpacing
+        ?: NavigationBarDefaults.style().contentSpacing
     val currentContentPadding = contentPadding
         ?: LocalNavigationBarContentPadding.current
-        ?: NavigationBarDefaults.style.contentPadding
+        ?: NavigationBarDefaults.style().contentPadding
     val currentContentShape = contentShape
         ?: LocalNavigationBarContentShape.current
-        ?: NavigationBarDefaults.style.contentShape
+        ?: NavigationBarDefaults.style().contentShape
     val animatedIndicatorColor by animateColorAsState(if (selected) currentColors.indicatorColor else Color.Transparent)
     val animatedContentColor by animateColorAsState(if (selected) currentColors.selectedContentColor else currentColors.unselectedContentColor)
     val currentIconStyle = LocalIconStyle.current.copy(tint = animatedContentColor)
@@ -206,7 +224,7 @@ fun NavigationBarItem(
             .then(modifier)
             .background(animatedIndicatorColor)
             .rippleClickable(
-                rippleStyle = InteractionDefaults.rippleStyle.copy(color = currentColors.indicatorColor),
+                rippleStyle = InteractionDefaults.rippleStyle(color = currentColors.indicatorColor),
                 enabled = enabled,
                 role = Role.Tab,
                 interactionSource = interactionSource,
@@ -275,45 +293,85 @@ private fun NavigationBarStyleBox(
  * Defaults of navigation bar.
  */
 object NavigationBarDefaults {
-    val colors: NavigationBarColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultNavigationBarColors()
-    val style: NavigationBarStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultNavigationBarStyle()
+
+    /**
+     * Creates a [NavigationBarColors] with the default values.
+     * @param backgroundColor the background color.
+     * @param borderColor the border color.
+     * @param indicatorColor the indicator color.
+     * @param selectedContentColor the selected content color.
+     * @param unselectedContentColor the unselected content color.
+     * @return [NavigationBarColors]
+     */
+    @Composable
+    fun colors(
+        backgroundColor: Color = NavigationBarProperties.BackgroundColor.toColor(),
+        borderColor: Color = NavigationBarProperties.BorderColor.toColor(),
+        indicatorColor: Color = NavigationBarProperties.IndicatorColor.toColor(),
+        selectedContentColor: Color = NavigationBarProperties.SelectedContentColor.toColor(),
+        unselectedContentColor: Color = NavigationBarProperties.UnselectedContentColor.toColor()
+    ) = NavigationBarColors(
+        backgroundColor = backgroundColor,
+        borderColor = borderColor,
+        indicatorColor = indicatorColor,
+        selectedContentColor = selectedContentColor,
+        unselectedContentColor = unselectedContentColor
+    )
+
+    /**
+     * Creates a [NavigationBarStyle] with the default values.
+     * @param padding the padding.
+     * @param shape the shape.
+     * @param borderWidth the border width.
+     * @param shadowSize the shadow size.
+     * @param contentSpacing the spacing between the components of content.
+     * @param contentPadding the padding of content.
+     * @param contentShape the content shape.
+     * @return [NavigationBarStyle]
+     */
+    @Composable
+    fun style(
+        padding: ComponentPadding = NavigationBarProperties.Padding.toPadding(),
+        shape: Shape = NavigationBarProperties.Shape.toShape(),
+        borderWidth: Dp = NavigationBarProperties.BorderWidth.toDp(),
+        shadowSize: Dp = NavigationBarProperties.ShadowSize,
+        contentSpacing: Dp = NavigationBarProperties.ContentSpacing.toDp(),
+        contentPadding: ComponentPadding = NavigationBarProperties.ContentPadding.toPadding(),
+        contentShape: Shape = NavigationBarProperties.Shape.toShape()
+    ) = NavigationBarStyle(
+        padding = padding,
+        shape = shape,
+        borderWidth = borderWidth,
+        shadowSize = shadowSize,
+        contentSpacing = contentSpacing,
+        contentPadding = contentPadding,
+        contentShape = contentShape
+    )
+}
+
+@Stable
+internal object NavigationBarProperties {
+    val BackgroundColor = AreaBoxProperties.BackgroundColor
+    val BorderColor = AreaBoxProperties.BorderColor
+    val IndicatorColor = ColorsDescriptor.ThemeTertiary
+    val SelectedContentColor = ColorsDescriptor.ThemePrimary
+    val UnselectedContentColor = ColorsDescriptor.TextSecondary
+    val Padding = AreaBoxProperties.Padding
+    val Shape = AreaBoxProperties.Shape
+    val BorderWidth = AreaBoxProperties.BorderWidth
+    val ShadowSize = AreaBoxProperties.ShadowSize
+    val ContentSpacing = SizesDescriptor.SpacingPrimary
+    val ContentPadding = PaddingDescriptor(
+        horizontal = SizesDescriptor.SpacingPrimary,
+        vertical = SizesDescriptor.SpacingSecondary
+    )
 }
 
 private val LocalHorizontalNavigationBar = compositionLocalOf { true }
-
 private val LocalNavigationBarColors = compositionLocalOf<NavigationBarColors?> { null }
 
 private val LocalNavigationBarContentSpacing = compositionLocalOf { Dp.Unspecified }
-
-private val LocalNavigationBarContentPadding = compositionLocalOf<PaddingValues?> { null }
-
+private val LocalNavigationBarContentPadding = compositionLocalOf<ComponentPadding?> { null }
 private val LocalNavigationBarContentShape = compositionLocalOf<Shape?> { null }
-
-@Composable
-@ReadOnlyComposable
-private fun defaultNavigationBarColors() = NavigationBarColors(
-    backgroundColor = AreaBoxDefaults.color,
-    indicatorColor = LocalColors.current.themeTertiary,
-    selectedContentColor = LocalColors.current.themePrimary,
-    unselectedContentColor = LocalColors.current.textSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultNavigationBarStyle() = NavigationBarStyle(
-    boxStyle = AreaBoxDefaults.style,
-    contentSpacing = LocalSizes.current.spacingSecondary,
-    contentPadding = ComponentPadding(
-        horizontal = LocalSizes.current.spacingPrimary,
-        vertical = LocalSizes.current.spacingSecondary
-    ),
-    contentShape = withAreaBoxShape()
-)
 
 private const val VerticalContentSpacingRatio = 1.6f

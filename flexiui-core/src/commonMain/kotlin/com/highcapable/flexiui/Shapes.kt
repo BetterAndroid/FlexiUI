@@ -26,8 +26,12 @@ package com.highcapable.flexiui
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 /**
@@ -40,6 +44,16 @@ data class Shapes(
     val tertiary: CornerBasedShape
 )
 
+/**
+ * Descriptor for [Shapes].
+ */
+@Stable
+internal enum class ShapesDescriptor {
+    Primary,
+    Secondary,
+    Tertiary
+}
+
 internal val LocalShapes = staticCompositionLocalOf { DefaultShapes }
 
 internal val DefaultShapes = Shapes(
@@ -47,3 +61,24 @@ internal val DefaultShapes = Shapes(
     secondary = RoundedCornerShape(10.dp),
     tertiary = CircleShape
 )
+
+/**
+ * Gets a [Shape] from descriptor.
+ * @see ShapesDescriptor.toShape
+ * @param value the descriptor.
+ * @return [Shape]
+ */
+internal fun Shapes.fromDescriptor(value: ShapesDescriptor): Shape = when (value) {
+    ShapesDescriptor.Primary -> primary
+    ShapesDescriptor.Secondary -> secondary
+    ShapesDescriptor.Tertiary -> tertiary
+}
+
+/**
+ * Converts a descriptor to a [Shape].
+ * @see Shapes.fromDescriptor
+ * @return [Shape]
+ */
+@Composable
+@ReadOnlyComposable
+internal fun ShapesDescriptor.toShape(): Shape = LocalShapes.current.fromDescriptor(this)

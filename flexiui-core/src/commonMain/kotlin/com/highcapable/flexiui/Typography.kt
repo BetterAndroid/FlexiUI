@@ -23,7 +23,10 @@
 
 package com.highcapable.flexiui
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +44,18 @@ data class Typography(
     val primary: TextStyle,
     val secondary: TextStyle
 )
+
+/**
+ * Descriptor for [Typography].
+ */
+@Stable
+internal enum class TypographyDescriptor {
+    TitlePrimary,
+    TitleSecondary,
+    Subtitle,
+    Primary,
+    Secondary
+}
 
 internal val LocalTypography = staticCompositionLocalOf { DefaultTypography }
 
@@ -70,3 +85,26 @@ internal val DefaultTypography = Typography(
         lineHeight = DefaultLineHeight
     )
 )
+
+/**
+ * Gets a [TextStyle] from descriptor.
+ * @see TypographyDescriptor.toTextStyle
+ * @param value the descriptor.
+ * @return [TextStyle]
+ */
+internal fun Typography.fromDescriptor(value: TypographyDescriptor) = when (value) {
+    TypographyDescriptor.TitlePrimary -> titlePrimary
+    TypographyDescriptor.TitleSecondary -> titleSecondary
+    TypographyDescriptor.Subtitle -> subtitle
+    TypographyDescriptor.Primary -> primary
+    TypographyDescriptor.Secondary -> secondary
+}
+
+/**
+ * Converts a descriptor to a [TextStyle].
+ * @see Typography.fromDescriptor
+ * @return [TextStyle]
+ */
+@Composable
+@ReadOnlyComposable
+internal fun TypographyDescriptor.toTextStyle() = LocalTypography.current.fromDescriptor(this)

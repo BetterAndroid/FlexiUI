@@ -31,19 +31,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.debugInspectorInfo
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
+import com.highcapable.flexiui.ColorsDescriptor
 import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.toColor
 
 /**
  * Colors defines for surface.
- * @param contentColor the content color, usually for the text color.
- * @param backgroundColor the background color.
+ * @see SurfaceDefaults.colors
  */
 @Immutable
 data class SurfaceColors(
@@ -65,7 +68,7 @@ data class SurfaceColors(
 fun Surface(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    colors: SurfaceColors = SurfaceDefaults.colors,
+    colors: SurfaceColors = SurfaceDefaults.colors(),
     padding: ComponentPadding = SurfaceDefaults.padding,
     content: @Composable BoxScope.() -> Unit
 ) {
@@ -100,25 +103,34 @@ private fun Modifier.surface(
  * Defaults of surface.
  */
 object SurfaceDefaults {
-    val colors: SurfaceColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSurfaceColors()
+
+    /**
+     * Creates a [SurfaceColors] with the default values.
+     * @param contentColor the content color, usually for the text color.
+     * @param backgroundColor the background color.
+     * @return [SurfaceColors]
+     */
+    @Composable
+    fun colors(
+        contentColor: Color = SurfaceProperties.ContentColor.toColor(),
+        backgroundColor: Color = SurfaceProperties.BackgroundColor.toColor()
+    ) = SurfaceColors(contentColor, backgroundColor)
+
+    /**
+     * Returns the default padding of surface.
+     * @return [ComponentPadding]
+     */
     val padding: ComponentPadding
         @Composable
         @ReadOnlyComposable
-        get() = defaultSurfacePadding()
+        get() = SurfaceProperties.Padding.toPadding()
+}
+
+@Stable
+internal object SurfaceProperties {
+    val ContentColor = ColorsDescriptor.TextPrimary
+    val BackgroundColor = ColorsDescriptor.BackgroundPrimary
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingPrimary)
 }
 
 internal val LocalInSurface = compositionLocalOf { false }
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSurfaceColors() = SurfaceColors(
-    contentColor = LocalColors.current.textPrimary,
-    backgroundColor = LocalColors.current.backgroundPrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSurfacePadding() = ComponentPadding(LocalSizes.current.spacingPrimary)

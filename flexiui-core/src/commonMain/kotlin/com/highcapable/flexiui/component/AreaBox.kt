@@ -23,7 +23,6 @@
 
 package com.highcapable.flexiui.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,7 +35,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,23 +49,33 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
-import com.highcapable.flexiui.DefaultShapes
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
+
+/**
+ * Colors defines for area box.
+ * @see AreaBoxDefaults.colors
+ */
+@Immutable
+data class AreaBoxColors(
+    val backgroundColor: Color,
+    val borderColor: Color
+)
 
 /**
  * Style defines for area box.
- * @param padding the padding of content.
- * @param shape the shape of the box.
- * @param border the border stroke of the box.
- * @param shadowSize the shadow size of the box.
+ * @see AreaBoxDefaults.style
  */
 @Immutable
 data class AreaBoxStyle(
     val padding: ComponentPadding,
     val shape: Shape,
-    val border: BorderStroke,
+    val borderWidth: Dp,
     val shadowSize: Dp
 )
 
@@ -76,7 +85,7 @@ data class AreaBoxStyle(
  * @see AreaColumn
  * @param modifier the [Modifier] to be applied to this area box.
  * @param initializer the [Modifier] initializer, earlies than [modifier].
- * @param color the background color of this area box, default is [AreaBoxDefaults.color].
+ * @param colors the colors of this area box, default is [AreaBoxDefaults.colors].
  * @param style the style of this area box, default is [AreaBoxDefaults.style].
  * @param contentAlignment the alignment of the content inside this area box, default is [Alignment.TopStart].
  * @param propagateMinConstraints whether to propagate the min constraints from the content to this area box.
@@ -86,8 +95,8 @@ data class AreaBoxStyle(
 fun AreaBox(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    color: Color = AreaBoxDefaults.color,
-    style: AreaBoxStyle = AreaBoxDefaults.style,
+    colors: AreaBoxColors = AreaBoxDefaults.colors(),
+    style: AreaBoxStyle = AreaBoxDefaults.style(),
     contentAlignment: Alignment = Alignment.TopStart,
     propagateMinConstraints: Boolean = false,
     content: @Composable BoxScope.() -> Unit
@@ -97,7 +106,7 @@ fun AreaBox(
         LocalAreaBoxShape provides style.shape
     ) {
         Box(
-            modifier = Modifier.areaBox(color, style, modifier, initializer),
+            modifier = Modifier.areaBox(colors, style, modifier, initializer),
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
             content = content
@@ -111,7 +120,7 @@ fun AreaBox(
  * @see AreaBox
  * @param modifier the [Modifier] to be applied to this area row.
  * @param initializer the [Modifier] initializer, earlies than [modifier].
- * @param color the background color of this area row, default is [AreaBoxDefaults.color].
+ * @param colors the colors of this area row, default is [AreaBoxDefaults.colors].
  * @param style the style of this area row, default is [AreaBoxDefaults.style].
  * @param horizontalArrangement the horizontal arrangement of the content inside this area row, default is [Arrangement.Start].
  * @param verticalAlignment the vertical alignment of the content inside this area row, default is [Alignment.Top].
@@ -121,8 +130,8 @@ fun AreaBox(
 fun AreaRow(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    color: Color = AreaBoxDefaults.color,
-    style: AreaBoxStyle = AreaBoxDefaults.style,
+    colors: AreaBoxColors = AreaBoxDefaults.colors(),
+    style: AreaBoxStyle = AreaBoxDefaults.style(),
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     content: @Composable RowScope.() -> Unit
@@ -132,7 +141,7 @@ fun AreaRow(
         LocalAreaBoxShape provides style.shape
     ) {
         Row(
-            modifier = Modifier.areaBox(color, style, modifier, initializer),
+            modifier = Modifier.areaBox(colors, style, modifier, initializer),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             content = content
@@ -146,7 +155,7 @@ fun AreaRow(
  * @see AreaBox
  * @param modifier the [Modifier] to be applied to this area column.
  * @param initializer the [Modifier] initializer, earlies than [modifier].
- * @param color the background color of this area column, default is [AreaBoxDefaults.color].
+ * @param colors the colors of this area column, default is [AreaBoxDefaults.colors].
  * @param style the style of this area column, default is [AreaBoxDefaults.style].
  * @param verticalArrangement the vertical arrangement of the content inside this area column, default is [Arrangement.Top].
  * @param horizontalAlignment the horizontal alignment of the content inside this area column, default is [Alignment.Start].
@@ -156,8 +165,8 @@ fun AreaRow(
 fun AreaColumn(
     modifier: Modifier = Modifier,
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
-    color: Color = AreaBoxDefaults.color,
-    style: AreaBoxStyle = AreaBoxDefaults.style,
+    colors: AreaBoxColors = AreaBoxDefaults.colors(),
+    style: AreaBoxStyle = AreaBoxDefaults.style(),
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable ColumnScope.() -> Unit
@@ -167,7 +176,7 @@ fun AreaColumn(
         LocalAreaBoxShape provides style.shape
     ) {
         Column(
-            modifier = Modifier.areaBox(color, style, modifier, initializer),
+            modifier = Modifier.areaBox(colors, style, modifier, initializer),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             content = content
@@ -176,22 +185,22 @@ fun AreaColumn(
 }
 
 private fun Modifier.areaBox(
-    color: Color,
+    colors: AreaBoxColors,
     style: AreaBoxStyle,
     then: Modifier,
     initializer: @Composable Modifier.() -> Modifier
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "areaBox"
-        properties["color"] = color
+        properties["colors"] = colors
         properties["style"] = style
     }
 ) {
     initializer()
         .shadow(style.shadowSize, style.shape)
         .clip(style.shape)
-        .background(color, style.shape)
-        .borderOrElse(style.border, style.shape)
+        .background(colors.backgroundColor, style.shape)
+        .borderOrElse(style.borderWidth, colors.borderColor, style.shape)
         .then(then)
         .padding(style.padding)
 }
@@ -200,47 +209,73 @@ private fun Modifier.areaBox(
  * Defaults of area box.
  */
 object AreaBoxDefaults {
-    val color: Color
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAreaBoxColor()
-    val style: AreaBoxStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultAreaBoxStyle()
+
+    /**
+     * Creates a [AreaBoxColors] with the default values.
+     * @param backgroundColor the background color of the box.
+     * @param borderColor the border color of the box.
+     * @return [AreaBoxColors]
+     */
+    @Composable
+    fun colors(
+        backgroundColor: Color = AreaBoxProperties.BackgroundColor.toColor(),
+        borderColor: Color = AreaBoxProperties.BorderColor.toColor()
+    ) = AreaBoxColors(
+        backgroundColor = backgroundColor,
+        borderColor = borderColor
+    )
+
+    /**
+     * Creates a [AreaBoxStyle] with the default values.
+     * @param padding the padding of content.
+     * @param shape the shape of the box.
+     * @param borderWidth the border width of the box.
+     * @param shadowSize the shadow size of the box.
+     * @return [AreaBoxStyle]
+     */
+    @Composable
+    fun style(
+        padding: ComponentPadding = AreaBoxProperties.Padding.toPadding(),
+        shape: Shape = AreaBoxProperties.Shape.toShape(),
+        borderWidth: Dp = AreaBoxProperties.BorderWidth.toDp(),
+        shadowSize: Dp = AreaBoxProperties.ShadowSize
+    ) = AreaBoxStyle(
+        padding = padding,
+        shape = shape,
+        borderWidth = borderWidth,
+        shadowSize = shadowSize
+    )
+
+    /**
+     * Returns the child components shape of the current area box.
+     *
+     * Design specification: The shape of the components inside the area box
+     * should be consistent with the shape of the area box.
+     * @param inBox the shape of inner area box.
+     * @param outBox the shape of outside area box.
+     * @return [Shape]
+     */
+    @Composable
+    fun childShape(
+        inBox: Shape = LocalAreaBoxShape.current ?: AreaBoxProperties.Shape.toShape(),
+        outBox: Shape = AreaBoxProperties.OutBoxShape.toShape()
+    ) = when (LocalInAreaBox.current) {
+        true -> inBox
+        else -> outBox
+    }
+}
+
+@Stable
+internal object AreaBoxProperties {
+    val BackgroundColor = ColorsDescriptor.ForegroundPrimary
+    val BorderColor = ColorsDescriptor.TextPrimary
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingPrimary)
+    val Shape = ShapesDescriptor.Primary
+    val OutBoxShape = ShapesDescriptor.Secondary
+    val BorderWidth = SizesDescriptor.BorderSizeTertiary
+    val ShadowSize = 0.dp
 }
 
 internal val LocalInAreaBox = compositionLocalOf { false }
 
-internal val LocalAreaBoxShape = compositionLocalOf { DefaultAreaBoxShape }
-
-@Composable
-@ReadOnlyComposable
-internal fun withAreaBoxShape(
-    inBox: Shape = LocalAreaBoxShape.current,
-    outBox: Shape = LocalShapes.current.secondary
-) = when (LocalInAreaBox.current) {
-    true -> inBox
-    else -> outBox
-}
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAreaBoxStyle() = AreaBoxStyle(
-    padding = ComponentPadding(LocalSizes.current.spacingPrimary),
-    shape = LocalAreaBoxShape.current,
-    border = defaultAreaBoxBorder(),
-    shadowSize = DefaultAreaBoxShadowSize
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAreaBoxColor() = LocalColors.current.foregroundPrimary
-
-@Composable
-@ReadOnlyComposable
-private fun defaultAreaBoxBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-private val DefaultAreaBoxShape: Shape = DefaultShapes.primary
-
-private val DefaultAreaBoxShadowSize = 0.dp
+internal val LocalAreaBoxShape = compositionLocalOf<Shape?> { null }

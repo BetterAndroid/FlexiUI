@@ -23,6 +23,8 @@
 
 package com.highcapable.flexiui
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -42,6 +44,22 @@ data class Colors(
     var textPrimary: Color,
     var textSecondary: Color
 )
+
+/**
+ * Descriptor for [Colors].
+ */
+@Stable
+internal enum class ColorsDescriptor {
+    BackgroundPrimary,
+    BackgroundSecondary,
+    ForegroundPrimary,
+    ForegroundSecondary,
+    ThemePrimary,
+    ThemeSecondary,
+    ThemeTertiary,
+    TextPrimary,
+    TextSecondary
+}
 
 internal val DefaultLightColors = Colors(
     backgroundPrimary = Color(0xFFF5F5F5),
@@ -420,3 +438,30 @@ fun blueColors(darkMode: Boolean = false, blackDarkMode: Boolean = false) = when
 }
 
 internal val LocalColors = staticCompositionLocalOf { DefaultLightColors }
+
+/**
+ * Gets a [Color] from descriptor.
+ * @see ColorsDescriptor.toColor
+ * @param value the descriptor.
+ * @return [Color]
+ */
+internal fun Colors.fromDescriptor(value: ColorsDescriptor) = when (value) {
+    ColorsDescriptor.BackgroundPrimary -> backgroundPrimary
+    ColorsDescriptor.BackgroundSecondary -> backgroundSecondary
+    ColorsDescriptor.ForegroundPrimary -> foregroundPrimary
+    ColorsDescriptor.ForegroundSecondary -> foregroundSecondary
+    ColorsDescriptor.ThemePrimary -> themePrimary
+    ColorsDescriptor.ThemeSecondary -> themeSecondary
+    ColorsDescriptor.ThemeTertiary -> themeTertiary
+    ColorsDescriptor.TextPrimary -> textPrimary
+    ColorsDescriptor.TextSecondary -> textSecondary
+}
+
+/**
+ * Converts a descriptor to a [Color].
+ * @see Colors.fromDescriptor
+ * @return [Color]
+ */
+@Composable
+@ReadOnlyComposable
+internal fun ColorsDescriptor.toColor() = LocalColors.current.fromDescriptor(this)

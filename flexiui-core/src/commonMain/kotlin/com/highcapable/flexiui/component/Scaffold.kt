@@ -58,7 +58,7 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
-    colors: SurfaceColors = SurfaceDefaults.colors,
+    colors: SurfaceColors = SurfaceDefaults.colors(),
     padding: ComponentPadding = SurfaceDefaults.padding,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,

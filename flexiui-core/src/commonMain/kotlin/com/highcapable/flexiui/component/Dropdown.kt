@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package com.highcapable.flexiui.component
 
@@ -31,7 +31,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
@@ -60,7 +59,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -77,7 +75,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.InputMode
@@ -106,77 +103,72 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.betterandroid.compose.extension.ui.orNull
-import com.highcapable.betterandroid.compose.extension.ui.solidColor
 import com.highcapable.betterandroid.compose.extension.ui.window.Popup
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.component.interaction.rippleClickable
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.Dropdown
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
 import kotlin.math.max
 import kotlin.math.min
 
 /**
  * Colors defines for dropdown list.
- * @param endIconInactiveTint the tint of the end icon when inactive.
- * @param endIconActiveTint the tint of the end icon when active.
- * @param borderInactiveColor the color of the border when inactive.
- * @param borderActiveColor the color of the border when active.
- * @param backgroundColor the background color.
+ * @see DropdownListDefaults.colors
  */
 @Immutable
 data class DropdownListColors(
     val endIconInactiveTint: Color,
     val endIconActiveTint: Color,
+    val backgroundColor: Color,
     val borderInactiveColor: Color,
-    val borderActiveColor: Color,
-    val backgroundColor: Color
+    val borderActiveColor: Color
 )
 
 /**
  * Colors defines for dropdown menu.
- * @param contentColor the color of the content.
- * @param activeColor the color of the active item.
- * @param borderColor the color of the border.
+ * @see DropdownMenuDefaults.colors
  */
 @Immutable
 data class DropdownMenuColors(
     val contentColor: Color,
     val activeColor: Color,
+    val backgroundColor: Color,
     val borderColor: Color
 )
 
 /**
  * Style defines for dropdown list.
- * @param padding the padding of the content.
- * @param shape the shape.
- * @param endIconSize the size of the end icon.
- * @param borderInactive the border stroke when inactive.
- * @param borderActive the border stroke when active.
+ * @see DropdownListDefaults.style
  */
 @Immutable
 data class DropdownListStyle(
     val padding: ComponentPadding,
     val shape: Shape,
     val endIconSize: Dp,
-    val borderInactive: BorderStroke,
-    val borderActive: BorderStroke
+    val borderInactiveWidth: Dp,
+    val borderActiveWidth: Dp
 )
 
 /**
  * Style defines for dropdown menu.
- * @param inTransitionDuration the duration of the in transition.
- * @param outTransitionDuration the duration of the out transition.
- * @param contentStyle the content style of area box.
- * @param borderStyle the brder style of area box.
+ * @see DropdownMenuDefaults.style
  */
 @Immutable
 data class DropdownMenuStyle(
+    val padding: ComponentPadding,
+    val shape: Shape,
+    val borderWidth: Dp,
+    val contentPadding: ComponentPadding,
+    val contentShape: Shape,
+    val shadowSize: Dp,
     val inTransitionDuration: Int,
-    val outTransitionDuration: Int,
-    val contentStyle: AreaBoxStyle,
-    val borderStyle: AreaBoxStyle
+    val outTransitionDuration: Int
 )
 
 /**
@@ -202,10 +194,10 @@ fun DropdownList(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: DropdownListColors = DropdownListDefaults.colors,
-    style: DropdownListStyle = DropdownListDefaults.style,
-    menuColors: DropdownMenuColors = DropdownMenuDefaults.colors,
-    menuStyle: DropdownMenuStyle = DropdownMenuDefaults.style,
+    colors: DropdownListColors = DropdownListDefaults.colors(),
+    style: DropdownListStyle = DropdownListDefaults.style(),
+    menuColors: DropdownMenuColors = DropdownMenuDefaults.colors(),
+    menuStyle: DropdownMenuStyle = DropdownMenuDefaults.style(),
     enabled: Boolean = true,
     scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
@@ -221,24 +213,21 @@ fun DropdownList(
         else -> colors.endIconInactiveTint
     })
     val animatedBorderColor by animateColorAsState(when {
-        focused || hovered -> style.borderActive.solidColor
-        else -> style.borderInactive.solidColor
+        focused || hovered -> colors.borderActiveColor
+        else -> colors.borderInactiveColor
     })
     val animatedDirection by animateFloatAsState(if (expanded) 180f else 0f)
     val animatedBorderWidth by animateDpAsState(when {
-        focused -> style.borderActive.width
-        else -> style.borderInactive.width
+        focused -> style.borderActiveWidth
+        else -> style.borderInactiveWidth
     })
-    val border = when {
-        focused || hovered -> style.borderInactive
-        else -> style.borderInactive
-    }.copy(animatedBorderWidth, SolidColor(animatedBorderColor))
     DropdownMenuBox(
         modifier = Modifier.dropdownList(
             enabled = enabled,
             colors = colors,
             style = style,
-            border = border,
+            borderColor = animatedBorderColor,
+            borderWidth = animatedBorderWidth,
             focusRequester = focusRequester,
             interactionSource = interactionSource,
             then = modifier.rippleClickable(
@@ -265,7 +254,7 @@ fun DropdownList(
                     rotationZ = animatedDirection
                 }.size(style.endIconSize),
                 imageVector = FlexiIcons.Dropdown,
-                style = IconDefaults.style.copy(tint = animatedEndIconTint)
+                style = IconDefaults.style(tint = animatedEndIconTint)
             )
         }
         DropdownMenu(
@@ -301,8 +290,8 @@ fun DropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: DropdownMenuColors = DropdownMenuDefaults.colors,
-    style: DropdownMenuStyle = DropdownMenuDefaults.style,
+    colors: DropdownMenuColors = DropdownMenuDefaults.colors(),
+    style: DropdownMenuStyle = DropdownMenuDefaults.style(),
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
@@ -383,7 +372,8 @@ fun DropdownMenuBox(
  * @param modifier the [Modifier] to be applied to this dropdown menu item.
  * @param contentColor the color of the content.
  * @param activeColor the color of the active item.
- * @param contentStyle the style of the content.
+ * @param contentPadding the padding of the content.
+ * @param contentShape the shape of the content.
  * @param enabled whether the dropdown menu item is enabled, default is true.
  * @param actived whether the dropdown menu item is actived, default is false.
  * @param interactionSource the interaction source of the dropdown menu item.
@@ -395,7 +385,8 @@ fun DropdownMenuItem(
     modifier: Modifier = Modifier,
     contentColor: Color = Color.Unspecified,
     activeColor: Color = Color.Unspecified,
-    contentStyle: AreaBoxStyle? = null,
+    contentPadding: ComponentPadding? = null,
+    contentShape: Shape? = null,
     enabled: Boolean = true,
     actived: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -403,13 +394,16 @@ fun DropdownMenuItem(
 ) {
     val currentColor = contentColor.orNull()
         ?: LocalDropdownMenuContentColor.current.orNull()
-        ?: DropdownMenuDefaults.colors.contentColor
+        ?: DropdownMenuDefaults.colors().contentColor
     val currentActiveColor = activeColor.orNull()
         ?: LocalDropdownMenuActiveColor.current.orNull()
-        ?: DropdownMenuDefaults.colors.activeColor
-    val currentStyle = contentStyle
-        ?: LocalDropdownMenuContentStyle.current
-        ?: DropdownMenuDefaults.style.contentStyle
+        ?: DropdownMenuDefaults.colors().activeColor
+    val currentPadding = contentPadding
+        ?: LocalDropdownMenuContentPadding.current
+        ?: DropdownMenuDefaults.style().contentPadding
+    val currentShape = contentShape
+        ?: LocalDropdownMenuContentShape.current
+        ?: DropdownMenuDefaults.style().contentShape
     AreaRow(
         modifier = Modifier.componentState(enabled)
             .then(modifier)
@@ -425,8 +419,8 @@ fun DropdownMenuItem(
                 interactionSource = interactionSource,
                 onClick = onClick
             ),
-        color = if (actived) currentActiveColor else Color.Transparent,
-        style = currentStyle,
+        colors = AreaBoxDefaults.colors(backgroundColor = if (actived) currentActiveColor else Color.Transparent),
+        style = AreaBoxDefaults.style(padding = currentPadding, shape = currentShape),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CompositionLocalProvider(
@@ -489,13 +483,22 @@ private fun DropdownMenuContent(
                 transformOrigin = transformOriginState.value
             }
         },
-        color = colors.borderColor,
-        style = style.borderStyle
+        colors = AreaBoxDefaults.colors(
+            backgroundColor = colors.backgroundColor,
+            borderColor = colors.borderColor
+        ),
+        style = AreaBoxDefaults.style(
+            padding = style.padding,
+            shape = style.shape,
+            borderWidth = style.borderWidth,
+            shadowSize = style.shadowSize
+        )
     ) {
         CompositionLocalProvider(
             LocalDropdownMenuContentColor provides colors.contentColor,
             LocalDropdownMenuActiveColor provides colors.activeColor,
-            LocalDropdownMenuContentStyle provides style.contentStyle
+            LocalDropdownMenuContentPadding provides style.contentPadding,
+            LocalDropdownMenuContentShape provides style.contentShape
         ) { content() }
     }
 }
@@ -504,7 +507,8 @@ private fun Modifier.dropdownList(
     enabled: Boolean,
     colors: DropdownListColors,
     style: DropdownListStyle,
-    border: BorderStroke,
+    borderColor: Color,
+    borderWidth: Dp,
     focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
     then: Modifier
@@ -514,7 +518,8 @@ private fun Modifier.dropdownList(
         properties["enabled"] = enabled
         properties["colors"] = colors
         properties["style"] = style
-        properties["border"] = border
+        properties["borderColor"] = borderColor
+        properties["borderWidth"] = borderWidth
     }
 ) {
     componentState(enabled)
@@ -523,7 +528,7 @@ private fun Modifier.dropdownList(
         .hoverable(interactionSource, enabled)
         .clip(style.shape)
         .background(colors.backgroundColor, style.shape)
-        .borderOrElse(border, style.shape)
+        .borderOrElse(borderWidth, borderColor, style.shape)
         .then(then)
         .padding(style.padding)
 }
@@ -611,92 +616,150 @@ private data class DropdownMenuPositionProvider(
  * Defaults of dropdown list.
  */
 object DropdownListDefaults {
-    val colors: DropdownListColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultDropdownListColors()
-    val style: DropdownListStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultDropdownListStyle()
+
+    /**
+     * Creates a [DropdownListColors] with the default values.
+     * @param endIconInactiveTint the tint of the end icon when inactive.
+     * @param endIconActiveTint the tint of the end icon when active.
+     * @param backgroundColor the background color.
+     * @param borderInactiveColor the color of the border when inactive.
+     * @param borderActiveColor the color of the border when active.
+     * @return [DropdownListColors]
+     */
+    @Composable
+    fun colors(
+        endIconInactiveTint: Color = DropdownListProperties.EndIconInactiveTint.toColor(),
+        endIconActiveTint: Color = DropdownListProperties.EndIconActiveTint.toColor(),
+        backgroundColor: Color = DropdownListProperties.BackgroundColor,
+        borderInactiveColor: Color = DropdownListProperties.BorderInactiveColor.toColor(),
+        borderActiveColor: Color = DropdownListProperties.BorderActiveColor.toColor()
+    ) = DropdownListColors(
+        endIconInactiveTint = endIconInactiveTint,
+        endIconActiveTint = endIconActiveTint,
+        backgroundColor = backgroundColor,
+        borderInactiveColor = borderInactiveColor,
+        borderActiveColor = borderActiveColor
+    )
+
+    /**
+     * Creates a [DropdownListStyle] with the default values.
+     * @param padding the padding of the content.
+     * @param shape the shape.
+     * @param endIconSize the size of the end icon.
+     * @param borderInactiveWidth the width of the border when inactive.
+     * @param borderActiveWidth the width of the border when active.
+     * @return [DropdownListStyle]
+     */
+    @Composable
+    fun style(
+        padding: ComponentPadding = DropdownListProperties.Padding.toPadding(),
+        shape: Shape = AreaBoxDefaults.childShape(),
+        endIconSize: Dp = DropdownListProperties.EndIconSize.toDp(),
+        borderInactiveWidth: Dp = DropdownListProperties.BorderInactiveWidth.toDp(),
+        borderActiveWidth: Dp = DropdownListProperties.BorderActiveWidth.toDp()
+    ) = DropdownListStyle(
+        padding = padding,
+        shape = shape,
+        endIconSize = endIconSize,
+        borderInactiveWidth = borderInactiveWidth,
+        borderActiveWidth = borderActiveWidth
+    )
 }
 
 /**
  * Defaults of dropdown menu.
  */
 object DropdownMenuDefaults {
-    val colors: DropdownMenuColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultDropdownMenuColors()
-    val style: DropdownMenuStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultDropdownMenuStyle()
+
+    /**
+     * Creates a [DropdownMenuColors] with the default values.
+     * @param contentColor the color of the content.
+     * @param activeColor the color of the active item.
+     * @param backgroundColor the background color.
+     * @param borderColor the color of the border.
+     * @return [DropdownMenuColors]
+     */
+    @Composable
+    fun colors(
+        contentColor: Color = DropdownMenuProperties.ContentColor.toColor(),
+        activeColor: Color = DropdownMenuProperties.ActiveColor.toColor().copy(alpha = 0.3f),
+        backgroundColor: Color = DropdownMenuProperties.BackgroundColor.toColor(),
+        borderColor: Color = DropdownMenuProperties.BorderColor.toColor()
+    ) = DropdownMenuColors(
+        contentColor = contentColor,
+        activeColor = activeColor,
+        backgroundColor = backgroundColor,
+        borderColor = borderColor
+    )
+
+    /**
+     * Creates a [DropdownMenuStyle] with the default values.
+     * @param padding the menu padding.
+     * @param shape the menu shape.
+     * @param borderWidth the menu border width.
+     * @param contentPadding the content padding.
+     * @param contentShape the content shape.
+     * @param shadowSize the shadow size.
+     * @param inTransitionDuration the duration of the in transition.
+     * @param outTransitionDuration the duration of the out transition.
+     * @return [DropdownMenuStyle]
+     */
+    @Composable
+    fun style(
+        padding: ComponentPadding = DropdownMenuProperties.Padding.toPadding(),
+        shape: Shape = DropdownMenuProperties.Shape.toShape(),
+        borderWidth: Dp = DropdownMenuProperties.BorderWidth.toDp(),
+        contentPadding: ComponentPadding = DropdownMenuProperties.ContentPadding,
+        contentShape: Shape = DropdownMenuProperties.ContentShape.toShape(),
+        shadowSize: Dp = DropdownMenuProperties.ShadowSize.toDp(),
+        inTransitionDuration: Int = DropdownMenuProperties.InTransitionDuration,
+        outTransitionDuration: Int = DropdownMenuProperties.OutTransitionDuration
+    ) = DropdownMenuStyle(
+        padding = padding,
+        shape = shape,
+        borderWidth = borderWidth,
+        contentPadding = contentPadding,
+        contentShape = contentShape,
+        shadowSize = shadowSize,
+        inTransitionDuration = inTransitionDuration,
+        outTransitionDuration = outTransitionDuration
+    )
 }
 
-private val LocalDropdownMenuContentColor = compositionLocalOf { Color.Unspecified }
+@Stable
+internal object DropdownListProperties {
+    val EndIconInactiveTint = ColorsDescriptor.ThemeSecondary
+    val EndIconActiveTint = ColorsDescriptor.ThemePrimary
+    val BackgroundColor = Color.Transparent
+    val BorderInactiveColor = ColorsDescriptor.ThemeSecondary
+    val BorderActiveColor = ColorsDescriptor.ThemePrimary
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingSecondary)
+    val EndIconSize = SizesDescriptor.IconSizeTertiary
+    val BorderInactiveWidth = SizesDescriptor.BorderSizeSecondary
+    val BorderActiveWidth = SizesDescriptor.BorderSizePrimary
+}
+
+@Stable
+internal object DropdownMenuProperties {
+    val ContentColor = ColorsDescriptor.TextPrimary
+    val ActiveColor = ColorsDescriptor.ThemePrimary
+    val BackgroundColor = AreaBoxProperties.BackgroundColor
+    val BorderColor = AreaBoxProperties.BorderColor
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingTertiary)
+    val Shape = ShapesDescriptor.Primary
+    val BorderWidth = AreaBoxProperties.BorderWidth
+    val ContentPadding = ComponentPadding(horizontal = 16.dp)
+    val ContentShape = ShapesDescriptor.Secondary
+    val ShadowSize = SizesDescriptor.ZoomSizeTertiary
+    const val InTransitionDuration = 120
+    const val OutTransitionDuration = 90
+}
 
 private val LocalDropdownMenuActiveColor = compositionLocalOf { Color.Unspecified }
 
-private val LocalDropdownMenuContentStyle = compositionLocalOf<AreaBoxStyle?> { null }
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownListColors() = DropdownListColors(
-    endIconInactiveTint = LocalColors.current.themeSecondary,
-    endIconActiveTint = LocalColors.current.themePrimary,
-    borderInactiveColor = LocalColors.current.themeSecondary,
-    borderActiveColor = LocalColors.current.themePrimary,
-    backgroundColor = Color.Transparent
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownMenuColors() = DropdownMenuColors(
-    contentColor = LocalColors.current.textPrimary,
-    activeColor = LocalColors.current.themePrimary.copy(alpha = 0.3f),
-    borderColor = LocalColors.current.backgroundSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownListStyle() = DropdownListStyle(
-    padding = ComponentPadding(LocalSizes.current.spacingSecondary),
-    shape = withAreaBoxShape(),
-    endIconSize = LocalSizes.current.iconSizeTertiary,
-    borderInactive = defaultDropdownListInactiveBorder(),
-    borderActive = defaultDropdownListActiveBorder()
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownMenuStyle() = DropdownMenuStyle(
-    inTransitionDuration = DefaultInTransitionDuration,
-    outTransitionDuration = DefaultOutTransitionDuration,
-    contentStyle = AreaBoxDefaults.style.copy(
-        padding = ComponentPadding(horizontal = DefaultMenuContentPadding),
-        shape = LocalShapes.current.secondary
-    ),
-    borderStyle = AreaBoxDefaults.style.copy(
-        padding = ComponentPadding(LocalSizes.current.spacingTertiary),
-        shadowSize = LocalSizes.current.zoomSizeTertiary,
-        shape = LocalShapes.current.primary
-    )
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownListInactiveBorder() = BorderStroke(LocalSizes.current.borderSizeSecondary, LocalColors.current.themeSecondary)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultDropdownListActiveBorder() = BorderStroke(LocalSizes.current.borderSizePrimary, LocalColors.current.themePrimary)
-
-private val DefaultMenuContentPadding = 16.dp
-
-private const val DefaultInTransitionDuration = 120
-private const val DefaultOutTransitionDuration = 90
+private val LocalDropdownMenuContentColor = compositionLocalOf { Color.Unspecified }
+private val LocalDropdownMenuContentPadding = compositionLocalOf<ComponentPadding?> { null }
+private val LocalDropdownMenuContentShape = compositionLocalOf<Shape?> { null }
 
 private val MenuItemMinWidth = 112.dp
 private val MenuItemMaxWidth = 280.dp

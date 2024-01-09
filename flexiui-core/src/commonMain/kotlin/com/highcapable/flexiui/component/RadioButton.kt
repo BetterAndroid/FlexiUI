@@ -19,14 +19,13 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package com.highcapable.flexiui.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -39,7 +38,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,32 +53,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.clickable
 import com.highcapable.betterandroid.compose.extension.ui.componentState
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
 
 /**
  * Colors defines for radio button.
- * @param contentColor the color of the check mark.
- * @param inactiveColor the color of the unchecked box.
- * @param activeColor the color of the checked box.
+ * @see RadioButtonDefaults.colors
  */
 @Immutable
 data class RadioButtonColors(
     val contentColor: Color,
     val inactiveColor: Color,
-    val activeColor: Color
+    val activeColor: Color,
+    val borderColor: Color
 )
 
 /**
  * Style defines for radio button.
- * @param contentSpacing the spacing between the check mark and the content.
- * @param contentRadius the radius of the check mark.
- * @param strokeRadius the radius of the box.
- * @param pressedGain the gain when pressed.
- * @param hoveredGain the gain when hovered.
- * @param shape the shape.
- * @param border the border stroke.
+ * @see RadioButtonDefaults.style
  */
 @Immutable
 data class RadioButtonStyle(
@@ -90,7 +85,7 @@ data class RadioButtonStyle(
     val pressedGain: Float,
     val hoveredGain: Float,
     val shape: Shape,
-    val border: BorderStroke
+    val borderWidth: Dp
 )
 
 /**
@@ -109,8 +104,8 @@ fun RadioButton(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: RadioButtonColors = RadioButtonDefaults.colors,
-    style: RadioButtonStyle = RadioButtonDefaults.style,
+    colors: RadioButtonColors = RadioButtonDefaults.colors(),
+    style: RadioButtonStyle = RadioButtonDefaults.style(),
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable (RowScope.() -> Unit)? = null
@@ -157,45 +152,73 @@ fun RadioButton(
  * Defaults of radio button.
  */
 object RadioButtonDefaults {
-    val colors: RadioButtonColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultRadioButtonColors()
-    val style: RadioButtonStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultRadioButtonStyle()
+
+    /**
+     * Creates a [RadioButtonColors] with the default values.
+     * @param contentColor the color of the check mark.
+     * @param inactiveColor the color of the unchecked box.
+     * @param activeColor the color of the checked box.
+     * @param borderColor the color of the border.
+     * @return [RadioButtonColors]
+     */
+    @Composable
+    fun colors(
+        contentColor: Color = RadioButtonProperties.ContentColor,
+        inactiveColor: Color = RadioButtonProperties.InactiveColor.toColor(),
+        activeColor: Color = RadioButtonProperties.ActiveColor.toColor(),
+        borderColor: Color = RadioButtonProperties.BorderColor.toColor()
+    ) = RadioButtonColors(
+        contentColor = contentColor,
+        inactiveColor = inactiveColor,
+        activeColor = activeColor,
+        borderColor = borderColor
+    )
+
+    /**
+     * Creates a [RadioButtonStyle] with the default values.
+     * @param contentSpacing the spacing between the check mark and the content.
+     * @param contentRadius the radius of the check mark.
+     * @param strokeRadius the radius of the box.
+     * @param pressedGain the gain when pressed.
+     * @param hoveredGain the gain when hovered.
+     * @param shape the shape.
+     * @param borderWidth the border width.
+     * @return [RadioButtonStyle]
+     */
+    @Composable
+    fun style(
+        contentSpacing: Dp = RadioButtonProperties.ContentSpacing.toDp(),
+        contentRadius: Dp = RadioButtonProperties.ContentRadius,
+        contentShadowSize: Dp = RadioButtonProperties.ContentShadowSize,
+        strokeRadius: Dp = RadioButtonProperties.StrokeRadius,
+        pressedGain: Float = RadioButtonProperties.PressedGain,
+        hoveredGain: Float = RadioButtonProperties.HoveredGain,
+        shape: Shape = RadioButtonProperties.Shape.toShape(),
+        borderWidth: Dp = RadioButtonProperties.BorderWidth.toDp()
+    ) = RadioButtonStyle(
+        contentSpacing = contentSpacing,
+        contentRadius = contentRadius,
+        contentShadowSize = contentShadowSize,
+        strokeRadius = strokeRadius,
+        pressedGain = pressedGain,
+        hoveredGain = hoveredGain,
+        shape = shape,
+        borderWidth = borderWidth
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultRadioButtonColors() = RadioButtonColors(
-    contentColor = Color.White,
-    inactiveColor = LocalColors.current.themeTertiary,
-    activeColor = LocalColors.current.themePrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultRadioButtonStyle() = RadioButtonStyle(
-    contentSpacing = LocalSizes.current.spacingSecondary,
-    contentRadius = DefaultContentRadius,
-    contentShadowSize = DefaultContentShadowSize,
-    strokeRadius = DefaultStrokeRadius,
-    pressedGain = DefaultPressedGain,
-    hoveredGain = DefaultHoveredGain,
-    shape = LocalShapes.current.tertiary,
-    border = defaultRadioButtonBorder()
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultRadioButtonBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-private val DefaultContentRadius = 5.dp
-private val DefaultStrokeRadius = 10.dp
-
-private const val DefaultPressedGain = 0.9f
-private const val DefaultHoveredGain = 1.2f
-
-private val DefaultContentShadowSize = 0.5.dp
+@Stable
+internal object RadioButtonProperties {
+    val ContentColor = Color.White
+    val InactiveColor = ColorsDescriptor.ThemeTertiary
+    val ActiveColor = ColorsDescriptor.ThemePrimary
+    val BorderColor = ColorsDescriptor.TextPrimary
+    val ContentSpacing = SizesDescriptor.SpacingSecondary
+    val ContentRadius = 5.dp
+    val ContentShadowSize = 0.5.dp
+    val StrokeRadius = 10.dp
+    const val PressedGain = 0.9f
+    const val HoveredGain = 1.2f
+    val Shape = ShapesDescriptor.Tertiary
+    val BorderWidth = SizesDescriptor.BorderSizeTertiary
+}

@@ -41,12 +41,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -55,11 +56,14 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.layout.AdaptiveRow
 import com.highcapable.betterandroid.compose.extension.ui.window.Dialog
 import com.highcapable.betterandroid.compose.extension.ui.window.DialogPropertiesWrapper
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalSizes
-import com.highcapable.flexiui.LocalTypography
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.TypographyDescriptor
 import com.highcapable.flexiui.component.AreaBox
+import com.highcapable.flexiui.component.AreaBoxColors
 import com.highcapable.flexiui.component.AreaBoxDefaults
+import com.highcapable.flexiui.component.AreaBoxProperties
 import com.highcapable.flexiui.component.AreaBoxStyle
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.Icon
@@ -69,15 +73,19 @@ import com.highcapable.flexiui.component.LocalTextStyle
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.platform.ActualPlatform
 import com.highcapable.flexiui.platform.Platform
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
+import com.highcapable.flexiui.toTextStyle
 
 /**
  * Colors defines for flexi dialog.
- * @param titleTextColor the title text color.
- * @param titleIconTint the title icon tint.
- * @param contentTextColor the content text color.
+ * @see FlexiDialogDefaults.colors
  */
 @Immutable
 data class FlexiDialogColors(
+    val backgroundColor: Color,
+    val borderColor: Color,
     val titleTextColor: Color,
     val titleIconTint: Color,
     val contentTextColor: Color
@@ -85,26 +93,21 @@ data class FlexiDialogColors(
 
 /**
  * Style defines for flexi dialog.
- * @param boxStyle the style of area box.
- * @param titleTextStyle the title text style.
- * @param contentTextStyle the content text style.
- * @param maxWidth the dialog's max width.
- * @param maxHeight the dialog's max height.
- * @param outPadding the dialog's out padding.
- * @param titlePadding the title padding.
- * @param contentPadding the content padding.
- * @param buttonsSpacing the spacing between buttons.
+ * @see FlexiDialogDefaults.style
  */
 @Immutable
 data class FlexiDialogStyle(
-    val boxStyle: AreaBoxStyle,
     val titleTextStyle: TextStyle,
     val contentTextStyle: TextStyle,
     val maxWidth: Dp,
     val maxHeight: Dp,
-    val outPadding: ComponentPadding,
+    val padding: ComponentPadding,
+    val insetsPadding: ComponentPadding,
     val titlePadding: ComponentPadding,
     val contentPadding: ComponentPadding,
+    val shape: Shape,
+    val borderWidth: Dp,
+    val shadowSize: Dp,
     val buttonsSpacing: Dp
 )
 
@@ -130,8 +133,8 @@ fun FlexiDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     animated: Boolean = true,
-    colors: FlexiDialogColors = FlexiDialogDefaults.colors,
-    style: FlexiDialogStyle = FlexiDialogDefaults.style,
+    colors: FlexiDialogColors = FlexiDialogDefaults.colors(),
+    style: FlexiDialogStyle = FlexiDialogDefaults.style(),
     contentAlignment: Alignment = Alignment.TopStart,
     properties: DialogPropertiesWrapper = DefaultDialogProperties,
     title: (@Composable RowScope.() -> Unit)? = null,
@@ -185,8 +188,8 @@ fun FlexiDialog(
     modifier: Modifier = Modifier,
     animated: Boolean = true,
     scrimAnimated: Boolean = false,
-    colors: FlexiDialogColors = FlexiDialogDefaults.colors,
-    style: FlexiDialogStyle = FlexiDialogDefaults.style,
+    colors: FlexiDialogColors = FlexiDialogDefaults.colors(),
+    style: FlexiDialogStyle = FlexiDialogDefaults.style(),
     contentAlignment: Alignment = Alignment.TopStart,
     properties: DialogPropertiesWrapper = DefaultDialogProperties,
     title: (@Composable RowScope.() -> Unit)? = null,
@@ -248,10 +251,20 @@ fun FlexiDialog(
     BasicFlexiDialog(
         visible = visible,
         onDismissRequest = onDismissRequest,
-        modifier = Modifier.padding(style.outPadding).then(modifier),
+        modifier = modifier,
         animated = animated,
         scrimAnimated = scrimAnimated,
-        boxStyle = style.boxStyle,
+        boxColors = AreaBoxDefaults.colors(
+            backgroundColor = colors.backgroundColor,
+            borderColor = colors.borderColor
+        ),
+        boxStyle = AreaBoxDefaults.style(
+            padding = style.padding,
+            shape = style.shape,
+            borderWidth = style.borderWidth,
+            shadowSize = style.shadowSize
+        ),
+        insetsPadding = style.insetsPadding,
         maxWidth = style.maxWidth,
         maxHeight = style.maxHeight,
         contentAlignment = contentAlignment,
@@ -276,7 +289,9 @@ private fun BasicFlexiDialog(
     modifier: Modifier,
     animated: Boolean,
     scrimAnimated: Boolean,
+    boxColors: AreaBoxColors,
     boxStyle: AreaBoxStyle,
+    insetsPadding: ComponentPadding,
     maxWidth: Dp,
     maxHeight: Dp,
     contentAlignment: Alignment,
@@ -305,17 +320,17 @@ private fun BasicFlexiDialog(
         properties = propertiesCopy,
         onDismissRequest = onDismissRequest
     ) {
-        Box(
-            modifier = if (animated)
-                Modifier.graphicsLayer {
-                    scaleX = animatedScale
-                    scaleY = animatedScale
-                    alpha = animatedAlpha
-                }.then(modifier)
-            else Modifier.then(modifier)
-        ) {
+        val sModifier = if (animated)
+            Modifier.graphicsLayer {
+                scaleX = animatedScale
+                scaleY = animatedScale
+                alpha = animatedAlpha
+            }.then(modifier)
+        else modifier
+        Box(modifier = Modifier.padding(insetsPadding).then(sModifier)) {
             AreaBox(
                 modifier = Modifier.widthIn(max = maxWidth).heightIn(max = maxHeight),
+                colors = boxColors,
                 style = boxStyle,
                 contentAlignment = contentAlignment
             ) { content() }
@@ -327,44 +342,100 @@ private fun BasicFlexiDialog(
  * Defaults of flexi dialog.
  */
 object FlexiDialogDefaults {
-    val colors: FlexiDialogColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultFlexiDialogColors()
-    val style: FlexiDialogStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultFlexiDialogStyle()
+
+    /**
+     * Creates a [FlexiDialogColors] with the default values.
+     * @param backgroundColor the background color.
+     * @param borderColor the border color.
+     * @param titleTextColor the title text color.
+     * @param titleIconTint the title icon tint.
+     * @param contentTextColor the content text color.
+     * @return [FlexiDialogColors]
+     */
+    @Composable
+    fun colors(
+        backgroundColor: Color = FlexiDialogProperties.BackgroundColor.toColor(),
+        borderColor: Color = FlexiDialogProperties.BorderColor.toColor(),
+        titleTextColor: Color = FlexiDialogProperties.TitleTextColor.toColor(),
+        titleIconTint: Color = FlexiDialogProperties.TitleIconTint.toColor(),
+        contentTextColor: Color = FlexiDialogProperties.ContentTextColor.toColor()
+    ) = FlexiDialogColors(
+        backgroundColor = backgroundColor,
+        borderColor = borderColor,
+        titleTextColor = titleTextColor,
+        titleIconTint = titleIconTint,
+        contentTextColor = contentTextColor
+    )
+
+    /**
+     * Creates a [FlexiDialogStyle] with the default values.
+     * @param titleTextStyle the title text style.
+     * @param contentTextStyle the content text style.
+     * @param maxWidth the dialog's max width.
+     * @param maxHeight the dialog's max height.
+     * @param padding the dialog's padding.
+     * @param insetsPadding the dialog's insets padding.
+     * @param titlePadding the title padding.
+     * @param contentPadding the content padding.
+     * @param shape the dialog's shape.
+     * @param borderWidth the dialog's border width.
+     * @param shadowSize the dialog's shadow size.
+     * @param buttonsSpacing the spacing between buttons.
+     * @return [FlexiDialogStyle]
+     */
+    @Composable
+    fun style(
+        titleTextStyle: TextStyle = FlexiDialogProperties.TitleTextStyle.toTextStyle(),
+        contentTextStyle: TextStyle = FlexiDialogProperties.ContentTextStyle.toTextStyle(),
+        maxWidth: Dp = FlexiDialogProperties.MaxWidth,
+        maxHeight: Dp = FlexiDialogProperties.MaxHeight,
+        padding: ComponentPadding = FlexiDialogProperties.Padding.toPadding(),
+        insetsPadding: ComponentPadding = FlexiDialogProperties.InsetsPadding,
+        titlePadding: ComponentPadding = FlexiDialogProperties.TitlePadding.toPadding(),
+        contentPadding: ComponentPadding = FlexiDialogProperties.ContentPadding.toPadding(),
+        shape: Shape = FlexiDialogProperties.Shape.toShape(),
+        borderWidth: Dp = FlexiDialogProperties.BorderWidth.toDp(),
+        shadowSize: Dp = FlexiDialogProperties.ShadowSize,
+        buttonsSpacing: Dp = FlexiDialogProperties.ButtonsSpacing.toDp()
+    ) = FlexiDialogStyle(
+        titleTextStyle = titleTextStyle,
+        contentTextStyle = contentTextStyle,
+        maxWidth = maxWidth,
+        maxHeight = maxHeight,
+        padding = padding,
+        insetsPadding = insetsPadding,
+        titlePadding = titlePadding,
+        contentPadding = contentPadding,
+        shape = shape,
+        borderWidth = borderWidth,
+        shadowSize = shadowSize,
+        buttonsSpacing = buttonsSpacing
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultFlexiDialogColors() = FlexiDialogColors(
-    titleTextColor = LocalColors.current.textPrimary,
-    titleIconTint = LocalColors.current.textPrimary,
-    contentTextColor = LocalColors.current.textSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultFlexiDialogStyle() = FlexiDialogStyle(
-    boxStyle = AreaBoxDefaults.style.copy(padding = ComponentPadding(LocalSizes.current.spacingSecondary)),
-    titleTextStyle = LocalTypography.current.titleSecondary,
-    contentTextStyle = LocalTypography.current.primary,
-    maxWidth = DefaultMaxWidth,
-    maxHeight = DefaultMaxHeight,
-    outPadding = ComponentPadding(horizontal = DefaultHorizontalOutPadding),
-    titlePadding = ComponentPadding(LocalSizes.current.spacingSecondary),
-    contentPadding = ComponentPadding(LocalSizes.current.spacingSecondary),
-    buttonsSpacing = LocalSizes.current.spacingSecondary
-)
+@Stable
+internal object FlexiDialogProperties {
+    val BackgroundColor = AreaBoxProperties.BackgroundColor
+    val BorderColor = AreaBoxProperties.BorderColor
+    val TitleTextColor = ColorsDescriptor.TextPrimary
+    val TitleIconTint = ColorsDescriptor.TextPrimary
+    val ContentTextColor = ColorsDescriptor.TextSecondary
+    val TitleTextStyle = TypographyDescriptor.TitleSecondary
+    val ContentTextStyle = TypographyDescriptor.Primary
+    val MaxWidth = 300.dp
+    val MaxHeight = 500.dp
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingSecondary)
+    val InsetsPadding = ComponentPadding(horizontal = 50.dp)
+    val TitlePadding = PaddingDescriptor(SizesDescriptor.SpacingSecondary)
+    val ContentPadding = PaddingDescriptor(SizesDescriptor.SpacingSecondary)
+    val Shape = AreaBoxProperties.Shape
+    val BorderWidth = AreaBoxProperties.BorderWidth
+    val ShadowSize = AreaBoxProperties.ShadowSize
+    val ButtonsSpacing = SizesDescriptor.SpacingSecondary
+}
 
 private const val AnimationDuration = 250
 private const val AnimationMinmumScale = 0.8f
-
-private val DefaultMaxWidth = 300.dp
-private val DefaultMaxHeight = 500.dp
-private val DefaultHorizontalOutPadding = 50.dp
 
 private const val DefaultScrimOpacity = 0.35f
 private val DefaultScrimColor = Color.Black.copy(alpha = DefaultScrimOpacity)

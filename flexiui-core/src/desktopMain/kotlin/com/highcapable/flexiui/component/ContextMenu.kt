@@ -35,7 +35,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.input.InputModeManager
 import androidx.compose.ui.input.key.KeyEventType
@@ -56,22 +57,25 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInputModeManager
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
-import com.highcapable.betterandroid.compose.extension.ui.orNull
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.component.interaction.rippleClickable
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
 import java.awt.event.KeyEvent
 
 /**
  * Colors defines for the context menu.
- * @param contentColor the content color, usually for the text color.
- * @param borderColor the border color.
+ * @see ContextMenuDefaults.colors
  */
 @Immutable
 data class ContextMenuColors(
@@ -81,26 +85,26 @@ data class ContextMenuColors(
 
 /**
  * Style defines for the context menu.
- * @param contentStyle the content style of area box.
- * @param borderStyle the border style of area box.
+ * @see ContextMenuDefaults.style
  */
 @Immutable
 data class ContextMenuStyle(
-    val contentStyle: AreaBoxStyle?,
-    val borderStyle: AreaBoxStyle?
+    val padding: ComponentPadding,
+    val shape: Shape,
+    val borderWidth: Dp,
+    val contentPadding: ComponentPadding,
+    val contentShape: Shape,
+    val shadowSize: Dp
 )
 
-internal class DesktopContextMenuRepresentation(
-    private val colors: ContextMenuColors,
-    private val style: ContextMenuStyle
-) : ContextMenuRepresentation {
+internal class FlexiContextMenuRepresentation : ContextMenuRepresentation {
 
     @Composable
     override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
+        val colors = LocalContextMenuColors.current ?: ContextMenuDefaults.colors()
+        val style = LocalContextMenuStyle.current ?: ContextMenuDefaults.style()
         val status = state.status
         if (status is ContextMenuState.Status.Open) {
-            val contentStyle = style.contentStyle ?: return
-            val borderStyle = style.borderStyle ?: return
             var focusManager: FocusManager? by mutableStateOf(null)
             var inputModeManager: InputModeManager? by mutableStateOf(null)
             Popup(
@@ -129,12 +133,20 @@ internal class DesktopContextMenuRepresentation(
                     modifier = Modifier
                         .width(IntrinsicSize.Max)
                         .verticalScroll(rememberScrollState()),
-                    color = colors.borderColor,
-                    style = borderStyle
+                    colors = AreaBoxDefaults.colors(backgroundColor = colors.borderColor),
+                    style = AreaBoxDefaults.style(
+                        padding = style.padding,
+                        shape = style.shape,
+                        borderWidth = style.borderWidth,
+                        shadowSize = style.shadowSize
+                    )
                 ) {
                     items().forEach { item ->
                         MenuItemContent(
-                            style = contentStyle,
+                            style = AreaBoxDefaults.style(
+                                padding = style.contentPadding,
+                                shape = style.contentShape
+                            ),
                             onClick = {
                                 state.status = ContextMenuState.Status.Closed
                                 item.onClick()
@@ -164,7 +176,7 @@ private fun MenuItemContent(
                 maxWidth = MenuContentMaxWidth,
                 minHeight = MenuContentMinHeight
             ),
-        color = Color.Transparent,
+        colors = AreaBoxDefaults.colors(backgroundColor = Color.Transparent),
         style = style,
         verticalAlignment = Alignment.CenterVertically
     ) { content() }
@@ -185,61 +197,74 @@ private fun Modifier.onHover(onHover: (Boolean) -> Unit) = pointerInput(Unit) {
 /**
  * Defaults of context menu.
  */
-object DesktopContextMenuDefaults {
-    val colors: ContextMenuColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalContextMenuColors.current
-    val style: ContextMenuStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalContextMenuStyle.current
+object ContextMenuDefaults {
+
+    /**
+     * Creates a [ContextMenuColors] with the default values.
+     * @param contentColor the content color, usually for the text color.
+     * @param borderColor the border color.
+     * @return [ContextMenuColors]
+     */
+    @Composable
+    fun colors(
+        contentColor: Color = ContextMenuProperties.ContentColor.toColor(),
+        borderColor: Color = ContextMenuProperties.BorderColor.toColor()
+    ) = ContextMenuColors(
+        contentColor = contentColor,
+        borderColor = borderColor
+    )
+
+    /**
+     * Creates a [ContextMenuStyle] with the default values.
+     * @param padding the menu padding.
+     * @param shape the menu shape.
+     * @param borderWidth the menu border width.
+     * @param contentPadding the content padding.
+     * @param contentShape the content shape.
+     * @param shadowSize the shadow size.
+     * @return [ContextMenuStyle]
+     */
+    @Composable
+    fun style(
+        padding: ComponentPadding = ContextMenuProperties.Padding.toPadding(),
+        shape: Shape = ContextMenuProperties.Shape.toShape(),
+        borderWidth: Dp = ContextMenuProperties.BorderWidth.toDp(),
+        contentPadding: ComponentPadding = ContextMenuProperties.ContentPadding,
+        contentShape: Shape = ContextMenuProperties.ContentShape.toShape(),
+        shadowSize: Dp = ContextMenuProperties.ShadowSize.toDp()
+    ) = ContextMenuStyle(
+        padding = padding,
+        shape = shape,
+        borderWidth = borderWidth,
+        contentPadding = contentPadding,
+        contentShape = contentShape,
+        shadowSize = shadowSize
+    )
+}
+
+@Stable
+internal object ContextMenuProperties {
+    val ContentColor = ColorsDescriptor.TextPrimary
+    val BorderColor = ColorsDescriptor.BackgroundSecondary
+    val Padding = PaddingDescriptor(SizesDescriptor.SpacingTertiary)
+    val Shape = ShapesDescriptor.Primary
+    val BorderWidth = AreaBoxProperties.BorderWidth
+    val ContentPadding = ComponentPadding(horizontal = 16.dp)
+    val ContentShape = ShapesDescriptor.Secondary
+    val ShadowSize = SizesDescriptor.ZoomSizeTertiary
 }
 
 /**
- * CompositionLocal containing the preferred [ContextMenuColors]
- * that will be used by context menu by default.
+ * Composition local containing the preferred [ContextMenuColors]
+ * that will be used by [ContextMenuRepresentation] by default.
  */
-val LocalContextMenuColors = compositionLocalOf {
-    ContextMenuColors(
-        borderColor = Color.Unspecified,
-        contentColor = Color.Unspecified
-    )
-}
+val LocalContextMenuColors = compositionLocalOf<ContextMenuColors?> { null }
 
 /**
- * CompositionLocal containing the preferred [ContextMenuStyle]
- * that will be used by context menu by default.
+ * Composition local containing the preferred [ContextMenuStyle]
+ * that will be used by [ContextMenuRepresentation] by default.
  */
-val LocalContextMenuStyle = compositionLocalOf {
-    ContextMenuStyle(
-        contentStyle = null,
-        borderStyle = null
-    )
-}
-
-@Composable
-@ReadOnlyComposable
-internal fun defaultContextMenuColors() = ContextMenuColors(
-    contentColor = LocalContextMenuColors.current.contentColor.orNull() ?: LocalColors.current.textPrimary,
-    borderColor = LocalContextMenuColors.current.borderColor.orNull() ?: LocalColors.current.backgroundSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-internal fun defaultContextMenuStyle() = ContextMenuStyle(
-    contentStyle = LocalContextMenuStyle.current.contentStyle ?: AreaBoxDefaults.style.copy(
-        padding = ComponentPadding(horizontal = DefaultMenuContentPadding),
-        shape = LocalShapes.current.secondary
-    ),
-    borderStyle = LocalContextMenuStyle.current.borderStyle ?: AreaBoxDefaults.style.copy(
-        padding = ComponentPadding(LocalSizes.current.spacingTertiary),
-        shadowSize = LocalSizes.current.zoomSizeTertiary,
-        shape = LocalShapes.current.primary
-    )
-)
-
-private val DefaultMenuContentPadding = 16.dp
+val LocalContextMenuStyle = compositionLocalOf<ContextMenuStyle?> { null }
 
 private val MenuContentMinWidth = 112.dp
 private val MenuContentMaxWidth = 280.dp

@@ -19,13 +19,12 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package com.highcapable.flexiui.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -41,7 +40,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,37 +61,30 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.clickable
 import com.highcapable.betterandroid.compose.extension.ui.componentState
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toDp
+import com.highcapable.flexiui.toShape
 import kotlin.math.roundToInt
 
 /**
  * Colors defines for switch.
- * @param thumbColor the color of thumb.
- * @param trackInactive the color of track when switch is inactive.
- * @param trackActive the color of track when switch is active.
+ * @see SwitchDefaults.colors
  */
 @Immutable
 data class SwitchColors(
     val thumbColor: Color,
-    val trackInactive: Color,
-    val trackActive: Color
+    val thumbBorderColor: Color,
+    val trackBorderColor: Color,
+    val trackInactiveColor: Color,
+    val trackActiveColor: Color
 )
 
 /**
  * Style defines for switch.
- * @param padding the padding between thumb and track.
- * @param contentSpacing the spacing between content and track.
- * @param thumbRadius the radius of thumb.
- * @param thumbGain the gain of thumb when switch is hovered or dragging.
- * @param thumbShadowSize the shadow size of thumb.
- * @param thumbShape the shape of thumb.
- * @param trackShape the shape of track.
- * @param thumbBorder the border of thumb.
- * @param trackBorder the border of track.
- * @param trackWidth the width of track.
- * @param trackHeight the height of track.
+ * @see SwitchDefaults.style
  */
 @Immutable
 data class SwitchStyle(
@@ -103,10 +95,10 @@ data class SwitchStyle(
     val thumbShadowSize: Dp,
     val thumbShape: Shape,
     val trackShape: Shape,
-    val thumbBorder: BorderStroke,
-    val trackBorder: BorderStroke,
     val trackWidth: Dp,
-    val trackHeight: Dp
+    val trackHeight: Dp,
+    val thumbBorderWidth: Dp,
+    val trackBorderWidth: Dp
 )
 
 /**
@@ -125,8 +117,8 @@ fun Switch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    colors: SwitchColors = SwitchDefaults.colors,
-    style: SwitchStyle = SwitchDefaults.style,
+    colors: SwitchColors = SwitchDefaults.colors(),
+    style: SwitchStyle = SwitchDefaults.style(),
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable (RowScope.() -> Unit)? = null
@@ -142,12 +134,12 @@ fun Switch(
     if (!hovered && !dragging) offsetX = if (checked) maxOffsetX else 0f
     val animatedOffsetX by animateFloatAsState(offsetX)
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
-    var trackColor by remember { mutableStateOf(colors.trackInactive) }
+    var trackColor by remember { mutableStateOf(colors.trackInactiveColor) }
 
     /** Update the track color of switch. */
     fun updateTrackColor() {
         val fraction = (offsetX / maxOffsetX).coerceIn(0f, 1f)
-        trackColor = lerp(colors.trackInactive, colors.trackActive, fraction)
+        trackColor = lerp(colors.trackInactiveColor, colors.trackActiveColor, fraction)
     }
     updateTrackColor()
     val animatedTrackColor by animateColorAsState(trackColor)
@@ -166,7 +158,7 @@ fun Switch(
                 offsetX = if (checked) 0f else maxOffsetX
                 onCheckedChange(!checked)
             }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
-                .borderOrElse(style.trackBorder, style.trackShape)
+                .borderOrElse(style.trackBorderWidth, colors.trackBorderColor, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
                 .padding(style.padding),
             verticalAlignment = Alignment.CenterVertically,
@@ -183,7 +175,7 @@ fun Switch(
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
                 .background(colors.thumbColor, style.thumbShape)
-                .borderOrElse(style.thumbBorder, style.thumbShape)
+                .borderOrElse(style.thumbBorderWidth, colors.thumbBorderColor, style.thumbShape)
                 .draggable(
                     enabled = enabled,
                     orientation = Orientation.Horizontal,
@@ -232,49 +224,93 @@ fun Switch(
  * Defaults of switch.
  */
 object SwitchDefaults {
-    val colors: SwitchColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSwitchColors()
-    val style: SwitchStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultSwitchStyle()
+
+    /**
+     * Creates a [SwitchColors] with the default values.
+     * @param thumbColor the color of thumb.
+     * @param thumbBorderColor the border color of thumb.
+     * @param trackBorderColor the border color of track.
+     * @param trackInactiveColor the color of track when switch is inactive.
+     * @param trackActiveColor the color of track when switch is active.
+     * @return [SwitchColors]
+     */
+    @Composable
+    fun colors(
+        thumbColor: Color = SwitchProperties.ThumbColor,
+        thumbBorderColor: Color = SwitchProperties.ThumbBorderColor.toColor(),
+        trackBorderColor: Color = SwitchProperties.TrackBorderColor.toColor(),
+        trackInactiveColor: Color = SwitchProperties.TrackInactiveColor.toColor(),
+        trackActiveColor: Color = SwitchProperties.TrackActiveColor.toColor()
+    ) = SwitchColors(
+        thumbColor = thumbColor,
+        thumbBorderColor = thumbBorderColor,
+        trackBorderColor = trackBorderColor,
+        trackInactiveColor = trackInactiveColor,
+        trackActiveColor = trackActiveColor
+    )
+
+    /**
+     * Creates a [SwitchStyle] with the default values.
+     * @param padding the padding between thumb and track.
+     * @param contentSpacing the spacing between content and track.
+     * @param thumbRadius the radius of thumb.
+     * @param thumbGain the gain of thumb when switch is hovered or dragging.
+     * @param thumbShadowSize the shadow size of thumb.
+     * @param thumbShape the shape of thumb.
+     * @param trackShape the shape of track.
+     * @param trackWidth the width of track.
+     * @param trackHeight the height of track.
+     * @param thumbBorderWidth the border width of thumb.
+     * @param trackBorderWidth the border width of track.
+     * @return [SwitchStyle]
+     */
+    @Composable
+    fun style(
+        padding: ComponentPadding = SwitchProperties.Padding,
+        contentSpacing: Dp = SwitchProperties.ContentSpacing.toDp(),
+        thumbRadius: Dp = SwitchProperties.ThumbRadius,
+        thumbGain: Float = SwitchProperties.ThumbGain,
+        thumbShadowSize: Dp = SwitchProperties.ThumbShadowSize,
+        thumbShape: Shape = SwitchProperties.ThumbShape.toShape(),
+        trackShape: Shape = SwitchProperties.TrackShape.toShape(),
+        trackWidth: Dp = SwitchProperties.TrackWidth,
+        trackHeight: Dp = SwitchProperties.TrackHeight,
+        trackBorderWidth: Dp = SwitchProperties.TrackBorderWidth.toDp(),
+        thumbBorderWidth: Dp = SwitchProperties.ThumbBorderWidth.toDp()
+    ) = SwitchStyle(
+        padding = padding,
+        contentSpacing = contentSpacing,
+        thumbRadius = thumbRadius,
+        thumbGain = thumbGain,
+        thumbShadowSize = thumbShadowSize,
+        thumbShape = thumbShape,
+        trackShape = trackShape,
+        trackWidth = trackWidth,
+        trackHeight = trackHeight,
+        thumbBorderWidth = thumbBorderWidth,
+        trackBorderWidth = trackBorderWidth
+    )
 }
 
-@Composable
-@ReadOnlyComposable
-private fun defaultSwitchColors() = SwitchColors(
-    thumbColor = Color.White,
-    trackInactive = LocalColors.current.themeTertiary,
-    trackActive = LocalColors.current.themePrimary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSwitchStyle() = SwitchStyle(
-    padding = ComponentPadding(horizontal = DefaultSwitchPadding),
-    contentSpacing = LocalSizes.current.spacingSecondary,
-    thumbRadius = DefaultThumbRadius,
-    thumbGain = DefaultThumbGain,
-    thumbShadowSize = DefaultThumbShadowSize,
-    thumbShape = LocalShapes.current.tertiary,
-    trackShape = LocalShapes.current.tertiary,
-    thumbBorder = defaultSwitchBorder(),
-    trackBorder = defaultSwitchBorder(),
-    trackWidth = DefaultTrackWidth,
-    trackHeight = DefaultTrackHeight
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultSwitchBorder() = BorderStroke(LocalSizes.current.borderSizeTertiary, LocalColors.current.textPrimary)
-
-private val DefaultSwitchPadding = 3.5.dp
-
-private val DefaultThumbRadius = 6.5.dp
-private const val DefaultThumbGain = 1.1f
-private val DefaultThumbShadowSize = 0.5.dp
-
-private val DefaultTrackWidth = 40.dp
-private val DefaultTrackHeight = 20.dp
+/**
+ * Properties for [Switch].
+ */
+@Stable
+internal object SwitchProperties {
+    val ThumbColor = Color.White
+    val ThumbBorderColor = ColorsDescriptor.TextPrimary
+    val TrackBorderColor = ColorsDescriptor.TextPrimary
+    val TrackInactiveColor = ColorsDescriptor.ThemeTertiary
+    val TrackActiveColor = ColorsDescriptor.ThemePrimary
+    val Padding = ComponentPadding(horizontal = 3.5.dp)
+    val ContentSpacing = SizesDescriptor.SpacingSecondary
+    val ThumbRadius = 6.5.dp
+    const val ThumbGain = 1.1f
+    val ThumbShadowSize = 0.5.dp
+    val ThumbShape = ShapesDescriptor.Tertiary
+    val TrackShape = ShapesDescriptor.Tertiary
+    val TrackWidth = 40.dp
+    val TrackHeight = 20.dp
+    val ThumbBorderWidth = SizesDescriptor.BorderSizeTertiary
+    val TrackBorderWidth = SizesDescriptor.BorderSizeTertiary
+}

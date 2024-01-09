@@ -33,7 +33,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,7 +47,6 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -73,18 +71,19 @@ import androidx.compose.ui.unit.lerp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.betterandroid.compose.extension.ui.orNull
-import com.highcapable.flexiui.LocalColors
-import com.highcapable.flexiui.LocalShapes
-import com.highcapable.flexiui.LocalSizes
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.PaddingDescriptor
+import com.highcapable.flexiui.ShapesDescriptor
+import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.component.interaction.rippleClickable
+import com.highcapable.flexiui.toColor
+import com.highcapable.flexiui.toShape
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
  * Colors defines for tab.
- * @param indicatorColor the indicator color.
- * @param selectedContentColor the selected content color.
- * @param unselectedContentColor the unselected content color.
+ * @see TabDefaults.colors
  */
 @Immutable
 data class TabColors(
@@ -95,11 +94,7 @@ data class TabColors(
 
 /**
  * Style defines for tab.
- * @param contentPadding the content padding.
- * @param contentShape the content shape.
- * @param indicatorWidth the indicator width.
- * @param indicatorHeight the indicator height.
- * @param indicatorShape the indicator shape.
+ * @see TabDefaults.style
  */
 @Immutable
 data class TabStyle(
@@ -125,8 +120,8 @@ data class TabStyle(
 fun TabRow(
     selectedTabIndex: Int = 0,
     modifier: Modifier = Modifier,
-    colors: TabColors = TabDefaults.colors,
-    style: TabStyle = TabDefaults.style,
+    colors: TabColors = TabDefaults.colors(),
+    style: TabStyle = TabDefaults.style(),
     indicator: @Composable TabRowScope.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
 ) {
@@ -177,8 +172,8 @@ fun TabRow(
 fun ScrollableTabRow(
     selectedTabIndex: Int = 0,
     modifier: Modifier = Modifier,
-    colors: TabColors = TabDefaults.colors,
-    style: TabStyle = TabDefaults.style,
+    colors: TabColors = TabDefaults.colors(),
+    style: TabStyle = TabDefaults.style(),
     scrollState: ScrollState = rememberScrollState(),
     indicator: @Composable TabRowScope.() -> Unit = { TabIndicator(modifier = Modifier.tabIndicatorOffset()) },
     tabs: @Composable () -> Unit
@@ -249,18 +244,18 @@ fun Tab(
     modifier: Modifier = Modifier,
     selectedContentColor: Color = Color.Unspecified,
     unselectedContentColor: Color = Color.Unspecified,
-    contentPadding: PaddingValues? = null,
+    contentPadding: ComponentPadding? = null,
     contentShape: Shape? = null,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit
 ) {
     val currentSelectedContentColor = selectedContentColor.orNull()
-        ?: LocalTabSelectedContentColor.current.orNull() ?: TabDefaults.colors.selectedContentColor
+        ?: LocalTabSelectedContentColor.current.orNull() ?: TabDefaults.colors().selectedContentColor
     val currentUnselectedContentColor = unselectedContentColor.orNull()
-        ?: LocalTabUnselectedContentColor.current.orNull() ?: TabDefaults.colors.unselectedContentColor
-    val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: TabDefaults.style.contentPadding
-    val currentContentShape = contentShape ?: LocalTabContentShape.current ?: TabDefaults.style.contentShape
+        ?: LocalTabUnselectedContentColor.current.orNull() ?: TabDefaults.colors().unselectedContentColor
+    val currentContentPadding = contentPadding ?: LocalTabContentPadding.current ?: TabDefaults.style().contentPadding
+    val currentContentShape = contentShape ?: LocalTabContentShape.current ?: TabDefaults.style().contentShape
     val contentColor by animateColorAsState(if (selected) currentSelectedContentColor else currentUnselectedContentColor)
     val contentIconStyle = LocalIconStyle.current.copy(tint = contentColor)
     val contentTextStyle = LocalTextStyle.current.copy(color = contentColor)
@@ -508,45 +503,68 @@ private enum class TabSlots { Tabs, TabsAverage, Indicator }
  * Defaults of tab.
  */
 object TabDefaults {
-    val colors: TabColors
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTabColors()
-    val style: TabStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = defaultTabStyle()
+
+    /**
+     * Creates a [TabColors] with the default values.
+     * @param indicatorColor the indicator color.
+     * @param selectedContentColor the selected content color.
+     * @param unselectedContentColor the unselected content color.
+     * @return [TabColors]
+     */
+    @Composable
+    fun colors(
+        indicatorColor: Color = TabProperties.IndicatorColor.toColor(),
+        selectedContentColor: Color = TabProperties.SelectedContentColor.toColor(),
+        unselectedContentColor: Color = TabProperties.UnselectedContentColor.toColor()
+    ) = TabColors(
+        indicatorColor = indicatorColor,
+        selectedContentColor = selectedContentColor,
+        unselectedContentColor = unselectedContentColor
+    )
+
+    /**
+     * Creates a [TabStyle] with the default values.
+     * @param contentPadding the content padding.
+     * @param contentShape the content shape.
+     * @param indicatorWidth the indicator width.
+     * @param indicatorHeight the indicator height.
+     * @param indicatorShape the indicator shape.
+     * @return [TabStyle]
+     */
+    @Composable
+    fun style(
+        contentPadding: ComponentPadding = TabProperties.ContentPadding.toPadding(),
+        contentShape: Shape = AreaBoxDefaults.childShape(),
+        indicatorWidth: Dp = TabProperties.IndicatorWidth,
+        indicatorHeight: Dp = TabProperties.IndicatorHeight,
+        indicatorShape: Shape = TabProperties.IndicatorShape.toShape()
+    ) = TabStyle(
+        contentPadding = contentPadding,
+        contentShape = contentShape,
+        indicatorWidth = indicatorWidth,
+        indicatorHeight = indicatorHeight,
+        indicatorShape = indicatorShape
+    )
+}
+
+@Stable
+internal object TabProperties {
+    val IndicatorColor = ColorsDescriptor.ThemePrimary
+    val SelectedContentColor = ColorsDescriptor.ThemePrimary
+    val UnselectedContentColor = ColorsDescriptor.TextSecondary
+    val ContentPadding = PaddingDescriptor(
+        horizontal = SizesDescriptor.SpacingPrimary,
+        vertical = SizesDescriptor.SpacingSecondary
+    )
+    val IndicatorWidth = Dp.Unspecified
+    val IndicatorHeight = 3.dp
+    val IndicatorShape = ShapesDescriptor.Tertiary
 }
 
 private val LocalTabSelectedContentColor = compositionLocalOf { Color.Unspecified }
-
 private val LocalTabUnselectedContentColor = compositionLocalOf { Color.Unspecified }
 
-private val LocalTabContentPadding = compositionLocalOf<PaddingValues?> { null }
-
+private val LocalTabContentPadding = compositionLocalOf<ComponentPadding?> { null }
 private val LocalTabContentShape = compositionLocalOf<Shape?> { null }
-
-@Composable
-@ReadOnlyComposable
-private fun defaultTabColors() = TabColors(
-    indicatorColor = LocalColors.current.themePrimary,
-    selectedContentColor = LocalColors.current.themePrimary,
-    unselectedContentColor = LocalColors.current.textSecondary
-)
-
-@Composable
-@ReadOnlyComposable
-private fun defaultTabStyle() = TabStyle(
-    contentPadding = ComponentPadding(
-        horizontal = LocalSizes.current.spacingPrimary,
-        vertical = LocalSizes.current.spacingSecondary
-    ),
-    contentShape = withAreaBoxShape(),
-    indicatorWidth = Dp.Unspecified,
-    indicatorHeight = DefaultTabIndicatorHeight,
-    indicatorShape = LocalShapes.current.tertiary
-)
-
-private val DefaultTabIndicatorHeight = 3.dp
 
 private const val TabIndicatorDuration = 250

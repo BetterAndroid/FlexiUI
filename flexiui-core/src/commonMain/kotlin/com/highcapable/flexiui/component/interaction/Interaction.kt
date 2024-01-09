@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/10.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package com.highcapable.flexiui.component.interaction
 
@@ -27,7 +27,7 @@ import androidx.compose.foundation.Indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -39,14 +39,13 @@ import com.highcapable.betterandroid.compose.extension.ui.clickable
 import com.highcapable.betterandroid.compose.extension.ui.combinedClickable
 import com.highcapable.betterandroid.compose.extension.ui.selectable
 import com.highcapable.betterandroid.compose.extension.ui.toggleable
-import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.ColorsDescriptor
+import com.highcapable.flexiui.toColor
 import androidx.compose.material.ripple.rememberRipple as materialRememberRipple
 
 /**
  * Style defines for ripple.
- * @param bounded whether the ripple is bounded.
- * @param radius the radius.
- * @param color the color.
+ * @see InteractionDefaults.rippleStyle
  */
 @Immutable
 data class RippleStyle(
@@ -62,7 +61,7 @@ data class RippleStyle(
  * @return [Indication]
  */
 @Composable
-fun rememberRipple(style: RippleStyle = InteractionDefaults.rippleStyle) =
+fun rememberRipple(style: RippleStyle = InteractionDefaults.rippleStyle()) =
     materialRememberRipple(style.bounded, style.radius, style.color)
 
 /**
@@ -95,7 +94,7 @@ fun Modifier.rippleClickable(
         properties["onClick"] = onClick
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle()
     val currentIndication = rememberRipple(currentRippleStyle)
     clickable(
         onClick = onClick,
@@ -146,7 +145,7 @@ fun Modifier.rippleCombinedClickable(
         properties["onClick"] = onClick
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle()
     val currentIndication = rememberRipple(currentRippleStyle)
     combinedClickable(
         onClick = onClick,
@@ -190,7 +189,7 @@ fun Modifier.rippleToggleable(
         properties["onValueChange"] = onValueChange
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle()
     val currentIndication = rememberRipple(currentRippleStyle)
     toggleable(
         value = value,
@@ -231,7 +230,7 @@ fun Modifier.rippleSelectable(
         properties["onClick"] = onClick
     }
 ) {
-    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle
+    val currentRippleStyle = rippleStyle ?: InteractionDefaults.rippleStyle()
     val currentIndication = rememberRipple(currentRippleStyle)
     selectable(
         selected = selected,
@@ -247,22 +246,35 @@ fun Modifier.rippleSelectable(
  * Defaults of interaction.
  */
 object InteractionDefaults {
-    val rippleStyle: RippleStyle
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalRippleStyle.current ?: defaultRippleStyle()
+
+    /**
+     * Creates a [RippleStyle] with the default values.
+     * @param bounded whether the ripple is bounded.
+     * @param radius the radius.
+     * @param color the color.
+     * @return [RippleStyle]
+     */
+    @Composable
+    fun rippleStyle(
+        bounded: Boolean = InteractionProperties.RippleBounded,
+        radius: Dp = InteractionProperties.RippleRadius,
+        color: Color = InteractionProperties.RippleColor.toColor()
+    ) = RippleStyle(
+        bounded = bounded,
+        radius = radius,
+        color = color
+    )
+}
+
+@Stable
+internal object InteractionProperties {
+    const val RippleBounded = true
+    val RippleRadius = Dp.Unspecified
+    val RippleColor = ColorsDescriptor.ThemeSecondary
 }
 
 /**
- * CompositionLocal containing the preferred [RippleStyle]
+ * Composition local containing the preferred [RippleStyle]
  * that will be used by interaction by default.
  */
 val LocalRippleStyle = compositionLocalOf<RippleStyle?> { null }
-
-@Composable
-@ReadOnlyComposable
-private fun defaultRippleStyle() = RippleStyle(
-    bounded = true,
-    radius = Dp.Unspecified,
-    color = LocalColors.current.themeSecondary
-)
