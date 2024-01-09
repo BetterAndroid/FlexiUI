@@ -67,6 +67,8 @@ import com.highcapable.flexiui.component.LocalIconStyle
 import com.highcapable.flexiui.component.LocalPrimaryButton
 import com.highcapable.flexiui.component.LocalTextStyle
 import com.highcapable.flexiui.component.Text
+import com.highcapable.flexiui.platform.ActualPlatform
+import com.highcapable.flexiui.platform.Platform
 
 /**
  * Colors defines for flexi dialog.
@@ -138,6 +140,61 @@ fun FlexiDialog(
     cancelButton: @Composable (() -> Unit)? = null,
     neutralButton: @Composable (() -> Unit)? = null
 ) {
+    FlexiDialog(
+        visible = visible,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        animated = animated,
+        scrimAnimated = false,
+        colors = colors,
+        style = style,
+        contentAlignment = contentAlignment,
+        properties = properties,
+        title = title,
+        content = content,
+        confirmButton = confirmButton,
+        cancelButton = cancelButton,
+        neutralButton = neutralButton
+    )
+}
+
+/**
+ * Flexi UI dialog.
+ * @see FlexiDialog
+ * @param visible the visible state of dialog.
+ * @param onDismissRequest the callback when dismiss dialog.
+ * @param modifier the [Modifier] to be applied to this dialog.
+ * @param animated whether to animate the dialog, default is true.
+ * @param scrimAnimated whether to animate the scrim, when false,
+ * this effect will only be available on Android platform, default is false.
+ * @param colors the colors of dialog, default is [FlexiDialogDefaults.colors].
+ * @param style the style of dialog, default is [FlexiDialogDefaults.style].
+ * @param contentAlignment the alignment of dialog content, default is [Alignment.TopStart].
+ * @param properties the properties of dialog, default is [DefaultDialogProperties].
+ * @param title the title of the [FlexiDialog], should typically be [Icon] or [Text].
+ * @param content the content of the [FlexiDialog].
+ * @param confirmButton the confirm button of the [FlexiDialog], should typically be [Button].
+ * @param cancelButton the cancel button of the [FlexiDialog], should typically be [Button].
+ * @param neutralButton the neutral button of the [FlexiDialog], should typically be [Button].
+ */
+@ExperimentalFlexiDialogScrimAnimated
+@Composable
+fun FlexiDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    animated: Boolean = true,
+    scrimAnimated: Boolean = false,
+    colors: FlexiDialogColors = FlexiDialogDefaults.colors,
+    style: FlexiDialogStyle = FlexiDialogDefaults.style,
+    contentAlignment: Alignment = Alignment.TopStart,
+    properties: DialogPropertiesWrapper = DefaultDialogProperties,
+    title: (@Composable RowScope.() -> Unit)? = null,
+    content: @Composable () -> Unit,
+    confirmButton: @Composable (() -> Unit)? = null,
+    cancelButton: @Composable (() -> Unit)? = null,
+    neutralButton: @Composable (() -> Unit)? = null
+) {
     /** Build the content of dialog. */
     @Composable
     fun Content() {
@@ -193,6 +250,7 @@ fun FlexiDialog(
         onDismissRequest = onDismissRequest,
         modifier = Modifier.padding(style.outPadding).then(modifier),
         animated = animated,
+        scrimAnimated = scrimAnimated,
         boxStyle = style.boxStyle,
         maxWidth = style.maxWidth,
         maxHeight = style.maxHeight,
@@ -217,6 +275,7 @@ private fun BasicFlexiDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier,
     animated: Boolean,
+    scrimAnimated: Boolean,
     boxStyle: AreaBoxStyle,
     maxWidth: Dp,
     maxHeight: Dp,
@@ -238,8 +297,12 @@ private fun BasicFlexiDialog(
     )
     val animatedScrimColor by animateColorAsState(if (visible) properties.scrimColor else Color.Transparent)
     val animation = animated && animatedAlpha > 0f
+    // Resolve @ExperimentalFlexiDialogScrimAnimated.
+    val propertiesCopy = if (scrimAnimated || ActualPlatform == Platform.Android)
+        properties.copy(scrimColor = animatedScrimColor)
+    else properties
     if (visible || animation) Dialog(
-        properties = properties.copy(scrimColor = animatedScrimColor),
+        properties = propertiesCopy,
         onDismissRequest = onDismissRequest
     ) {
         Box(
@@ -306,3 +369,18 @@ private val DefaultHorizontalOutPadding = 50.dp
 private const val DefaultScrimOpacity = 0.35f
 private val DefaultScrimColor = Color.Black.copy(alpha = DefaultScrimOpacity)
 private val DefaultDialogProperties = DialogPropertiesWrapper(usePlatformDefaultWidth = false, scrimColor = DefaultScrimColor)
+
+/**
+ * The scrim animation effect of Flexi UI dialog is still in experimental function,
+ * which may cause the scrim effect to be lost on non-Android platforms.
+ *
+ * Reproduced on compose-multiplatform 1.5.x, and has been fixed on latest 1.6.0-dev.
+ */
+@RequiresOptIn(
+    message = "The scrim animation effect of Flexi UI dialog is still in experimental function, " +
+        "which may cause the scrim effect to be lost on non-Android platforms.\n" +
+        "Reproduced on compose-multiplatform 1.5.x, and has been fixed on latest 1.6.0-dev.",
+    level = RequiresOptIn.Level.WARNING
+)
+@MustBeDocumented
+annotation class ExperimentalFlexiDialogScrimAnimated

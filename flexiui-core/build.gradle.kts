@@ -27,6 +27,7 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
+                optIn("com.highcapable.flexiui.component.window.ExperimentalFlexiDialogScrimAnimated")
                 optIn("com.highcapable.flexiui.ExperimentalFlexiUISizesApi")
                 optIn("androidx.compose.ui.ExperimentalComposeUiApi")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
