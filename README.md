@@ -32,10 +32,8 @@ I basically don’t plan to continue to maintain this project on the Android nat
 
 You can click the link below to view the project branch of the corresponding platform.
 
-> The Jetpack Compose version is still in the development stage, and the first testing version is expected to be officially released within this month (2024-01).
-
-| <img src="https://developer.android.com/static/images/spot-icons/jetpack-compose.svg" width = "30" height = "30" alt="LOGO"/> | [Jetpack Compose (Dev)](https://github.com/BetterAndroid/FlexiUI/tree/compose-dev) |
-| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| <img src="https://developer.android.com/static/images/spot-icons/jetpack-compose.svg" width = "30" height = "30" alt="LOGO"/> | [Jetpack Compose](https://github.com/BetterAndroid/FlexiUI/tree/compose) |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 
 
 | <img src="https://avatars.githubusercontent.com/u/14101776?s=200&v=4" width = "30" height = "30" alt="LOGO"/> | Flutter (Stay tuned) |
