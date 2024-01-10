@@ -51,6 +51,17 @@ Android 原生平台的这个项目我基本上不打算继续维护了，如果
   <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Dark.png?raw=true" width = "200" alt="SCREENSHOT"/>
 </div>
 
+## 项目推广
+
+<!--suppress HtmlDeprecatedAttribute -->
+<div align="center">
+    <h2>嘿，还请君留步！👋</h2>
+    <h3>这里有 Android 开发工具、UI 设计、Gradle 插件、Xposed 模块和实用软件等相关项目。</h3>
+    <h3>如果下方的项目能为你提供帮助，不妨为我点个 star 吧！</h3>
+    <h3>所有项目免费、开源，遵循对应开源许可协议。</h3>
+    <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README-zh-CN.md">→ 查看更多关于我的项目，请点击这里 ←</a></h1>
+</div>
+
 ## Star History
 
 ![Star History Chart](https://api.star-history.com/svg?repos=BetterAndroid/FlexiUI&type=Date)
