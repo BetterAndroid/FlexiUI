@@ -104,6 +104,10 @@ private fun ScaffoldLayout(
         appBarPlaceables = subcompose(ScaffoldSlots.AppBar, appBar).map { it.measure(constraints) }
         val tabPlaceables = subcompose(ScaffoldSlots.Tab, tab).map { it.measure(constraints) }
         val navigationBarPlaceables = subcompose(ScaffoldSlots.NavigationBar, navigationBar).map { it.measure(constraints) }
+        // Check the component number of [appBar], [tab] and [navigationBar].
+        require(appBarPlaceables.size <= 1) { "Scaffold can host only one app bar." }
+        require(tabPlaceables.size <= 1) { "Scaffold can host only one tab." }
+        require(navigationBarPlaceables.size <= 1) { "Scaffold can host only one navigation bar." }
         // Inner content no need start and end padding.
         val innerPadding = padding.copy(
             start = 0.dp,
