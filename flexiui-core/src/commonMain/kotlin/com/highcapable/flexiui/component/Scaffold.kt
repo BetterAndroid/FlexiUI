@@ -23,18 +23,18 @@
 
 package com.highcapable.flexiui.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
-
-// TODO: re-made it by SubcomposeLayout.
 
 /**
  * Scaffold implements the basic Flexi UI visual layout structure.
@@ -47,43 +47,127 @@ import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
  * @see NavigationBarColumn
  * @param modifier the [Modifier] to be applied to content.
  * @param colors the colors of content, default is [SurfaceDefaults.colors].
- * @param padding the padding of content, default is [SurfaceDefaults.padding].
- * @param verticalArrangement the vertical arrangement of content, default is [Arrangement.Top].
- * @param horizontalAlignment the horizontal alignment of content, default is [Alignment.Start].
+ * @param padding the padding of content, default is [ScaffoldDefaults.padding].
  * @param appBar the app bar on top of the screen, should typically be [PrimaryAppBar] or [SecondaryAppBar].
  * @param tab the tab below the app bar, should typically be [TabRow].
  * @param navigationBar the navigation bar on bottom of the screen, should typically be [NavigationBarRow] or [NavigationBarColumn].
- * @param content the content of the screen.
+ * @param contentWindowInsets the window insets of content, default is [ScaffoldDefaults.contentWindowInsets].
+ * @param content the content of the screen. The lambda receives a [ComponentPadding] that should be applied to the content root via
+ * [Modifier.padding], if using Modifier.verticalScroll, apply this modifier to the child of the scroll, and not on the scroll itself.
  */
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
     colors: SurfaceColors = SurfaceDefaults.colors(),
-    padding: ComponentPadding = SurfaceDefaults.padding,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    padding: ComponentPadding = ScaffoldDefaults.padding,
+    contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     appBar: @Composable () -> Unit = {},
     tab: @Composable () -> Unit = {},
     navigationBar: @Composable () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable (innerPadding: ComponentPadding) -> Unit
 ) {
-    // When out of the box, we no need to match the top padding, it should be provided by the action bar.
-    val outBoxPadding = padding.copy(top = 0.dp)
-    // When in the box, we no need to match the start and end padding, it should be provided by the surface.
-    val inBoxPadding = padding.copy(start = 0.dp, end = 0.dp)
-    Surface(
-        modifier = modifier,
-        colors = colors,
-        padding = outBoxPadding
-    ) {
-        Column(
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment
-        ) {
-            appBar()
-            tab()
-            Box(modifier = Modifier.fillMaxSize().padding(inBoxPadding).weight(1f)) { content() }
-            navigationBar()
+    Surface(modifier = modifier, colors = colors, padding = ComponentPadding()) {
+        ScaffoldLayout(
+            padding = padding,
+            contentWindowInsets = contentWindowInsets,
+            appBar = appBar,
+            tab = tab,
+            navigationBar = navigationBar,
+            content = content
+        )
+    }
+}
+
+@Composable
+private fun ScaffoldLayout(
+    padding: ComponentPadding,
+    contentWindowInsets: WindowInsets,
+    appBar: @Composable () -> Unit,
+    tab: @Composable () -> Unit,
+    navigationBar: @Composable () -> Unit,
+    content: @Composable (innerPadding: ComponentPadding) -> Unit
+) {
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    val leftInsets = with(density) { contentWindowInsets.getLeft(density, layoutDirection).toDp() }
+    val topInsets = with(density) { contentWindowInsets.getTop(density).toDp() }
+    val rightInsets = with(density) { contentWindowInsets.getRight(density, layoutDirection).toDp() }
+    val bottomInsets = with(density) { contentWindowInsets.getBottom(density).toDp() }
+    val insetsPadding = padding.copy(
+        start = padding.start + leftInsets,
+        // Top insets padding is override by [appBar].
+        top = topInsets,
+        end = padding.end + rightInsets,
+        bottom = padding.bottom + bottomInsets
+    )
+    SubcomposeLayout(modifier = Modifier.padding(insetsPadding)) { constraints ->
+        var currentY = 0
+        var navigationBarHeight = 0
+        val appBarPlaceables = subcompose(ScaffoldSlots.AppBar, appBar).map { it.measure(constraints) }
+        val tabPlaceables = subcompose(ScaffoldSlots.Tab, tab).map { it.measure(constraints) }
+        val navigationBarPlaceables = subcompose(ScaffoldSlots.NavigationBar, navigationBar).map { it.measure(constraints) }
+        // Inner content no need start and end padding.
+        val innerPadding = padding.copy(
+            start = 0.dp,
+            top = if (tabPlaceables.isNotEmpty()) padding.top else 0.dp,
+            end = 0.dp,
+            bottom = if (navigationBarPlaceables.isNotEmpty()) padding.bottom else 0.dp
+        )
+        // Measure [appBar], [tab] and [navigationBar] height.
+        appBarPlaceables.forEach { currentY += it.height }
+        tabPlaceables.forEach { currentY += it.height }
+        navigationBarPlaceables.forEach { navigationBarHeight += it.height }
+        // Measure content with [navigationBar] height.
+        val contentConstraints = constraints.copy(
+            // The maxHeight of content must be >= minHeight, if not will coerce to minHeight.
+            maxHeight = (constraints.maxHeight - currentY - navigationBarHeight).coerceAtLeast(constraints.minHeight)
+        )
+        val contentPlaceables = subcompose(ScaffoldSlots.Content) { content(innerPadding) }.map { it.measure(contentConstraints) }
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            var placementY = 0
+            appBarPlaceables.forEach {
+                it.placeRelative(0, placementY)
+                placementY += it.height
+            }
+            tabPlaceables.forEach {
+                it.placeRelative(0, placementY)
+                placementY += it.height
+            }
+            contentPlaceables.forEach {
+                it.placeRelative(0, placementY)
+                placementY += it.height
+            }
+            var navigationBarY = constraints.maxHeight
+            navigationBarPlaceables.forEach {
+                navigationBarY -= it.height
+                it.placeRelative(0, navigationBarY)
+            }
         }
     }
+}
+
+@Stable
+private enum class ScaffoldSlots { AppBar, Tab, NavigationBar, Content }
+
+/**
+ * Defaults of scaffold.
+ */
+object ScaffoldDefaults {
+
+    /**
+     * Returns the default padding of scaffold.
+     * @return [ComponentPadding]
+     */
+    val padding: ComponentPadding
+        @Composable
+        @ReadOnlyComposable
+        get() = SurfaceDefaults.padding
+
+    /**
+     * Returns the default content window insets of scaffold.
+     * @return [WindowInsets]
+     */
+    val contentWindowInsets: WindowInsets
+        @Composable
+        get() = WindowInsets.safeDrawing
 }
