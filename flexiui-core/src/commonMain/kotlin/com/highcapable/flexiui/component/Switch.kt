@@ -34,7 +34,6 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -110,7 +109,6 @@ data class SwitchStyle(
  * @param style the style of switch, default is [SwitchDefaults.style].
  * @param enabled the enabled state of switch, default is true.
  * @param interactionSource the interaction source of switch.
- * @param content the content of the [RowScope] to be applied to the [Switch], should typically be [Text].
  */
 @Composable
 fun Switch(
@@ -120,8 +118,7 @@ fun Switch(
     colors: SwitchColors = SwitchDefaults.colors(),
     style: SwitchStyle = SwitchDefaults.style(),
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable (RowScope.() -> Unit)? = null
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val thumbDiameter = style.thumbRadius * 2
     val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter - style.padding.horizontal).toPx() }
@@ -209,15 +206,7 @@ fun Switch(
                 )
         )
     }
-    Row(modifier = Modifier.componentState(enabled).then(modifier)) {
-        content?.also { content ->
-            Row(modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) }) {
-                content()
-                Spacer(modifier = Modifier.padding(start = style.contentSpacing))
-            }
-        }
-        Track { Thumb() }
-    }
+    Box(modifier = Modifier.componentState(enabled).then(modifier)) { Track { Thumb() } }
 }
 
 /**
