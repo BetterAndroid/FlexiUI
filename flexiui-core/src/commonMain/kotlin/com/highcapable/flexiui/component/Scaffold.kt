@@ -26,13 +26,13 @@ package com.highcapable.flexiui.component
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
 
@@ -88,22 +88,20 @@ private fun ScaffoldLayout(
     content: @Composable (innerPadding: ComponentPadding) -> Unit
 ) {
     val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
-    val leftInsets = with(density) { contentWindowInsets.getLeft(density, layoutDirection).toDp() }
-    val topInsets = with(density) { contentWindowInsets.getTop(density).toDp() }
-    val rightInsets = with(density) { contentWindowInsets.getRight(density, layoutDirection).toDp() }
-    val bottomInsets = with(density) { contentWindowInsets.getBottom(density).toDp() }
-    val insetsPadding = padding.copy(
-        start = padding.start + leftInsets,
-        // Top insets padding is override by [appBar].
-        top = topInsets,
-        end = padding.end + rightInsets,
-        bottom = padding.bottom + bottomInsets
-    )
-    SubcomposeLayout(modifier = Modifier.padding(insetsPadding)) { constraints ->
+    SubcomposeLayout(modifier = Modifier.windowInsetsPadding(contentWindowInsets)) { baseConstraints ->
         var currentY = 0
         var navigationBarHeight = 0
-        val appBarPlaceables = subcompose(ScaffoldSlots.AppBar, appBar).map { it.measure(constraints) }
+        var appBarPlaceables = subcompose(Unit, appBar).map { it.measure(baseConstraints) }
+        // Top insets padding is override by [appBar].
+        val topPadding = with(density) { if (appBarPlaceables.isNotEmpty()) 0 else padding.top.roundToPx() }
+        val horizontalPadding = with(density) { padding.horizontal.roundToPx() }
+        val bottomPadding = with(density) { padding.bottom.roundToPx() }
+        val constraints = baseConstraints.copy(
+            maxHeight = baseConstraints.maxHeight - topPadding - bottomPadding,
+            maxWidth = baseConstraints.maxWidth - horizontalPadding
+        )
+        // Re-measure [appBar] with new constraints.
+        appBarPlaceables = subcompose(ScaffoldSlots.AppBar, appBar).map { it.measure(constraints) }
         val tabPlaceables = subcompose(ScaffoldSlots.Tab, tab).map { it.measure(constraints) }
         val navigationBarPlaceables = subcompose(ScaffoldSlots.NavigationBar, navigationBar).map { it.measure(constraints) }
         // Inner content no need start and end padding.
@@ -124,23 +122,24 @@ private fun ScaffoldLayout(
         )
         val contentPlaceables = subcompose(ScaffoldSlots.Content) { content(innerPadding) }.map { it.measure(contentConstraints) }
         layout(constraints.maxWidth, constraints.maxHeight) {
+            val placementX = horizontalPadding / 2
             var placementY = 0
             appBarPlaceables.forEach {
-                it.placeRelative(0, placementY)
+                it.placeRelative(placementX, placementY)
                 placementY += it.height
             }
             tabPlaceables.forEach {
-                it.placeRelative(0, placementY)
+                it.placeRelative(placementX, placementY)
                 placementY += it.height
             }
             contentPlaceables.forEach {
-                it.placeRelative(0, placementY)
+                it.placeRelative(placementX, placementY)
                 placementY += it.height
             }
             var navigationBarY = constraints.maxHeight
             navigationBarPlaceables.forEach {
                 navigationBarY -= it.height
-                it.placeRelative(0, navigationBarY)
+                it.placeRelative(placementX, navigationBarY)
             }
         }
     }
