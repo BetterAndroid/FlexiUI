@@ -51,6 +51,17 @@ We are working hard to improve it and it is expected to be released soon, so sta
   <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Dark.png?raw=true" width = "200" alt="SCREENSHOT"/>
 </div>
 
+## Promotion
+
+<!--suppress HtmlDeprecatedAttribute -->
+<div align="center">
+     <h2>Hey, please stay! 👋</h2>
+     <h3>Here are related projects such as Android development tools, UI design, Gradle plugins, Xposed Modules and practical software. </h3>
+     <h3>If the project below can help you, please give me a star! </h3>
+     <h3>All projects are free, open source, and follow the corresponding open source license agreement. </h3>
+     <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README.md">→ To see more about my projects, please click here ←</a></h1>
+</div>
+
 ## Star History
 
 ![Star History Chart](https://api.star-history.com/svg?repos=BetterAndroid/FlexiUI&type=Date)
