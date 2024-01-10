@@ -355,7 +355,7 @@ internal object NavigationBarProperties {
     val BorderColor = AreaBoxProperties.BorderColor
     val IndicatorColor = ColorsDescriptor.ThemeTertiary
     val SelectedContentColor = ColorsDescriptor.ThemePrimary
-    val UnselectedContentColor = ColorsDescriptor.TextSecondary
+    val UnselectedContentColor = ColorsDescriptor.ThemeSecondary
     val Padding = AreaBoxProperties.Padding
     val Shape = AreaBoxProperties.Shape
     val BorderWidth = AreaBoxProperties.BorderWidth
