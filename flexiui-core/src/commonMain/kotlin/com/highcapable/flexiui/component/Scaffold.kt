@@ -24,6 +24,7 @@
 package com.highcapable.flexiui.component
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -66,7 +67,11 @@ fun Scaffold(
     navigationBar: @Composable () -> Unit = {},
     content: @Composable (innerPadding: ComponentPadding) -> Unit
 ) {
-    Surface(modifier = modifier, colors = colors, padding = ComponentPadding()) {
+    Surface(
+        modifier = Modifier.fillMaxSize().then(modifier),
+        colors = colors,
+        padding = ComponentPadding()
+    ) {
         ScaffoldLayout(
             padding = padding,
             contentWindowInsets = contentWindowInsets,
