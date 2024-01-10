@@ -34,6 +34,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -102,6 +103,7 @@ data class SwitchStyle(
 
 /**
  * Flexi UI switch.
+ * @see SwitchItem
  * @param checked the checked state of switch.
  * @param onCheckedChange the callback when switch checked state changed.
  * @param modifier the [Modifier] to be applied to this switch.
@@ -207,6 +209,50 @@ fun Switch(
         )
     }
     Box(modifier = Modifier.componentState(enabled).then(modifier)) { Track { Thumb() } }
+}
+
+/**
+ * Flexi UI switch item.
+ * @see Switch
+ * @param checked the checked state of switch.
+ * @param onCheckedChange the callback when switch checked state changed.
+ * @param modifier the [Modifier] to be applied to this switch.
+ * @param colors the colors of switch, default is [SwitchDefaults.colors].
+ * @param style the style of switch, default is [SwitchDefaults.style].
+ * @param enabled the enabled state of switch, default is true.
+ * @param interactionSource the interaction source of switch.
+ * @param content the content of the [SwitchItem], should typically be [Icon] or [Text].
+ */
+@Composable
+fun SwitchItem(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    colors: SwitchColors = SwitchDefaults.colors(),
+    style: SwitchStyle = SwitchDefaults.style(),
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier.componentState(enabled)
+                .weight(1f)
+                .clickable(enabled = enabled) { onCheckedChange(!checked) }
+        ) { content() }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = modifier,
+            colors = colors,
+            style = style,
+            enabled = enabled,
+            interactionSource = interactionSource
+        )
+    }
 }
 
 /**
