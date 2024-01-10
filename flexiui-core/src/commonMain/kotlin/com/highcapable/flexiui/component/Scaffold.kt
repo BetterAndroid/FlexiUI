@@ -123,7 +123,7 @@ private fun ScaffoldLayout(
         val contentPlaceables = subcompose(ScaffoldSlots.Content) { content(innerPadding) }.map { it.measure(contentConstraints) }
         layout(constraints.maxWidth, constraints.maxHeight) {
             val placementX = horizontalPadding / 2
-            var placementY = 0
+            var placementY = topPadding
             appBarPlaceables.forEach {
                 it.placeRelative(placementX, placementY)
                 placementY += it.height
