@@ -65,7 +65,7 @@ import com.highcapable.flexiui.toTextStyle
 @Immutable
 data class AppBarColors(
     val titleTextColor: Color,
-    val subTextColor: Color,
+    val subtitleTextColor: Color,
     val actionContentColor: Color
 )
 
@@ -78,7 +78,7 @@ data class AppBarStyle(
     val padding: ComponentPadding,
     val contentSpacing: Dp,
     val titleTextStyle: TextStyle,
-    val subTextStyle: TextStyle,
+    val subtitleTextStyle: TextStyle,
     val actionIconSize: Dp,
     val actionIconPadding: Dp,
     val actionContentMaxWidth: Dp
@@ -90,8 +90,8 @@ data class AppBarStyle(
  * @param modifier the [Modifier] to be applied to this app bar.
  * @param colors the colors of this app bar, default is [AppBarDefaults.colors].
  * @param style the style of this app bar, default is [AppBarDefaults.style].
- * @param titleText the title text of this app bar, should typically be [Text].
- * @param subText the sub text of this app bar, should typically be [Text].
+ * @param title the title of this app bar, should typically be [Text].
+ * @param subtitle the subtitle of this app bar, should typically be [Text].
  * @param actions the actions displayed at the end of the app bar, should typically be [AppBarScope.ActionIconButton].
  */
 @Composable
@@ -99,8 +99,8 @@ fun PrimaryAppBar(
     modifier: Modifier = Modifier,
     colors: AppBarColors = AppBarDefaults.colors(),
     style: AppBarStyle = AppBarDefaults.style(type = AppBarType.Primary),
-    titleText: @Composable () -> Unit,
-    subText: @Composable (() -> Unit)? = null,
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)? = null,
     actions: @Composable (AppBarScope.() -> Unit)? = null
 ) {
     BasicAppBar(
@@ -108,8 +108,8 @@ fun PrimaryAppBar(
         modifier = modifier,
         colors = colors,
         style = style,
-        titleText = titleText,
-        subText = subText,
+        title = title,
+        subtitle = subtitle,
         finishIcon = null,
         navigationIcon = null,
         actions = actions
@@ -122,8 +122,8 @@ fun PrimaryAppBar(
  * @param modifier the [Modifier] to be applied to this app bar.
  * @param colors the colors of this app bar, default is [AppBarDefaults.colors].
  * @param style the style of this app bar, default is [AppBarDefaults.style].
- * @param titleText the title text of this app bar, should typically be [Text].
- * @param subText the sub text of this app bar, should typically be [Text].
+ * @param title the title of this app bar, should typically be [Text].
+ * @param subtitle the subtitle of this app bar, should typically be [Text].
  * @param finishIcon the finish icon displayed at the start of the app bar, should typically be [AppBarScope.FinishIconButton].
  * @param navigationIcon the navigation icon displayed at the start of the app bar, should typically be [AppBarScope.NavigationIconButton].
  * @param actions the actions displayed at the end of the app bar, should typically be [AppBarScope.ActionIconButton].
@@ -133,8 +133,8 @@ fun SecondaryAppBar(
     modifier: Modifier = Modifier,
     colors: AppBarColors = AppBarDefaults.colors(),
     style: AppBarStyle = AppBarDefaults.style(type = AppBarType.Secondary),
-    titleText: @Composable () -> Unit,
-    subText: @Composable (() -> Unit)? = null,
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)? = null,
     finishIcon: @Composable (AppBarScope.() -> Unit)? = null,
     navigationIcon: @Composable (AppBarScope.() -> Unit)? = null,
     actions: @Composable (AppBarScope.() -> Unit)? = null
@@ -144,8 +144,8 @@ fun SecondaryAppBar(
         modifier = modifier,
         colors = colors,
         style = style,
-        titleText = titleText,
-        subText = subText,
+        title = title,
+        subtitle = subtitle,
         finishIcon = finishIcon,
         navigationIcon = navigationIcon,
         actions = actions
@@ -161,8 +161,8 @@ private fun BasicAppBar(
     modifier: Modifier,
     colors: AppBarColors,
     style: AppBarStyle,
-    titleText: @Composable () -> Unit,
-    subText: @Composable (() -> Unit)?,
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)?,
     finishIcon: @Composable (AppBarScope.() -> Unit)?,
     navigationIcon: @Composable (AppBarScope.() -> Unit)?,
     actions: @Composable (AppBarScope.() -> Unit)?
@@ -172,8 +172,8 @@ private fun BasicAppBar(
             type = type,
             colors = colors,
             style = style,
-            titleText = titleText,
-            subText = subText,
+            title = title,
+            subtitle = subtitle,
             finishIcon = finishIcon,
             navigationIcon = navigationIcon,
             actions = actions
@@ -284,8 +284,8 @@ private class AppBarImpl(
     val type: AppBarType,
     val colors: AppBarColors,
     val style: AppBarStyle,
-    val titleText: @Composable () -> Unit,
-    val subText: @Composable (() -> Unit)?,
+    val title: @Composable () -> Unit,
+    val subtitle: @Composable (() -> Unit)?,
     val finishIcon: @Composable (AppBarScope.() -> Unit)?,
     val navigationIcon: @Composable (AppBarScope.() -> Unit)?,
     val actions: @Composable (AppBarScope.() -> Unit)?
@@ -341,12 +341,12 @@ private class AppBarImpl(
             ContentStyle(
                 color = colors.titleTextColor,
                 textStyle = style.titleTextStyle,
-                content = titleText
+                content = title
             )
-            subText?.also { content ->
+            subtitle?.also { content ->
                 ContentStyle(
-                    color = colors.subTextColor,
-                    textStyle = style.subTextStyle,
+                    color = colors.subtitleTextColor,
+                    textStyle = style.subtitleTextStyle,
                     content = content
                 )
             }
@@ -404,18 +404,18 @@ object AppBarDefaults {
     /**
      * Creates a [AppBarColors] with the default values.
      * @param titleTextColor the title text color.
-     * @param subTextColor the sub text color.
+     * @param subtitleTextColor the subtitle text color.
      * @param actionContentColor the action content color, usually for icon tint and text color.
      * @return [AppBarColors]
      */
     @Composable
     fun colors(
         titleTextColor: Color = AppBarProperties.TitleTextColor.toColor(),
-        subTextColor: Color = AppBarProperties.SubTextColor.toColor(),
+        subtitleTextColor: Color = AppBarProperties.SubtitleTextColor.toColor(),
         actionContentColor: Color = AppBarProperties.ActionContentColor.toColor()
     ) = AppBarColors(
         titleTextColor = titleTextColor,
-        subTextColor = subTextColor,
+        subtitleTextColor = subtitleTextColor,
         actionContentColor = actionContentColor
     )
 
@@ -425,7 +425,7 @@ object AppBarDefaults {
      * @param padding the padding of content.
      * @param contentSpacing the spacing between the components of content.
      * @param titleTextStyle the title text style.
-     * @param subTextStyle the sub text style.
+     * @param subtitleTextStyle the subtitle text style.
      * @param actionIconSize the size of action icon.
      * @param actionIconPadding the padding of action icon.
      * @param actionContentMaxWidth the max width of actions content.
@@ -444,7 +444,7 @@ object AppBarDefaults {
             AppBarType.Primary -> AppBarProperties.PrimaryTitleTextStyle
             AppBarType.Secondary -> AppBarProperties.SecondaryTitleTextStyle
         }.toTextStyle(),
-        subTextStyle: TextStyle = AppBarProperties.SubTextStyle.toTextStyle(),
+        subtitleTextStyle: TextStyle = AppBarProperties.SubtitleTextStyle.toTextStyle(),
         actionIconSize: Dp = when (type) {
             AppBarType.Primary -> AppBarProperties.PrimaryActionIconSize
             AppBarType.Secondary -> AppBarProperties.SecondaryActionIconSize
@@ -455,7 +455,7 @@ object AppBarDefaults {
         padding = padding,
         contentSpacing = contentSpacing,
         titleTextStyle = titleTextStyle,
-        subTextStyle = subTextStyle,
+        subtitleTextStyle = subtitleTextStyle,
         actionIconSize = actionIconSize,
         actionIconPadding = actionIconPadding,
         actionContentMaxWidth = actionContentMaxWidth
@@ -465,14 +465,14 @@ object AppBarDefaults {
 @Stable
 internal object AppBarProperties {
     val TitleTextColor = ColorsDescriptor.TextPrimary
-    val SubTextColor = ColorsDescriptor.TextSecondary
+    val SubtitleTextColor = ColorsDescriptor.TextSecondary
     val ActionContentColor = ColorsDescriptor.TextPrimary
     val Padding = PaddingDescriptor(SizesDescriptor.SpacingPrimary)
     val InBoxPadding = PaddingDescriptor(vertical = SizesDescriptor.SpacingPrimary)
     val ContentSpacing = SizesDescriptor.SpacingSecondary
     val PrimaryTitleTextStyle = TypographyDescriptor.TitlePrimary
     val SecondaryTitleTextStyle = TypographyDescriptor.TitleSecondary
-    val SubTextStyle = TypographyDescriptor.Subtitle
+    val SubtitleTextStyle = TypographyDescriptor.Subtitle
     val PrimaryActionIconSize = SizesDescriptor.IconSizePrimary
     val SecondaryActionIconSize = SizesDescriptor.IconSizeSecondary
     val ActionIconPadding = SizesDescriptor.SpacingTertiary

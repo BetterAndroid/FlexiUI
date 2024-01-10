@@ -61,7 +61,7 @@ import com.highcapable.flexiui.toTextStyle
 data class ItemBoxColors(
     val backgroundColor: Color,
     val titleTextColor: Color,
-    val subTextColor: Color,
+    val subtitleTextColor: Color,
     val arrowIconTint: Color,
     val borderColor: Color
 )
@@ -74,7 +74,7 @@ data class ItemBoxColors(
 data class ItemBoxStyle(
     val contentSpacing: Dp,
     val titleTextStyle: TextStyle,
-    val subTextStyle: TextStyle,
+    val subtitleTextStyle: TextStyle,
     val shape: Shape,
     val borderWidth: Dp,
     val shadowSize: Dp
@@ -91,8 +91,8 @@ data class ItemBoxStyle(
  * @param showArrowIcon whether show arrow icon, default is true.
  * @param interactionSource the interaction source of this item box.
  * @param logoImage the logo image of the [HorizontalItemBox], should typically be [Icon] or [Image].
- * @param titleText the title text of the [HorizontalItemBox], should typically be [Text].
- * @param subText the sub text of the [HorizontalItemBox], should typically be [Text].
+ * @param title the title of the [HorizontalItemBox], should typically be [Text].
+ * @param subtitle the subtitle of the [HorizontalItemBox], should typically be [Text].
  */
 @Composable
 fun HorizontalItemBox(
@@ -104,8 +104,8 @@ fun HorizontalItemBox(
     showArrowIcon: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     logoImage: @Composable (() -> Unit)? = null,
-    titleText: @Composable () -> Unit,
-    subText: @Composable (() -> Unit)? = null
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)? = null
 ) {
     AreaBox(
         modifier = modifier.rippleClickable(
@@ -137,8 +137,8 @@ fun HorizontalItemBox(
                 ItemBoxContent(
                     colors = colors,
                     style = style,
-                    titleText = titleText,
-                    subText = subText
+                    title = title,
+                    subtitle = subtitle
                 )
             }
             if (showArrowIcon) Icon(
@@ -162,8 +162,8 @@ fun HorizontalItemBox(
  * @param enabled whether this item box is enabled, default is true.
  * @param interactionSource the interaction source of this item box.
  * @param logoImage the logo image of the [VerticalItemBox], should typically be [Icon] or [Image].
- * @param titleText the title text of the [VerticalItemBox], should typically be [Text].
- * @param subText the sub text of the [VerticalItemBox], should typically be [Text].
+ * @param title the title of the [VerticalItemBox], should typically be [Text].
+ * @param subtitle the subtitle of the [VerticalItemBox], should typically be [Text].
  */
 @Composable
 fun VerticalItemBox(
@@ -174,8 +174,8 @@ fun VerticalItemBox(
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     logoImage: @Composable (() -> Unit)? = null,
-    titleText: @Composable () -> Unit,
-    subText: @Composable (() -> Unit)? = null
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)? = null
 ) {
     AreaColumn(
         modifier = modifier.rippleClickable(
@@ -200,8 +200,8 @@ fun VerticalItemBox(
         ItemBoxContent(
             colors = colors,
             style = style,
-            titleText = titleText,
-            subText = subText
+            title = title,
+            subtitle = subtitle
         )
     }
 }
@@ -210,16 +210,16 @@ fun VerticalItemBox(
 private fun ItemBoxContent(
     colors: ItemBoxColors,
     style: ItemBoxStyle,
-    titleText: @Composable () -> Unit,
-    subText: @Composable (() -> Unit)?
+    title: @Composable () -> Unit,
+    subtitle: @Composable (() -> Unit)?
 ) {
     CompositionLocalProvider(
         LocalTextStyle provides style.titleTextStyle.copy(color = colors.titleTextColor),
-        content = titleText
+        content = title
     )
-    subText?.also { content ->
+    subtitle?.also { content ->
         CompositionLocalProvider(
-            LocalTextStyle provides style.subTextStyle.copy(color = colors.subTextColor),
+            LocalTextStyle provides style.subtitleTextStyle.copy(color = colors.subtitleTextColor),
             content = content
         )
     }
@@ -234,7 +234,7 @@ object ItemBoxDefaults {
      * Creates a [ItemBoxColors] with the default values.
      * @param backgroundColor the background color.
      * @param titleTextColor the title text color.
-     * @param subTextColor the sub text color.
+     * @param subtitleTextColor the subtitle text color.
      * @param arrowIconTint the arrow icon tint.
      * @param borderColor the border color.
      * @return [ItemBoxColors]
@@ -243,13 +243,13 @@ object ItemBoxDefaults {
     fun colors(
         backgroundColor: Color = ItemBoxProperties.BackgroundColor.toColor(),
         titleTextColor: Color = ItemBoxProperties.TitleTextColor.toColor(),
-        subTextColor: Color = ItemBoxProperties.SubTextColor.toColor(),
+        subtitleTextColor: Color = ItemBoxProperties.SubtitleTextColor.toColor(),
         arrowIconTint: Color = ItemBoxProperties.ArrowIconTint.toColor(),
         borderColor: Color = ItemBoxProperties.BorderColor.toColor()
     ) = ItemBoxColors(
         backgroundColor = backgroundColor,
         titleTextColor = titleTextColor,
-        subTextColor = subTextColor,
+        subtitleTextColor = subtitleTextColor,
         arrowIconTint = arrowIconTint,
         borderColor = borderColor
     )
@@ -258,7 +258,7 @@ object ItemBoxDefaults {
      * Creates a [ItemBoxStyle] with the default values.
      * @param contentSpacing the spacing between the components of content.
      * @param titleTextStyle the title text style.
-     * @param subTextStyle the sub text style.
+     * @param subtitleTextStyle the subtitle text style.
      * @param shape the shape.
      * @param borderWidth the border width.
      * @param shadowSize the shadow size.
@@ -268,14 +268,14 @@ object ItemBoxDefaults {
     fun style(
         contentSpacing: Dp = ItemBoxProperties.ContentSpacing.toDp(),
         titleTextStyle: TextStyle = ItemBoxProperties.TitleTextStyle.toTextStyle(),
-        subTextStyle: TextStyle = ItemBoxProperties.SubTextStyle.toTextStyle(),
+        subtitleTextStyle: TextStyle = ItemBoxProperties.SubtitleTextStyle.toTextStyle(),
         shape: Shape = ItemBoxProperties.Shape.toShape(),
         borderWidth: Dp = ItemBoxProperties.BorderWidth.toDp(),
         shadowSize: Dp = ItemBoxProperties.ShadowSize
     ) = ItemBoxStyle(
         contentSpacing = contentSpacing,
         titleTextStyle = titleTextStyle,
-        subTextStyle = subTextStyle,
+        subtitleTextStyle = subtitleTextStyle,
         shape = shape,
         borderWidth = borderWidth,
         shadowSize = shadowSize
@@ -286,12 +286,12 @@ object ItemBoxDefaults {
 internal object ItemBoxProperties {
     val BackgroundColor = AreaBoxProperties.BackgroundColor
     val TitleTextColor = ColorsDescriptor.TextPrimary
-    val SubTextColor = ColorsDescriptor.TextSecondary
+    val SubtitleTextColor = ColorsDescriptor.TextSecondary
     val ArrowIconTint = ColorsDescriptor.TextSecondary
     val BorderColor = AreaBoxProperties.BorderColor
     val ContentSpacing = SizesDescriptor.SpacingSecondary
     val TitleTextStyle = TypographyDescriptor.Primary
-    val SubTextStyle = TypographyDescriptor.Secondary
+    val SubtitleTextStyle = TypographyDescriptor.Secondary
     val Shape = AreaBoxProperties.Shape
     val BorderWidth = AreaBoxProperties.BorderWidth
     val ShadowSize = AreaBoxProperties.ShadowSize
