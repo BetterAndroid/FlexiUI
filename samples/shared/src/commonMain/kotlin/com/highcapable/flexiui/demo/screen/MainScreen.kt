@@ -33,6 +33,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -143,7 +145,8 @@ fun MainScreen() {
 
 @Composable
 fun MainHomePage() {
-    Column(modifier = Modifier.fillMaxSize()) {
+    val scrollState = rememberScrollState()
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
         AreaBox(modifier = Modifier.fillMaxWidth()) {
             Text("Flexi UI is a flexible and useful UI component library.")
         }
@@ -210,6 +213,7 @@ fun MainHomePage() {
             title = { Text("Lazy List Demo") },
             subtitle = { Text("Open a lazy list page") }
         )
+        PrimarySpacer()
     }
 }
 
