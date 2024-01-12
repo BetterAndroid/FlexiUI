@@ -17,9 +17,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/5.
+ * This file is created by fankes on 2024/1/11.
  */
+package com.highcapable.flexiui.demo
+
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.highcapable.flexiui.FlexiTheme
+import com.highcapable.flexiui.component.Text
+
+// TODO: Some components can be include to Flexi UI (To be determined)
 
 @Composable
-fun MainView() = App()
+fun PrimarySpacer() {
+    Spacer(modifier = Modifier.size(10.dp))
+}
+
+@Composable
+fun SecondarySpacer() {
+    Spacer(modifier = Modifier.size(5.dp))
+}
+
+@Composable
+fun SecondaryText(text: String) {
+    Text(
+        text = text,
+        color = FlexiTheme.colors.textSecondary,
+        style = FlexiTheme.typography.secondary
+    )
+}

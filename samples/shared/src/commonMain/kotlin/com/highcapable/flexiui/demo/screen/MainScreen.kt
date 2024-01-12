@@ -17,15 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * This file is created by fankes on 2023/11/5.
+ * This file is created by fankes on 2024/1/12.
  */
 @file:OptIn(ExperimentalFoundationApi::class)
 
+package com.highcapable.flexiui.demo.screen
+
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,13 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import com.highcapable.betterandroid.compose.extension.ui.ComponentPadding
-import com.highcapable.betterandroid.compose.multiplatform.backpress.BackHandler
-import com.highcapable.betterandroid.compose.multiplatform.systembar.PlatformSystemBarStyle
-import com.highcapable.betterandroid.compose.multiplatform.systembar.rememberSystemBarsController
-import com.highcapable.betterandroid.compose.multiplatform.systembar.setStyle
-import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.AreaColumn
 import com.highcapable.flexiui.component.Button
@@ -64,60 +55,23 @@ import com.highcapable.flexiui.component.NavigationBarItem
 import com.highcapable.flexiui.component.NavigationBarRow
 import com.highcapable.flexiui.component.PrimaryAppBar
 import com.highcapable.flexiui.component.Scaffold
-import com.highcapable.flexiui.component.SecondaryAppBar
-import com.highcapable.flexiui.component.Surface
 import com.highcapable.flexiui.component.SwitchItem
 import com.highcapable.flexiui.component.Text
+import com.highcapable.flexiui.component.window.FlexiDialog
+import com.highcapable.flexiui.demo.Component
+import com.highcapable.flexiui.demo.GitHub
+import com.highcapable.flexiui.demo.Home
+import com.highcapable.flexiui.demo.PROJECT_URL
+import com.highcapable.flexiui.demo.Preferences
+import com.highcapable.flexiui.demo.PrimarySpacer
+import com.highcapable.flexiui.demo.Screen
+import com.highcapable.flexiui.demo.SecondarySpacer
+import com.highcapable.flexiui.demo.SecondaryText
+import com.highcapable.flexiui.demo.colorSchemes
+import com.highcapable.flexiui.demo.rememberRouter
+import com.highcapable.flexiui.demo.toName
 import com.highcapable.flexiui.resources.FlexiIcons
 import kotlinx.coroutines.launch
-
-private const val PROJECT_URL = "https://github.com/BetterAndroid/FlexiUI"
-
-@Composable
-private fun FlexiDemoTheme(content: @Composable () -> Unit) {
-    val systemBars = rememberSystemBarsController()
-    val darkMode by remember { Preferences.darkMode }
-    val followSystemDarkMode by remember { Preferences.followSystemDarkMode }
-    val currentDarkMode = if (followSystemDarkMode) isSystemInDarkTheme() else darkMode
-    val colorScheme by remember { Preferences.colorScheme }
-    systemBars.setStyle(
-        if (currentDarkMode)
-            PlatformSystemBarStyle.DarkTransparent
-        else PlatformSystemBarStyle.LightTransparent
-    )
-    FlexiTheme(
-        colors = colorScheme.toColors(currentDarkMode),
-        content = content
-    )
-}
-
-/** Simulate a router. */
-@Stable
-private var CurrentPage = mutableStateOf(0)
-
-@Composable
-private fun rememberCurrentPage() = remember { CurrentPage }
-
-@Composable
-private fun Page(page: Int, content: @Composable () -> Unit) {
-    val currentPage by remember { CurrentPage }
-    AnimatedVisibility(
-        visible = currentPage == page,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) { content() }
-}
-
-@Composable
-fun App() {
-    FlexiDemoTheme {
-        // Surface will keep the content background color when animation.
-        Surface(padding = ComponentPadding()) {
-            Page(0) { MainScreen() }
-            Page(1) { SecondaryScreen() }
-        }
-    }
-}
 
 @Composable
 fun MainScreen() {
@@ -127,11 +81,31 @@ fun MainScreen() {
     val uriHandler = LocalUriHandler.current
     Scaffold(
         appBar = {
+            var showOpenUriDialog by remember { mutableStateOf(false) }
+            FlexiDialog(
+                visible = showOpenUriDialog,
+                onDismissRequest = { showOpenUriDialog = false },
+                title = { Text("Open Link") },
+                content = { Text("Open the project URL in the browser?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showOpenUriDialog = false
+                            uriHandler.openUri(PROJECT_URL)
+                        }
+                    ) { Text("Open") }
+                },
+                cancelButton = {
+                    Button(
+                        onClick = { showOpenUriDialog = false }
+                    ) { Text("Cancel") }
+                }
+            )
             PrimaryAppBar(
                 title = { Text("Flexi UI Demo") },
                 actions = {
                     ActionIconButton(
-                        onClick = { uriHandler.openUri(PROJECT_URL) }
+                        onClick = { showOpenUriDialog = true }
                     ) { Icon(FlexiIcons.GitHub) }
                 }
             )
@@ -224,11 +198,17 @@ fun MainHomePage() {
             }
         }
         PrimarySpacer()
-        var currentPage by rememberCurrentPage()
+        val router = rememberRouter()
         HorizontalItemBox(
-            onClick = { currentPage = 1 },
+            onClick = { router.navigate(Screen.Secondary) },
             title = { Text("Single Page Demo") },
-            subtitle = { Text("Open a single page.") }
+            subtitle = { Text("Open a single page") }
+        )
+        PrimarySpacer()
+        HorizontalItemBox(
+            onClick = { router.navigate(Screen.LazyList) },
+            title = { Text("Lazy List Demo") },
+            subtitle = { Text("Open a lazy list page") }
         )
     }
 }
@@ -240,35 +220,4 @@ fun MainComponentPage() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) { Text("To be implemented.") }
-}
-
-@Composable
-fun SecondaryScreen() {
-    var currentPage by rememberCurrentPage()
-    Scaffold(
-        appBar = {
-            SecondaryAppBar(
-                title = { Text("Single Page") },
-                navigationIcon = {
-                    NavigationIconButton(onClick = { currentPage = 0 })
-                }
-            )
-        }
-    ) {
-        AreaColumn(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                """
-                  Now, you open a separate secondary page.
-                  You can click the button below to back to the homepage.
-                """.trimIndent(),
-                style = FlexiTheme.typography.primary.copy(lineHeight = 2.em)
-            )
-            PrimarySpacer()
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { currentPage = 0 }
-            ) { Text("Take Me Home") }
-        }
-        BackHandler { currentPage = 0 }
-    }
 }

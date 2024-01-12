@@ -21,7 +21,6 @@
  */
 package com.highcapable.flexiui.demo
 
-import MainView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -32,5 +31,5 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "Flexi UI Demo",
         state = rememberWindowState(width = 550.dp, height = 1000.dp)
-    ) { MainView() }
+    ) { App() }
 }

@@ -19,7 +19,9 @@
  *
  * This file is created by fankes on 2023/11/5.
  */
-import androidx.compose.runtime.Composable
+@file:Suppress("unused")
 
-@Composable
-fun MainView() = App()
+import com.highcapable.betterandroid.compose.multiplatform.platform.AppComponentUIViewController
+import com.highcapable.flexiui.demo.App
+
+fun createUIViewController() = AppComponentUIViewController { App() }
