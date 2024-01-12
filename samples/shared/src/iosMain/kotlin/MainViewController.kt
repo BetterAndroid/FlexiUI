@@ -24,4 +24,4 @@
 import com.highcapable.betterandroid.compose.multiplatform.platform.AppComponentUIViewController
 import com.highcapable.flexiui.demo.App
 
-fun createUIViewController() = AppComponentUIViewController { App() }
+fun createMainViewController() = AppComponentUIViewController { App() }
