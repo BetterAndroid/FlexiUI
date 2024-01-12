@@ -26,10 +26,10 @@ sweetProperty {
         ":samples",
         ":samples:androidApp",
         ":samples:desktopApp",
-        ":samples:shared",
+        ":samples:composeApp",
         ":flexiui-resources"
     ) { sourcesCode { isEnable = false } }
 }
 rootProject.name = "FlexiUI"
-include(":samples:androidApp", ":samples:desktopApp", ":samples:shared")
+include(":samples:androidApp", ":samples:desktopApp", ":samples:composeApp")
 include(":flexiui-core", ":flexiui-resources")

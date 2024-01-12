@@ -13,7 +13,7 @@ kotlin {
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = projects.samples.shared.name
+            baseName = property.project.samples.composeApp.iosModuleName
             isStatic = true
         }
     }
@@ -56,7 +56,7 @@ kotlin {
 }
 
 android {
-    namespace = property.project.samples.shared.namespace
+    namespace = property.project.samples.composeApp.namespace
     compileSdk = property.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")

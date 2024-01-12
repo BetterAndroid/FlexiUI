@@ -12,7 +12,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(projects.samples.shared)
+                implementation(projects.samples.composeApp)
             }
         }
     }
