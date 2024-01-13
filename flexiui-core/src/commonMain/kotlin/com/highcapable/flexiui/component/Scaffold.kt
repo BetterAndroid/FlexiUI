@@ -113,11 +113,9 @@ private fun ScaffoldLayout(
         require(appBarPlaceables.size <= 1) { "Scaffold can host only one app bar." }
         require(tabPlaceables.size <= 1) { "Scaffold can host only one tab." }
         require(navigationBarPlaceables.size <= 1) { "Scaffold can host only one navigation bar." }
-        // Inner content no need start and end padding.
+        // The top and bottom padding of content is override by [appBar] and [navigationBar].
         val innerPadding = padding.copy(
-            start = 0.dp,
             top = if (tabPlaceables.isNotEmpty()) padding.top else 0.dp,
-            end = 0.dp,
             bottom = if (navigationBarPlaceables.isNotEmpty()) padding.bottom else 0.dp
         )
         // Measure [appBar], [tab] and [navigationBar] height.
@@ -126,6 +124,8 @@ private fun ScaffoldLayout(
         navigationBarPlaceables.forEach { navigationBarHeight += it.height }
         // Measure content with [navigationBar] height.
         val contentConstraints = constraints.copy(
+            // The content width follow baseConstraints, use innerPadding to control content padding.
+            maxWidth = baseConstraints.maxWidth,
             // The maxHeight of content must be >= minHeight, if not will coerce to minHeight.
             maxHeight = (constraints.maxHeight - currentY - navigationBarHeight).coerceAtLeast(constraints.minHeight)
         )
@@ -142,7 +142,8 @@ private fun ScaffoldLayout(
                 placementY += it.height
             }
             contentPlaceables.forEach {
-                it.placeRelative(placementX, placementY)
+                // No content padding of measure, so the X coordinate should be 0.
+                it.placeRelative(x = 0, placementY)
                 placementY += it.height
             }
             var navigationBarY = constraints.maxHeight
