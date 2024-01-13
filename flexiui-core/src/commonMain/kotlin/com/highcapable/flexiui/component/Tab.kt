@@ -551,7 +551,7 @@ object TabDefaults {
 internal object TabProperties {
     val IndicatorColor = ColorsDescriptor.ThemePrimary
     val SelectedContentColor = ColorsDescriptor.ThemePrimary
-    val UnselectedContentColor = ColorsDescriptor.TextSecondary
+    val UnselectedContentColor = ColorsDescriptor.ThemeSecondary
     val ContentPadding = PaddingDescriptor(
         horizontal = SizesDescriptor.SpacingPrimary,
         vertical = SizesDescriptor.SpacingSecondary
