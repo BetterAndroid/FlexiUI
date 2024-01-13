@@ -45,7 +45,7 @@ import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.ColorsDescriptor
 import com.highcapable.flexiui.SizesDescriptor
 import com.highcapable.flexiui.TypographyDescriptor
-import com.highcapable.flexiui.component.interaction.rippleClickable
+import com.highcapable.flexiui.component.interaction.rippleCombinedClickable
 import com.highcapable.flexiui.resources.FlexiIcons
 import com.highcapable.flexiui.resources.icon.ArrowForward
 import com.highcapable.flexiui.toColor
@@ -84,6 +84,7 @@ data class ItemBoxStyle(
  * Flexi UI horizontal item box.
  * @see VerticalItemBox
  * @param onClick the callback when item is clicked.
+ * @param onLongClick the callback when item is long clicked.
  * @param modifier the [Modifier] to be applied to this item box.
  * @param colors the colors of item box, default is [ItemBoxDefaults.colors].
  * @param style the style of item box, default is [ItemBoxDefaults.style].
@@ -96,7 +97,8 @@ data class ItemBoxStyle(
  */
 @Composable
 fun HorizontalItemBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
+    onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     colors: ItemBoxColors = ItemBoxDefaults.colors(),
     style: ItemBoxStyle = ItemBoxDefaults.style(),
@@ -108,9 +110,10 @@ fun HorizontalItemBox(
     subtitle: @Composable (() -> Unit)? = null
 ) {
     AreaBox(
-        modifier = modifier.rippleClickable(
+        modifier = modifier.rippleCombinedClickable(
             enabled = enabled,
             interactionSource = interactionSource,
+            onLongClick = onLongClick,
             onClick = onClick
         ),
         initializer = { componentState(enabled) },
@@ -156,6 +159,7 @@ fun HorizontalItemBox(
  * Flexi UI vertical item box.
  * @see HorizontalItemBox
  * @param onClick the callback when item is clicked.
+ * @param onLongClick the callback when item is long clicked.
  * @param modifier the [Modifier] to be applied to this item box.
  * @param colors the colors of item box, default is [ItemBoxDefaults.colors].
  * @param style the style of item box, default is [ItemBoxDefaults.style].
@@ -167,7 +171,8 @@ fun HorizontalItemBox(
  */
 @Composable
 fun VerticalItemBox(
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
+    onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     colors: ItemBoxColors = ItemBoxDefaults.colors(),
     style: ItemBoxStyle = ItemBoxDefaults.style(),
@@ -178,9 +183,10 @@ fun VerticalItemBox(
     subtitle: @Composable (() -> Unit)? = null
 ) {
     AreaColumn(
-        modifier = modifier.rippleClickable(
+        modifier = modifier.rippleCombinedClickable(
             enabled = enabled,
             interactionSource = interactionSource,
+            onLongClick = onLongClick,
             onClick = onClick
         ),
         initializer = { componentState(enabled) },
