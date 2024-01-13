@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -78,7 +79,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen() {
     val pageCount = 2
-    val state = rememberPagerState(pageCount = { pageCount })
+    val pagerState = rememberPagerState(pageCount = { pageCount })
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
     Scaffold(
@@ -117,36 +118,37 @@ fun MainScreen() {
                 arrangement = Arrangement.SpaceAround
             ) {
                 NavigationBarItem(
-                    selected = state.currentPage == 0,
-                    onClick = { scope.launch { state.animateScrollToPage(page = 0) } },
+                    selected = pagerState.currentPage == 0,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(page = 0) } },
                     icon = { Icon(FlexiIcons.Home, style = IconDefaults.style(size = 24.dp)) },
                     text = { Text("Home") }
                 )
                 NavigationBarItem(
-                    selected = state.currentPage == 1,
-                    onClick = { scope.launch { state.animateScrollToPage(page = 1) } },
+                    selected = pagerState.currentPage == 1,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(page = 1) } },
                     icon = { Icon(FlexiIcons.Component, style = IconDefaults.style(size = 24.dp)) },
                     text = { Text("Component") }
                 )
             }
         }
-    ) {
+    ) { innerPadding ->
         HorizontalPager(
             modifier = Modifier.fillMaxSize(),
-            state = state,
+            state = pagerState,
         ) { index ->
+            val modifier = Modifier.padding(innerPadding)
             when (index) {
-                0 -> MainHomePage()
-                1 -> MainComponentPage()
+                0 -> MainHomePage(modifier)
+                1 -> MainComponentPage(modifier)
             }
         }
     }
 }
 
 @Composable
-fun MainHomePage() {
+fun MainHomePage(modifier: Modifier) {
     val scrollState = rememberScrollState()
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
+    Column(modifier = modifier.fillMaxSize().verticalScroll(scrollState)) {
         AreaBox(modifier = Modifier.fillMaxWidth()) {
             Text("Flexi UI is a flexible and useful UI component library.")
         }
@@ -213,15 +215,14 @@ fun MainHomePage() {
             title = { Text("Lazy List Demo") },
             subtitle = { Text("Open a lazy list page") }
         )
-        PrimarySpacer()
     }
 }
 
 @Composable
-fun MainComponentPage() {
+fun MainComponentPage(modifier: Modifier) {
     // TODO: To be implemented.
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) { Text("To be implemented.") }
 }

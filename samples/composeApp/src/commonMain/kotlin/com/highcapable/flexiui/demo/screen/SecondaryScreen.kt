@@ -21,7 +21,9 @@
  */
 package com.highcapable.flexiui.demo.screen
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.em
@@ -46,22 +48,27 @@ fun SecondaryScreen() {
                     NavigationIconButton(onClick = { router.goHome() })
                 }
             )
+            BackHandler { router.goHome() }
         }
-    ) {
-        AreaColumn(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                """
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier.fillMaxWidth()
+                .padding(innerPadding)
+        ) {
+            AreaColumn(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    """
                   Now, you open a separate secondary page.
                   You can click the button below to back to the homepage.
-                """.trimIndent(),
-                style = FlexiTheme.typography.primary.copy(lineHeight = 2.em)
-            )
-            PrimarySpacer()
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { router.goHome() }
-            ) { Text("Take Me Home") }
+                    """.trimIndent(),
+                    style = FlexiTheme.typography.primary.copy(lineHeight = 2.em)
+                )
+                PrimarySpacer()
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { router.goHome() }
+                ) { Text("Take Me Home") }
+            }
         }
-        BackHandler { router.goHome() }
     }
 }
