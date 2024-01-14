@@ -44,8 +44,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.highcapable.betterandroid.compose.multiplatform.backpress.BackHandler
 import com.highcapable.flexiui.component.Button
@@ -61,6 +59,7 @@ import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.window.FlexiDialog
 import com.highcapable.flexiui.demo.Delete
 import com.highcapable.flexiui.demo.DeleteForever
+import com.highcapable.flexiui.demo.HapticFeedback
 import com.highcapable.flexiui.demo.ListAdd
 import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.bean.SimpleListBean
@@ -155,13 +154,9 @@ fun LazyListScreen() {
             @Composable
             fun LazyItem(modifier: Modifier, index: Int) {
                 Box(modifier = modifier) {
-                    val hapticFeedback = LocalHapticFeedback.current
                     var showDropdownMenu by remember { mutableStateOf(false) }
                     HorizontalItemBox(
-                        onLongClick = {
-                            showDropdownMenu = true
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        },
+                        onLongClick = HapticFeedback { showDropdownMenu = true },
                         title = { Text(testListData[index].title) },
                         subtitle = { Text(testListData[index].subtitle) },
                         showArrowIcon = false

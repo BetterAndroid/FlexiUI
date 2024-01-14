@@ -58,8 +58,8 @@ fun SecondaryScreen() {
             AreaColumn(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     """
-                  Now, you open a separate secondary page.
-                  You can click the button below to back to the homepage.
+                      Now, you open a separate secondary page.
+                      You can click the button below to back to the homepage.
                     """.trimIndent(),
                     style = FlexiTheme.typography.primary.copy(lineHeight = 2.em)
                 )
