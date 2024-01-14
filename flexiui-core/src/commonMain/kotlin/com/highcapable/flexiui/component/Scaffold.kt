@@ -124,7 +124,7 @@ private fun ScaffoldLayout(
         navigationBarPlaceables.forEach { navigationBarHeight += it.height }
         // Measure content with [navigationBar] height.
         val contentConstraints = constraints.copy(
-            // The content width follow baseConstraints, use innerPadding to control content padding.
+            // The content width follow [baseConstraints], use [innerPadding] to control content padding.
             maxWidth = baseConstraints.maxWidth,
             // The maxHeight of content must be >= minHeight, if not will coerce to minHeight.
             maxHeight = (constraints.maxHeight - currentY - navigationBarHeight).coerceAtLeast(constraints.minHeight)
