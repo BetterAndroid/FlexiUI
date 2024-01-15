@@ -58,6 +58,7 @@ import com.highcapable.flexiui.component.NavigationBarItem
 import com.highcapable.flexiui.component.NavigationBarRow
 import com.highcapable.flexiui.component.PrimaryAppBar
 import com.highcapable.flexiui.component.Scaffold
+import com.highcapable.flexiui.component.StickyHeaderBar
 import com.highcapable.flexiui.component.SwitchItem
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.window.FlexiDialog
@@ -70,6 +71,7 @@ import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.Screen
 import com.highcapable.flexiui.demo.SecondarySpacer
 import com.highcapable.flexiui.demo.SecondaryText
+import com.highcapable.flexiui.demo.Style
 import com.highcapable.flexiui.demo.colorSchemes
 import com.highcapable.flexiui.demo.rememberRouter
 import com.highcapable.flexiui.demo.toName
@@ -157,7 +159,11 @@ fun MainHomePage(modifier: Modifier) {
             var colorScheme by remember { Preferences.colorScheme }
             var darkMode by remember { Preferences.darkMode }
             var followSystemDarkMode by remember { Preferences.followSystemDarkMode }
-            SecondaryText("Theme Style")
+            StickyHeaderBar(
+                modifier = Modifier.fillMaxWidth(),
+                icon = { Icon(FlexiIcons.Style) },
+                title = { Text("Theme Style") }
+            )
             PrimarySpacer()
             AnimatedVisibility(visible = !followSystemDarkMode) {
                 Column {
