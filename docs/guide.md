@@ -270,6 +270,10 @@ This section is under development, stay tuned.
 
 This section is under development, stay tuned.
 
+### StickyHeaderBar
+
+This section is under development, stay tuned.
+
 ### AppBar
 
 This section is under development, stay tuned.
