@@ -226,6 +226,97 @@ val FlexiIcons.Component by lazy {
     }
 }
 
+val FlexiIcons.Locale by lazy {
+    ImageVector(
+        name = "locale",
+        defaultWidth = 48.dp,
+        defaultHeight = 48.dp,
+        viewportWidth = 48f,
+        viewportHeight = 48f
+    ) {
+        path(
+            fill = null,
+            fillAlpha = 1.0f,
+            stroke = SolidColor(Color.White),
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 4f,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.EvenOdd
+        ) {
+            moveTo(24f, 44f)
+            curveTo(35.0457f, 44f, 44f, 35.0457f, 44f, 24f)
+            curveTo(44f, 12.9543f, 35.0457f, 4f, 24f, 4f)
+            curveTo(12.9543f, 4f, 4f, 12.9543f, 4f, 24f)
+            curveTo(4f, 35.0457f, 12.9543f, 44f, 24f, 44f)
+            close()
+        }
+        path(
+            fill = null,
+            fillAlpha = 1.0f,
+            stroke = SolidColor(Color.White),
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 4f,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(4f, 24f)
+            horizontalLineTo(44f)
+        }
+        path(
+            fill = null,
+            fillAlpha = 1.0f,
+            stroke = SolidColor(Color.White),
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 4f,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.EvenOdd
+        ) {
+            moveTo(24f, 44f)
+            curveTo(28.4183f, 44f, 32f, 35.0457f, 32f, 24f)
+            curveTo(32f, 12.9543f, 28.4183f, 4f, 24f, 4f)
+            curveTo(19.5817f, 4f, 16f, 12.9543f, 16f, 24f)
+            curveTo(16f, 35.0457f, 19.5817f, 44f, 24f, 44f)
+            close()
+        }
+        path(
+            fill = null,
+            fillAlpha = 1.0f,
+            stroke = SolidColor(Color.White),
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 4f,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(9.85791f, 10.1421f)
+            curveTo(13.4772f, 13.7614f, 18.4772f, 16f, 24f, 16f)
+            curveTo(29.5229f, 16f, 34.5229f, 13.7614f, 38.1422f, 10.1421f)
+        }
+        path(
+            fill = null,
+            fillAlpha = 1.0f,
+            stroke = SolidColor(Color.White),
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 4f,
+            strokeLineCap = StrokeCap.Round,
+            strokeLineJoin = StrokeJoin.Round,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(38.1422f, 37.8579f)
+            curveTo(34.5229f, 34.2386f, 29.5229f, 32f, 24f, 32f)
+            curveTo(18.4772f, 32f, 13.4772f, 34.2386f, 9.8579f, 37.8579f)
+        }
+    }
+}
+
 val FlexiIcons.Style by lazy {
     ImageVector(
         name = "style",

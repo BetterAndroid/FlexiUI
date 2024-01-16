@@ -64,6 +64,7 @@ import com.highcapable.flexiui.demo.ListAdd
 import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.bean.SimpleListBean
 import com.highcapable.flexiui.demo.rememberRouter
+import com.highcapable.flexiui.demo.strings
 import com.highcapable.flexiui.resources.FlexiIcons
 import kotlinx.coroutines.launch
 
@@ -86,25 +87,25 @@ fun LazyListScreen() {
             FlexiDialog(
                 visible = showRemoveAllDialog,
                 onDismissRequest = { showRemoveAllDialog = false },
-                title = { Text("Remove All") },
-                content = { Text("Are you sure you want to remove all data?") },
+                title = { Text(strings.listRemoveAll) },
+                content = { Text(strings.listRemoveAllDescription) },
                 confirmButton = {
                     Button(
                         onClick = {
                             showRemoveAllDialog = false
                             testListData.clear()
                         }
-                    ) { Text("OK") }
+                    ) { Text(strings.comfirm) }
                 },
                 cancelButton = {
                     Button(
                         onClick = { showRemoveAllDialog = false }
-                    ) { Text("Cancel") }
+                    ) { Text(strings.cancel) }
                 }
             )
             SecondaryAppBar(
-                title = { Text("Lazy List Demo") },
-                subtitle = { Text("${testListData.size} items of list data", singleLine = true) },
+                title = { Text(strings.lazyListDemo) },
+                subtitle = { Text(strings.itemsListDataCount(testListData.size), singleLine = true) },
                 navigationIcon = {
                     NavigationIconButton(onClick = { router.goHome() })
                 },
@@ -138,11 +139,11 @@ fun LazyListScreen() {
                 Tab(
                     selected = pagerState.currentPage == 0,
                     onClick = { scope.launch { pagerState.animateScrollToPage(0) } }
-                ) { Text("Linear List") }
+                ) { Text(strings.linearList) }
                 Tab(
                     selected = pagerState.currentPage == 1,
                     onClick = { scope.launch { pagerState.animateScrollToPage(1) } }
-                ) { Text("Grid List") }
+                ) { Text(strings.gridList) }
             }
         }
     ) { innerPadding ->
@@ -170,7 +171,7 @@ fun LazyListScreen() {
                         ) {
                             Icon(FlexiIcons.Delete)
                             PrimarySpacer()
-                            Text("Remove this data")
+                            Text(strings.listRemoveSingle)
                         }
                     }
                 }
@@ -211,7 +212,7 @@ fun LazyListScreen() {
             } else Box(
                 modifier = Modifier.fillMaxSize().padding(innerPadding),
                 contentAlignment = Alignment.Center
-            ) { Text("No data to show") }
+            ) { Text(strings.listNoData) }
         }
     }
 }

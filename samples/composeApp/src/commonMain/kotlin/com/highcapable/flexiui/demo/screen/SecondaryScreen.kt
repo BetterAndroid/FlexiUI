@@ -36,6 +36,7 @@ import com.highcapable.flexiui.component.SecondaryAppBar
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.rememberRouter
+import com.highcapable.flexiui.demo.strings
 
 @Composable
 fun SecondaryScreen() {
@@ -43,7 +44,7 @@ fun SecondaryScreen() {
     Scaffold(
         appBar = {
             SecondaryAppBar(
-                title = { Text("Single Page Demo") },
+                title = { Text(strings.singlePageDemo) },
                 navigationIcon = {
                     NavigationIconButton(onClick = { router.goHome() })
                 }
@@ -57,17 +58,14 @@ fun SecondaryScreen() {
         ) {
             AreaColumn(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    """
-                      Now, you open a separate secondary page.
-                      You can click the button below to back to the homepage.
-                    """.trimIndent(),
+                    text = strings.singlePageDescription,
                     style = FlexiTheme.typography.primary.copy(lineHeight = 2.em)
                 )
                 PrimarySpacer()
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { router.goHome() }
-                ) { Text("Take Me Home") }
+                ) { Text(strings.takeMeHome) }
             }
         }
     }

@@ -65,6 +65,7 @@ import com.highcapable.flexiui.component.window.FlexiDialog
 import com.highcapable.flexiui.demo.Component
 import com.highcapable.flexiui.demo.GitHub
 import com.highcapable.flexiui.demo.Home
+import com.highcapable.flexiui.demo.Locale
 import com.highcapable.flexiui.demo.PROJECT_URL
 import com.highcapable.flexiui.demo.Preferences
 import com.highcapable.flexiui.demo.PrimarySpacer
@@ -73,7 +74,9 @@ import com.highcapable.flexiui.demo.SecondarySpacer
 import com.highcapable.flexiui.demo.SecondaryText
 import com.highcapable.flexiui.demo.Style
 import com.highcapable.flexiui.demo.colorSchemes
+import com.highcapable.flexiui.demo.locales
 import com.highcapable.flexiui.demo.rememberRouter
+import com.highcapable.flexiui.demo.strings
 import com.highcapable.flexiui.demo.toName
 import com.highcapable.flexiui.resources.FlexiIcons
 import kotlinx.coroutines.launch
@@ -90,24 +93,24 @@ fun MainScreen() {
             FlexiDialog(
                 visible = showOpenUriDialog,
                 onDismissRequest = { showOpenUriDialog = false },
-                title = { Text("Open Link") },
-                content = { Text("Open the project URL in the browser?") },
+                title = { Text(strings.openLink) },
+                content = { Text(strings.openLinkDescription) },
                 confirmButton = {
                     Button(
                         onClick = {
                             showOpenUriDialog = false
                             uriHandler.openUri(PROJECT_URL)
                         }
-                    ) { Text("Open") }
+                    ) { Text(strings.open) }
                 },
                 cancelButton = {
                     Button(
                         onClick = { showOpenUriDialog = false }
-                    ) { Text("Cancel") }
+                    ) { Text(strings.cancel) }
                 }
             )
             PrimaryAppBar(
-                title = { Text("Flexi UI Demo") },
+                title = { Text(strings.appName) },
                 actions = {
                     ActionIconButton(
                         onClick = { showOpenUriDialog = true }
@@ -123,13 +126,13 @@ fun MainScreen() {
                     selected = pagerState.currentPage == 0,
                     onClick = { scope.launch { pagerState.animateScrollToPage(page = 0) } },
                     icon = { Icon(FlexiIcons.Home, style = IconDefaults.style(size = 24.dp)) },
-                    text = { Text("Home") }
+                    text = { Text(strings.home) }
                 )
                 NavigationBarItem(
                     selected = pagerState.currentPage == 1,
                     onClick = { scope.launch { pagerState.animateScrollToPage(page = 1) } },
                     icon = { Icon(FlexiIcons.Component, style = IconDefaults.style(size = 24.dp)) },
-                    text = { Text("Component") }
+                    text = { Text(strings.component) }
                 )
             }
         }
@@ -151,8 +154,40 @@ fun MainScreen() {
 fun MainHomePage(modifier: Modifier) {
     val scrollState = rememberScrollState()
     Column(modifier = modifier.fillMaxSize().verticalScroll(scrollState)) {
-        AreaBox(modifier = Modifier.fillMaxWidth()) {
-            Text("Flexi UI is a flexible and useful UI component library.")
+        AreaBox(modifier = Modifier.fillMaxWidth()) { Text(strings.appDescription) }
+        PrimarySpacer()
+        AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            var locale by remember { Preferences.locale }
+            StickyHeaderBar(
+                modifier = Modifier.fillMaxWidth(),
+                icon = { Icon(FlexiIcons.Locale) },
+                title = { Text(strings.uiLanguage) }
+            )
+            PrimarySpacer()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var expanded by remember { mutableStateOf(false) }
+                Text(strings.selectLanguage)
+                PrimarySpacer()
+                DropdownList(
+                    modifier = Modifier.fillMaxWidth(),
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it },
+                    text = { Text(locale.toName()) },
+                ) {
+                    locales().forEach {
+                        DropdownMenuItem(
+                            actived = locale == it,
+                            onClick = {
+                                expanded = false
+                                locale = it
+                            }
+                        ) { Text(it.toName()) }
+                    }
+                }
+            }
         }
         PrimarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
@@ -162,7 +197,7 @@ fun MainHomePage(modifier: Modifier) {
             StickyHeaderBar(
                 modifier = Modifier.fillMaxWidth(),
                 icon = { Icon(FlexiIcons.Style) },
-                title = { Text("Theme Style") }
+                title = { Text(strings.themeStyle) }
             )
             PrimarySpacer()
             AnimatedVisibility(visible = !followSystemDarkMode) {
@@ -170,25 +205,25 @@ fun MainHomePage(modifier: Modifier) {
                     SwitchItem(
                         checked = darkMode,
                         onCheckedChange = { darkMode = it }
-                    ) { Text("Enable night mode") }
+                    ) { Text(strings.enableDarkMode) }
                     SecondarySpacer()
-                    SecondaryText("Manually switch the current theme to night mode.")
+                    SecondaryText(strings.enableDarkModeDescription)
                     PrimarySpacer()
                 }
             }
             SwitchItem(
                 checked = followSystemDarkMode,
                 onCheckedChange = { followSystemDarkMode = it }
-            ) { Text("Follow system night mode") }
+            ) { Text(strings.followSystemDarkMode) }
             SecondarySpacer()
-            SecondaryText("Follow the system theme to switch day and night mode.")
+            SecondaryText(strings.followSystemDarkModeDescription)
             PrimarySpacer()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
-                Text("Current Theme")
+                Text(strings.selectTheme)
                 PrimarySpacer()
                 DropdownList(
                     modifier = Modifier.fillMaxWidth(),
@@ -212,14 +247,14 @@ fun MainHomePage(modifier: Modifier) {
         val router = rememberRouter()
         HorizontalItemBox(
             onClick = { router.navigate(Screen.Secondary) },
-            title = { Text("Single Page Demo") },
-            subtitle = { Text("Open a single page") }
+            title = { Text(strings.singlePageDemo) },
+            subtitle = { Text(strings.singlePageDemoDescription) }
         )
         PrimarySpacer()
         HorizontalItemBox(
             onClick = { router.navigate(Screen.LazyList) },
-            title = { Text("Lazy List Demo") },
-            subtitle = { Text("Open a lazy list page") }
+            title = { Text(strings.lazyListDemo) },
+            subtitle = { Text(strings.lazyListDemoDescription) }
         )
     }
 }
