@@ -121,8 +121,8 @@ object SurfaceDefaults {
      * @return [ComponentPadding]
      */
     val padding: ComponentPadding
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = SurfaceProperties.Padding.toPadding()
 }
 

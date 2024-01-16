@@ -462,6 +462,6 @@ internal fun Colors.fromDescriptor(value: ColorsDescriptor) = when (value) {
  * @see Colors.fromDescriptor
  * @return [Color]
  */
-@Composable
 @ReadOnlyComposable
+@Composable
 internal fun ColorsDescriptor.toColor() = LocalColors.current.fromDescriptor(this)

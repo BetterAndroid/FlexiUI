@@ -105,6 +105,6 @@ internal fun Typography.fromDescriptor(value: TypographyDescriptor) = when (valu
  * @see Typography.fromDescriptor
  * @return [TextStyle]
  */
-@Composable
 @ReadOnlyComposable
+@Composable
 internal fun TypographyDescriptor.toTextStyle() = LocalTypography.current.fromDescriptor(this)

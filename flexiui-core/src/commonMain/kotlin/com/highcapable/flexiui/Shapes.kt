@@ -79,6 +79,6 @@ internal fun Shapes.fromDescriptor(value: ShapesDescriptor): Shape = when (value
  * @see Shapes.fromDescriptor
  * @return [Shape]
  */
-@Composable
 @ReadOnlyComposable
+@Composable
 internal fun ShapesDescriptor.toShape(): Shape = LocalShapes.current.fromDescriptor(this)

@@ -108,8 +108,8 @@ internal interface PaddingDescriptor {
     val bottom: SizesDescriptor?
     val end: SizesDescriptor?
 
-    @Composable
     @ReadOnlyComposable
+    @Composable
     fun toPadding(): ComponentPadding
 }
 
@@ -121,8 +121,8 @@ private class PaddingDescriptorImpl(
     override val end: SizesDescriptor?
 ) : PaddingDescriptor {
 
-    @Composable
     @ReadOnlyComposable
+    @Composable
     override fun toPadding() = ComponentPadding(
         start = start?.toDp() ?: 0.dp,
         top = top?.toDp() ?: 0.dp,
@@ -174,8 +174,8 @@ internal fun Sizes.fromDescriptor(value: SizesDescriptor) = when (value) {
  * @see Sizes.fromDescriptor
  * @return [Dp]
  */
-@Composable
 @ReadOnlyComposable
+@Composable
 internal fun SizesDescriptor.toDp() = LocalSizes.current.fromDescriptor(this)
 
 /**

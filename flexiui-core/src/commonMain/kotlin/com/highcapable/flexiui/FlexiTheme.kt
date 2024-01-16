@@ -84,8 +84,8 @@ object FlexiTheme {
      * @return [Colors]
      */
     val colors: Colors
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = LocalColors.current
 
     /**
@@ -93,8 +93,8 @@ object FlexiTheme {
      * @return [Shapes]
      */
     val shapes: Shapes
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = LocalShapes.current
 
     /**
@@ -102,8 +102,8 @@ object FlexiTheme {
      * @return [Typography]
      */
     val typography: Typography
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = LocalTypography.current
 
     /**
@@ -111,8 +111,8 @@ object FlexiTheme {
      * @return [Sizes]
      */
     val sizes: Sizes
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = LocalSizes.current
 }
 

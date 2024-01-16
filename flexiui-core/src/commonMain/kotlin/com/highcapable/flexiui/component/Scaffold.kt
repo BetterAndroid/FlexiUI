@@ -168,8 +168,8 @@ object ScaffoldDefaults {
      * @return [ComponentPadding]
      */
     val padding: ComponentPadding
-        @Composable
         @ReadOnlyComposable
+        @Composable
         get() = SurfaceDefaults.padding
 
     /**
