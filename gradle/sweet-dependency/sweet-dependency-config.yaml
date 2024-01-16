@@ -45,7 +45,7 @@ libraries:
     system-extension:
       version: 1.0.1
     compose-extension:
-      version: 1.0.1
+      version: 1.0.2
     compose-multiplatform:
       version: 0.1.0
   androidx.activity:
