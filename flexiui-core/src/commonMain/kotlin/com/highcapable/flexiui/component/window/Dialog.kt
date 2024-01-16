@@ -120,7 +120,7 @@ data class FlexiDialogStyle(
  * @param colors the colors of dialog, default is [FlexiDialogDefaults.colors].
  * @param style the style of dialog, default is [FlexiDialogDefaults.style].
  * @param contentAlignment the alignment of dialog content, default is [Alignment.TopStart].
- * @param properties the properties of dialog, default is [DefaultDialogProperties].
+ * @param properties the properties of dialog, default is [FlexiDialogDefaults.properties].
  * @param title the title of the [FlexiDialog], should typically be [Icon] or [Text].
  * @param content the content of the [FlexiDialog].
  * @param confirmButton the confirm button of the [FlexiDialog], should typically be [Button].
@@ -136,7 +136,7 @@ fun FlexiDialog(
     colors: FlexiDialogColors = FlexiDialogDefaults.colors(),
     style: FlexiDialogStyle = FlexiDialogDefaults.style(),
     contentAlignment: Alignment = Alignment.TopStart,
-    properties: DialogPropertiesWrapper = DefaultDialogProperties,
+    properties: DialogPropertiesWrapper = FlexiDialogDefaults.properties(),
     title: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
     confirmButton: @Composable (() -> Unit)? = null,
@@ -173,7 +173,7 @@ fun FlexiDialog(
  * @param colors the colors of dialog, default is [FlexiDialogDefaults.colors].
  * @param style the style of dialog, default is [FlexiDialogDefaults.style].
  * @param contentAlignment the alignment of dialog content, default is [Alignment.TopStart].
- * @param properties the properties of dialog, default is [DefaultDialogProperties].
+ * @param properties the properties of dialog, default is [FlexiDialogDefaults.properties].
  * @param title the title of the [FlexiDialog], should typically be [Icon] or [Text].
  * @param content the content of the [FlexiDialog].
  * @param confirmButton the confirm button of the [FlexiDialog], should typically be [Button].
@@ -191,7 +191,7 @@ fun FlexiDialog(
     colors: FlexiDialogColors = FlexiDialogDefaults.colors(),
     style: FlexiDialogStyle = FlexiDialogDefaults.style(),
     contentAlignment: Alignment = Alignment.TopStart,
-    properties: DialogPropertiesWrapper = DefaultDialogProperties,
+    properties: DialogPropertiesWrapper = FlexiDialogDefaults.properties(),
     title: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
     confirmButton: @Composable (() -> Unit)? = null,
@@ -344,6 +344,26 @@ private fun BasicFlexiDialog(
 object FlexiDialogDefaults {
 
     /**
+     * Creates a [DialogPropertiesWrapper] with the default values.
+     * @see DialogPropertiesWrapper
+     * @return [DialogPropertiesWrapper]
+     */
+    @Stable
+    fun properties(
+        dismissOnClickOutside: Boolean = true,
+        dismissOnBackPress: Boolean = true,
+        usePlatformDefaultWidth: Boolean = false,
+        usePlatformInsets: Boolean = true,
+        scrimColor: Color = DefaultScrimColor
+    ) = DialogPropertiesWrapper(
+        dismissOnClickOutside = dismissOnClickOutside,
+        dismissOnBackPress = dismissOnBackPress,
+        usePlatformDefaultWidth = usePlatformDefaultWidth,
+        usePlatformInsets = usePlatformInsets,
+        scrimColor = scrimColor
+    )
+
+    /**
      * Creates a [FlexiDialogColors] with the default values.
      * @param backgroundColor the background color.
      * @param borderColor the border color.
@@ -439,7 +459,6 @@ private const val AnimationMinmumScale = 0.8f
 
 private const val DefaultScrimOpacity = 0.35f
 private val DefaultScrimColor = Color.Black.copy(alpha = DefaultScrimOpacity)
-private val DefaultDialogProperties = DialogPropertiesWrapper(usePlatformDefaultWidth = false, scrimColor = DefaultScrimColor)
 
 /**
  * The scrim animation effect of Flexi UI dialog is still in experimental function,
