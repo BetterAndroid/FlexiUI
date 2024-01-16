@@ -135,6 +135,39 @@ kotlin {
 
 请将 `<version>` 修改为此页面顶部显示的版本。
 
+## Dev 版本
+
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2FHighCapable%2Fmaven-repository%2Fmain%2Frepository%2Fsnapshots%2Fcom%2Fhighcapable%2Fflexiui%2Fcore%2Fmaven-metadata.xml&logo=apachemaven&logoColor=orange&label=core)
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2FHighCapable%2Fmaven-repository%2Fmain%2Frepository%2Fsnapshots%2Fcom%2Fhighcapable%2Fflexiui%2Fresources%2Fmaven-metadata.xml&logo=apachemaven&logoColor=orange&label=resources)
+
+Flexi UI 每个版本都有对应的 Dev 版本 (开发中的版本)，它的更新频率将会非常高，这里的文档**可能不会及时**根据最新的 Dev 版本进行同步。
+
+Dev 版本仅会发布在我们的公共存储库中，不会同步至 **Maven Central**，如果你要使用 Dev 版本，请参考以下方式配置存储库。
+
+### SweetDependency (推荐)
+
+在你的项目 `SweetDependency` 配置文件中添加存储库。
+
+```yaml
+repositories:
+  # 详情请前往：https://github.com/HighCapable/maven-repository
+  highcapable-maven-snapshots:
+    # 中国大陆用户请将下方的 "raw.githubusercontent.com" 修改为 "raw.gitmirror.com"
+    url: https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/snapshots
+```
+
+### 传统方式
+
+在你的项目 `build.gradle.kts` 中配置存储库。
+
+```kotlin
+repositories {
+    // 详情请前往：https://github.com/HighCapable/maven-repository
+    // 中国大陆用户请将下方的 "raw.githubusercontent.com" 修改为 "raw.gitmirror.com"
+    maven("https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/snapshots")
+}
+```
+
 ## Demo
 
 你可以在 [这里](https://github.com/BetterAndroid/FlexiUI/tree/compose/samples) 找到一些示例，通过查看对应的演示项目来更好地了解 Flexi UI 的使用方式。
