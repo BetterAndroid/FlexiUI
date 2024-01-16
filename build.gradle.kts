@@ -12,6 +12,21 @@ plugins {
 
 libraryProjects {
     afterEvaluate {
+        configure<PublishingExtension> {
+            repositories {
+                val repositoryDir = gradle.gradleUserHomeDir
+                    .resolve("highcapable-maven-repository")
+                    .resolve("repository")
+                maven {
+                    name = "HighCapableMavenReleases"
+                    url = repositoryDir.resolve("releases").toURI()
+                }
+                maven {
+                    name = "HighCapableMavenSnapShots"
+                    url = repositoryDir.resolve("snapshots").toURI()
+                }
+            }
+        }
         configure<MavenPublishBaseExtension> {
             configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty()))
         }
