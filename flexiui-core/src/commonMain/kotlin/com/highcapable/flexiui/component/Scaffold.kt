@@ -70,7 +70,7 @@ fun Scaffold(
     Surface(
         modifier = Modifier.fillMaxSize().then(modifier),
         colors = colors,
-        padding = ComponentPadding()
+        padding = ComponentPadding.None
     ) {
         ScaffoldLayout(
             padding = padding,

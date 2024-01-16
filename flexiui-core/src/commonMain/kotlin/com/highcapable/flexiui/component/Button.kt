@@ -386,7 +386,7 @@ internal object IconButtonProperties {
     val ContentColor = ColorsDescriptor.ThemePrimary
     val BackgroundColor = Color.Transparent
     const val RippleBounded = false
-    val Padding = ComponentPadding()
+    val Padding = ComponentPadding.None
     val Shape = ShapesDescriptor.Tertiary
 }
 

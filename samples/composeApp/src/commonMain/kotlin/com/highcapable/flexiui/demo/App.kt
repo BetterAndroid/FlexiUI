@@ -59,7 +59,7 @@ private fun FlexiDemoTheme(content: @Composable () -> Unit) {
 fun App() {
     FlexiDemoTheme {
         // Surface will keep the content background color when animation.
-        Surface(padding = ComponentPadding()) {
+        Surface(padding = ComponentPadding.None) {
             Screen(Screen.Main) { MainScreen() }
             Screen(Screen.Secondary) { SecondaryScreen() }
             Screen(Screen.LazyList) { LazyListScreen() }
