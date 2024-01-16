@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.component.Text
@@ -50,16 +48,4 @@ fun SecondaryText(text: String) {
         color = FlexiTheme.colors.textSecondary,
         style = FlexiTheme.typography.secondary
     )
-}
-
-@Composable
-fun HapticFeedback(
-    type: HapticFeedbackType = HapticFeedbackType.LongPress,
-    handler: () -> Unit
-): () -> Unit {
-    val hapticFeedback = LocalHapticFeedback.current
-    return {
-        handler()
-        hapticFeedback.performHapticFeedback(type)
-    }
 }

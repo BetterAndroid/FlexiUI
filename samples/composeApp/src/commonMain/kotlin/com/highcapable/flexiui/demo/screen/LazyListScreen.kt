@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.highcapable.betterandroid.compose.extension.ui.HapticFeedback
 import com.highcapable.betterandroid.compose.multiplatform.backpress.BackHandler
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.DropdownMenu
@@ -59,7 +60,6 @@ import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.window.FlexiDialog
 import com.highcapable.flexiui.demo.Delete
 import com.highcapable.flexiui.demo.DeleteForever
-import com.highcapable.flexiui.demo.HapticFeedback
 import com.highcapable.flexiui.demo.ListAdd
 import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.bean.SimpleListBean
