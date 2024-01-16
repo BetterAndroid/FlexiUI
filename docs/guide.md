@@ -138,6 +138,40 @@ kotlin {
 
 Please change `<version>` to the version displayed at the top of page.
 
+## Dev Version
+
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2FHighCapable%2Fmaven-repository%2Fmain%2Frepository%2Fsnapshots%2Fcom%2Fhighcapable%2Fflexiui%2Fcore%2Fmaven-metadata.xml&logo=apachemaven&logoColor=orange&label=core)
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fraw.githubusercontent.com%2FHighCapable%2Fmaven-repository%2Fmain%2Frepository%2Fsnapshots%2Fcom%2Fhighcapable%2Fflexiui%2Fresources%2Fmaven-metadata.xml&logo=apachemaven&logoColor=orange&label=resources)
+
+Each version of Flexi UI has a corresponding dev version (version under development), and its update frequency will be very high.
+
+The documents here may not be synchronized in time according to the latest dev version.
+
+The dev version will only be published in our public repository and will not be synchronized to **Maven Central**,
+if you want to use the `dev version, please refer to the following method to configure the repository.
+
+### SweetDependency (Recommended)
+
+Add the repository in your project's `SweetDependency` configuration file.
+
+```yaml
+repositories:
+  # For details, please go to: https://github.com/HighCapable/maven-repository
+  highcapable-maven-snapshots:
+    url: https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/snapshots
+```
+
+### Traditional Method
+
+Configure the repository in your project `build.gradle.kts`.
+
+```kotlin
+repositories {
+    // For details, please go to: https://github.com/HighCapable/maven-repository
+    maven("https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/snapshots")
+}
+```
+
 ## Demo
 
 You can find some samples [here](https://github.com/BetterAndroid/FlexiUI/tree/compose/samples) to get a better understanding of how
