@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import com.highcapable.flexiui.availableColorSchemes
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.AreaColumn
 import com.highcapable.flexiui.component.Button
@@ -73,11 +74,11 @@ import com.highcapable.flexiui.demo.Screen
 import com.highcapable.flexiui.demo.SecondarySpacer
 import com.highcapable.flexiui.demo.SecondaryText
 import com.highcapable.flexiui.demo.Style
-import com.highcapable.flexiui.demo.colorSchemes
 import com.highcapable.flexiui.demo.locales
 import com.highcapable.flexiui.demo.rememberRouter
 import com.highcapable.flexiui.demo.strings
 import com.highcapable.flexiui.demo.toName
+import com.highcapable.flexiui.displayName
 import com.highcapable.flexiui.resources.FlexiIcons
 import kotlinx.coroutines.launch
 
@@ -191,6 +192,7 @@ fun MainHomePage(modifier: Modifier) {
         }
         PrimarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            val colorSchemes = availableColorSchemes()
             var colorScheme by remember { Preferences.colorScheme }
             var darkMode by remember { Preferences.darkMode }
             var followSystemDarkMode by remember { Preferences.followSystemDarkMode }
@@ -229,16 +231,16 @@ fun MainHomePage(modifier: Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    text = { Text(colorScheme.toName()) },
+                    text = { Text(colorScheme.displayName) },
                 ) {
-                    colorSchemes().forEach {
+                    colorSchemes.forEach {
                         DropdownMenuItem(
                             actived = colorScheme == it,
                             onClick = {
                                 expanded = false
                                 colorScheme = it
                             }
-                        ) { Text(it.toName()) }
+                        ) { Text(it.displayName) }
                     }
                 }
             }

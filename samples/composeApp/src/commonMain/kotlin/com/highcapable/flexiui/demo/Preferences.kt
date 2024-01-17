@@ -24,6 +24,7 @@ package com.highcapable.flexiui.demo
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
+import com.highcapable.flexiui.ColorScheme
 
 @Stable
 data class AppPreferences(

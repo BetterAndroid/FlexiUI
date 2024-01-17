@@ -34,6 +34,7 @@ import com.highcapable.flexiui.component.Surface
 import com.highcapable.flexiui.demo.screen.LazyListScreen
 import com.highcapable.flexiui.demo.screen.MainScreen
 import com.highcapable.flexiui.demo.screen.SecondaryScreen
+import com.highcapable.flexiui.toColors
 
 const val PROJECT_URL = "https://github.com/BetterAndroid/FlexiUI"
 
