@@ -12,6 +12,7 @@ plugins {
 
 libraryProjects {
     afterEvaluate {
+        resolveDevPublishWorkflow()
         configure<PublishingExtension> {
             repositories {
                 val repositoryDir = gradle.gradleUserHomeDir
@@ -29,6 +30,35 @@ libraryProjects {
         }
         configure<MavenPublishBaseExtension> {
             configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty()))
+        }
+    }
+}
+
+/**
+ * How to enable dev publish:
+ *
+ * 1. Create a file named "publish_dev" in the project build directory.
+ *
+ * 2. Run "./gradlew :(project name):publishDev" to publish a dev version.
+ *
+ * - Note: If you delete the "publish_dev" file, the dev publish will be disabled and lost the last dev version code.
+ */
+fun Project.resolveDevPublishWorkflow() {
+    fun String.parseCode() = (trim().toIntOrNull() ?: 0).toString().padStart(4, '0')
+    fun String.nextCode() = (toInt() + 1).toString().parseCode()
+    val devFile = projectDir.resolve("build").resolve("publish_dev")
+    val isDevMode = devFile.exists()
+    val code = (if (isDevMode) devFile.readText() else "1").parseCode()
+    val devVersion = "$version-dev$code"
+    version = if (isDevMode) devVersion else version
+    if (isDevMode) println("Detected dev mode of $name, publish version is $devVersion")
+    tasks.register("publishDev") {
+        group = "publishing"
+        dependsOn("publishAllPublicationsToHighCapableMavenSnapShotsRepository")
+        doLast {
+            val nextCode = code.nextCode()
+            println("Dev publish is finished, next dev code is $nextCode")
+            devFile.writeText(nextCode)
         }
     }
 }
