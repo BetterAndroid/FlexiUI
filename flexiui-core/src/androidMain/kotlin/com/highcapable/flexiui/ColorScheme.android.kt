@@ -32,15 +32,15 @@ import com.highcapable.betterandroid.ui.extension.graphics.mixColorOf
 
 internal actual val SystemLightColors
     @Composable
-    get() = defaultSystemLightColors()
+    get() = systemLightColors()
 
 internal actual val SystemDarkColors
     @Composable
-    get() = defaultSystemDarkColors()
+    get() = systemDarkColors()
 
 internal actual val SystemBlackColors
     @Composable
-    get() = defaultSystemBlackColors()
+    get() = systemBlackColors()
 
 /**
  * Whether system color is available.
@@ -50,7 +50,7 @@ internal actual val SystemBlackColors
 actual fun isSystemColorAvailable() = SystemColors.isAvailable
 
 @Composable
-private fun defaultSystemLightColors(): Colors {
+private fun systemLightColors(): Colors {
     val systemColors = rememberSystemColors()
     if (!SystemColors.isAvailable) return DefaultLightColors
     return Colors(
@@ -67,7 +67,7 @@ private fun defaultSystemLightColors(): Colors {
 }
 
 @Composable
-private fun defaultSystemDarkColors(): Colors {
+private fun systemDarkColors(): Colors {
     val systemColors = rememberSystemColors()
     if (!SystemColors.isAvailable) return DefaultDarkColors
     return Colors(
@@ -84,7 +84,7 @@ private fun defaultSystemDarkColors(): Colors {
 }
 
 @Composable
-private fun defaultSystemBlackColors(): Colors {
+private fun systemBlackColors(): Colors {
     val systemColors = rememberSystemColors()
     if (!SystemColors.isAvailable) return DefaultBlackColors
     return Colors(
