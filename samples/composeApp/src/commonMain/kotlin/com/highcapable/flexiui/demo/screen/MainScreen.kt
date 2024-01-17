@@ -59,8 +59,11 @@ import com.highcapable.flexiui.component.NavigationBarItem
 import com.highcapable.flexiui.component.NavigationBarRow
 import com.highcapable.flexiui.component.PrimaryAppBar
 import com.highcapable.flexiui.component.Scaffold
+import com.highcapable.flexiui.component.SecondarySpacer
+import com.highcapable.flexiui.component.SecondaryText
 import com.highcapable.flexiui.component.StickyHeaderBar
 import com.highcapable.flexiui.component.SwitchItem
+import com.highcapable.flexiui.component.TertiarySpacer
 import com.highcapable.flexiui.component.Text
 import com.highcapable.flexiui.component.window.FlexiDialog
 import com.highcapable.flexiui.demo.Component
@@ -69,10 +72,7 @@ import com.highcapable.flexiui.demo.Home
 import com.highcapable.flexiui.demo.Locale
 import com.highcapable.flexiui.demo.PROJECT_URL
 import com.highcapable.flexiui.demo.Preferences
-import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.Screen
-import com.highcapable.flexiui.demo.SecondarySpacer
-import com.highcapable.flexiui.demo.SecondaryText
 import com.highcapable.flexiui.demo.Style
 import com.highcapable.flexiui.demo.locales
 import com.highcapable.flexiui.demo.rememberRouter
@@ -156,7 +156,7 @@ fun MainHomePage(modifier: Modifier) {
     val scrollState = rememberScrollState()
     Column(modifier = modifier.fillMaxSize().verticalScroll(scrollState)) {
         AreaBox(modifier = Modifier.fillMaxWidth()) { Text(strings.appDescription) }
-        PrimarySpacer()
+        SecondarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
             var locale by remember { Preferences.locale }
             StickyHeaderBar(
@@ -164,14 +164,14 @@ fun MainHomePage(modifier: Modifier) {
                 icon = { Icon(FlexiIcons.Locale) },
                 title = { Text(strings.uiLanguage) }
             )
-            PrimarySpacer()
+            SecondarySpacer()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
                 Text(strings.selectLanguage)
-                PrimarySpacer()
+                SecondarySpacer()
                 DropdownList(
                     modifier = Modifier.fillMaxWidth(),
                     expanded = expanded,
@@ -190,7 +190,7 @@ fun MainHomePage(modifier: Modifier) {
                 }
             }
         }
-        PrimarySpacer()
+        SecondarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
             val colorSchemes = availableColorSchemes()
             var colorScheme by remember { Preferences.colorScheme }
@@ -201,32 +201,32 @@ fun MainHomePage(modifier: Modifier) {
                 icon = { Icon(FlexiIcons.Style) },
                 title = { Text(strings.themeStyle) }
             )
-            PrimarySpacer()
+            SecondarySpacer()
             AnimatedVisibility(visible = !followSystemDarkMode) {
                 Column {
                     SwitchItem(
                         checked = darkMode,
                         onCheckedChange = { darkMode = it }
                     ) { Text(strings.enableDarkMode) }
-                    SecondarySpacer()
+                    TertiarySpacer()
                     SecondaryText(strings.enableDarkModeDescription)
-                    PrimarySpacer()
+                    SecondarySpacer()
                 }
             }
             SwitchItem(
                 checked = followSystemDarkMode,
                 onCheckedChange = { followSystemDarkMode = it }
             ) { Text(strings.followSystemDarkMode) }
-            SecondarySpacer()
+            TertiarySpacer()
             SecondaryText(strings.followSystemDarkModeDescription)
-            PrimarySpacer()
+            SecondarySpacer()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
                 Text(strings.selectTheme)
-                PrimarySpacer()
+                SecondarySpacer()
                 DropdownList(
                     modifier = Modifier.fillMaxWidth(),
                     expanded = expanded,
@@ -245,14 +245,14 @@ fun MainHomePage(modifier: Modifier) {
                 }
             }
         }
-        PrimarySpacer()
+        SecondarySpacer()
         val router = rememberRouter()
         HorizontalItemBox(
             onClick = { router.navigate(Screen.Secondary) },
             title = { Text(strings.singlePageDemo) },
             subtitle = { Text(strings.singlePageDemoDescription) }
         )
-        PrimarySpacer()
+        SecondarySpacer()
         HorizontalItemBox(
             onClick = { router.navigate(Screen.LazyList) },
             title = { Text(strings.lazyListDemo) },

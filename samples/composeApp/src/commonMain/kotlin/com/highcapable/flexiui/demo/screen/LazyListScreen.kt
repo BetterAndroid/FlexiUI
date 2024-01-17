@@ -54,6 +54,7 @@ import com.highcapable.flexiui.component.HorizontalItemBox
 import com.highcapable.flexiui.component.Icon
 import com.highcapable.flexiui.component.Scaffold
 import com.highcapable.flexiui.component.SecondaryAppBar
+import com.highcapable.flexiui.component.SecondarySpacer
 import com.highcapable.flexiui.component.Tab
 import com.highcapable.flexiui.component.TabRow
 import com.highcapable.flexiui.component.Text
@@ -61,7 +62,6 @@ import com.highcapable.flexiui.component.window.FlexiDialog
 import com.highcapable.flexiui.demo.Delete
 import com.highcapable.flexiui.demo.DeleteForever
 import com.highcapable.flexiui.demo.ListAdd
-import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.bean.SimpleListBean
 import com.highcapable.flexiui.demo.rememberRouter
 import com.highcapable.flexiui.demo.strings
@@ -170,7 +170,7 @@ fun LazyListScreen() {
                             onClick = { testListData.removeAt(index) }
                         ) {
                             Icon(FlexiIcons.Delete)
-                            PrimarySpacer()
+                            SecondarySpacer()
                             Text(strings.listRemoveSingle)
                         }
                     }

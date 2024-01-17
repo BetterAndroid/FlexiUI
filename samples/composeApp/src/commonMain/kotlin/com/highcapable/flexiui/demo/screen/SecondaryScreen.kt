@@ -33,8 +33,8 @@ import com.highcapable.flexiui.component.AreaColumn
 import com.highcapable.flexiui.component.Button
 import com.highcapable.flexiui.component.Scaffold
 import com.highcapable.flexiui.component.SecondaryAppBar
+import com.highcapable.flexiui.component.SecondarySpacer
 import com.highcapable.flexiui.component.Text
-import com.highcapable.flexiui.demo.PrimarySpacer
 import com.highcapable.flexiui.demo.rememberRouter
 import com.highcapable.flexiui.demo.strings
 
@@ -61,7 +61,7 @@ fun SecondaryScreen() {
                     text = strings.singlePageDescription,
                     style = FlexiTheme.typography.primary.copy(lineHeight = 2.em)
                 )
-                PrimarySpacer()
+                SecondarySpacer()
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { router.goHome() }
