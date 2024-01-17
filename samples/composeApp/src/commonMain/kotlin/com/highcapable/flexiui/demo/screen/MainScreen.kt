@@ -158,6 +158,7 @@ fun MainHomePage(modifier: Modifier) {
         AreaBox(modifier = Modifier.fillMaxWidth()) { Text(strings.appDescription) }
         SecondarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            val locales = locales()
             var locale by remember { Preferences.locale }
             StickyHeaderBar(
                 modifier = Modifier.fillMaxWidth(),
@@ -178,7 +179,7 @@ fun MainHomePage(modifier: Modifier) {
                     onExpandedChange = { expanded = it },
                     text = { Text(locale.toName()) },
                 ) {
-                    locales().forEach {
+                    locales.forEach {
                         DropdownMenuItem(
                             actived = locale == it,
                             onClick = {
