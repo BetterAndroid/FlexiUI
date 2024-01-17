@@ -42,12 +42,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.highcapable.betterandroid.compose.extension.ui.orNull
+import com.highcapable.flexiui.Colors
 import com.highcapable.flexiui.ColorsDescriptor
 import com.highcapable.flexiui.DefaultTypography
+import com.highcapable.flexiui.LocalColors
+import com.highcapable.flexiui.LocalTypography
+import com.highcapable.flexiui.Typography
 import com.highcapable.flexiui.toColor
 
 /**
  * Flexi UI basic text.
+ * @see SecondaryText
  * @see BasicText
  * @param text the text to be displayed.
  * @param modifier the [Modifier] to be applied to this text.
@@ -113,6 +118,7 @@ fun Text(
 
 /**
  * Flexi UI basic text.
+ * @see SecondaryText
  * @see BasicText
  * @param text the text to be displayed.
  * @param modifier the [Modifier] to be applied to this text.
@@ -177,6 +183,135 @@ fun Text(
         maxLines = maxLines,
         minLines = minLines,
         inlineContent = inlineContent
+    )
+}
+
+/**
+ * Flexi UI secondary text.
+ * @see Colors.textSecondary
+ * @see Typography.secondary
+ * @see SecondaryText
+ * @see Text
+ * @param text the text to be displayed.
+ * @param modifier the [Modifier] to be applied to this text.
+ * @param fontStyle the font style of the text, see [TextStyle.fontStyle].
+ * @param fontWeight the font weight of the text, see [TextStyle.fontWeight].
+ * @param fontFamily the font family of the text, see [TextStyle.fontFamily].
+ * @param letterSpacing the letter spacing of the text, see [TextStyle.letterSpacing].
+ * @param textDecoration the text decoration of the text, see [TextStyle.textDecoration].
+ * @param textAlign the text alignment of the text, see [TextStyle.textAlign].
+ * @param lineHeight the line height of the text, see [TextStyle.lineHeight].
+ * @param singleLine whether the text should be displayed on a single line, default is false.
+ * @param maxLines the maximum number of lines to display, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the minimum number of lines to display, default is 1.
+ * @param overflow the overflow strategy for displaying the text, default is [TextOverflow.Ellipsis].
+ * @param softWrap whether the text should break at soft line breaks.
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ */
+@Composable
+fun SecondaryText(
+    text: String,
+    modifier: Modifier = Modifier,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    softWrap: Boolean = !singleLine || maxLines > 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    val textColor = LocalColors.current.textSecondary
+    val textStyle = LocalTypography.current.secondary
+    Text(
+        text = text,
+        modifier = modifier,
+        color = textColor,
+        style = textStyle,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        overflow = overflow,
+        softWrap = softWrap,
+        onTextLayout = onTextLayout
+    )
+}
+
+/**
+ * Flexi UI secondary text.
+ * @see Colors.textSecondary
+ * @see Typography.secondary
+ * @see SecondaryText
+ * @see Text
+ * @param text the text to be displayed.
+ * @param modifier the [Modifier] to be applied to this text.
+ * @param fontStyle the font style of the text, see [TextStyle.fontStyle].
+ * @param fontWeight the font weight of the text, see [TextStyle.fontWeight].
+ * @param fontFamily the font family of the text, see [TextStyle.fontFamily].
+ * @param letterSpacing the letter spacing of the text, see [TextStyle.letterSpacing].
+ * @param textDecoration the text decoration of the text, see [TextStyle.textDecoration].
+ * @param textAlign the text alignment of the text, see [TextStyle.textAlign].
+ * @param lineHeight the line height of the text, see [TextStyle.lineHeight].
+ * @param singleLine whether the text should be displayed on a single line, default is false.
+ * @param maxLines the maximum number of lines to display, when [singleLine] is false default is [Int.MAX_VALUE].
+ * @param minLines the minimum number of lines to display, default is 1.
+ * @param overflow the overflow strategy for displaying the text, default is [TextOverflow.Ellipsis].
+ * @param softWrap whether the text should break at soft line breaks.
+ * @param inlineContent map of tags to [InlineTextContent]s that can be used to add composable content to the text.
+ * @param onTextLayout the callback to be invoked when the text layout is ready.
+ */
+@Composable
+fun SecondaryText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    singleLine: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    softWrap: Boolean = !singleLine || maxLines > 1,
+    inlineContent: Map<String, InlineTextContent> = mapOf(),
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    val textColor = LocalColors.current.textSecondary
+    val textStyle = LocalTypography.current.secondary
+    Text(
+        text = text,
+        modifier = modifier,
+        color = textColor,
+        style = textStyle,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        overflow = overflow,
+        softWrap = softWrap,
+        inlineContent = inlineContent,
+        onTextLayout = onTextLayout
     )
 }
 
