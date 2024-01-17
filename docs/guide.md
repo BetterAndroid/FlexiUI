@@ -145,7 +145,7 @@ Please change `<version>` to the version displayed at the top of page.
 
 Each version of Flexi UI has a corresponding dev version (version under development), and its update frequency will be very high.
 
-The documents here may not be synchronized in time according to the latest dev version.
+The documents here **may not be synchronized in time** according to the latest dev version.
 
 The dev version will only be published in our public repository and will not be synchronized to **Maven Central**,
 if you want to use the dev version, please refer to the following method to configure the repository.
