@@ -65,6 +65,7 @@ import com.highcapable.flexiui.component.LinearProgressIndicator
 import com.highcapable.flexiui.component.NavigationBarItem
 import com.highcapable.flexiui.component.NavigationBarRow
 import com.highcapable.flexiui.component.PrimaryAppBar
+import com.highcapable.flexiui.component.PrimarySpacer
 import com.highcapable.flexiui.component.Scaffold
 import com.highcapable.flexiui.component.SecondarySpacer
 import com.highcapable.flexiui.component.SecondaryText
@@ -373,7 +374,7 @@ fun MainComponentPage(modifier: Modifier) {
         }
         SecondarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
-            var useCircularIndicator by remember { mutableStateOf(true) }
+            var useCircularIndicator by remember { mutableStateOf(false) }
             var indeterminate by remember { mutableStateOf(false) }
             var progress by remember { mutableStateOf(30f) }
             StickyHeaderBar(
@@ -414,12 +415,12 @@ fun MainComponentPage(modifier: Modifier) {
                     onClick = { progress = 100f }
                 ) { Text(strings.progressTo100, singleLine = true) }
             }
-            SecondarySpacer()
+            PrimarySpacer()
             SwitchItem(
                 checked = useCircularIndicator,
                 onCheckedChange = { useCircularIndicator = it }
             ) { Text(strings.useCircularIndicator) }
-            SecondarySpacer()
+            PrimarySpacer()
             SwitchItem(
                 checked = indeterminate,
                 onCheckedChange = { indeterminate = it }
