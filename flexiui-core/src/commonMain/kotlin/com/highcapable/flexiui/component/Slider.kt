@@ -34,6 +34,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -60,6 +61,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isUnspecified
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.ColorsDescriptor
@@ -133,14 +135,56 @@ fun Slider(
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
+    BoxWithConstraints {
+        SliderLayout(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = modifier,
+            colors = colors,
+            style = style,
+            enabled = enabled,
+            min = min,
+            max = max,
+            steps = steps,
+            onValueChangeFinished = onValueChangeFinished,
+            interactionSource = interactionSource,
+            maxWidth = maxWidth
+        )
+    }
+}
+
+/**
+ * Slider layout for internal use.
+ */
+@Composable
+private fun SliderLayout(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier,
+    colors: SliderColors,
+    style: SliderStyle,
+    enabled: Boolean,
+    min: Float,
+    max: Float,
+    steps: Int,
+    onValueChangeFinished: (() -> Unit)?,
+    interactionSource: MutableInteractionSource,
+    maxWidth: Dp
+) {
     val thumbDiameter = style.thumbRadius * 2
-    val trackAdoptWidth = style.trackWidth - thumbDiameter
+    val trackWidth = when {
+        maxWidth > 0.dp && style.trackWidth.isUnspecified -> maxWidth
+        style.trackWidth.isUnspecified -> DefaultTrackWidth
+        else -> style.trackWidth
+    }
+    val trackAdoptWidth = trackWidth - thumbDiameter
     val hovered by interactionSource.collectIsHoveredAsState()
     var tapped by remember { mutableStateOf(false) }
     var dragging by remember { mutableStateOf(false) }
     val animatedScale by animateFloatAsState(if (hovered || dragging) style.thumbGain else 1f)
-    val maxOffsetX = with(LocalDensity.current) { (style.trackWidth - thumbDiameter).toPx() }
+    val maxOffsetX = with(LocalDensity.current) { (trackWidth - thumbDiameter).toPx() }
     var steppedOffsetXs by remember { mutableStateOf(listOf<Float>()) }
+
     if (steps > 0) {
         val pOffsetX = maxOffsetX / (steps + 1)
         steppedOffsetXs = List(steps + 2) { index -> index * pOffsetX }
@@ -169,7 +213,7 @@ fun Slider(
     @Composable
     fun Track(content: @Composable () -> Unit) {
         val cornerSize = (style.trackShape as? CornerBasedShape)?.topStart?.toPx(Size.Zero, LocalDensity.current) ?: 0f
-        Box(modifier = Modifier.width(style.trackWidth), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.width(trackWidth), contentAlignment = Alignment.Center) {
             Box(
                 modifier = Modifier.size(trackAdoptWidth, style.trackHeight)
                     .background(colors.trackInactiveColor, style.trackShape)
@@ -356,9 +400,11 @@ internal object SliderProperties {
     val ThumbShape = ShapesDescriptor.Tertiary
     val StepShape = ShapesDescriptor.Tertiary
     val TrackShape = ShapesDescriptor.Primary
-    val TrackWidth = 240.dp
+    val TrackWidth = Dp.Unspecified
     val TrackHeight = 4.dp
     val ThumbBorderWidth = SizesDescriptor.BorderSizeTertiary
     val StepBorderWidth = SizesDescriptor.BorderSizeTertiary
     val TrackBorderWidth = SizesDescriptor.BorderSizeTertiary
 }
+
+private val DefaultTrackWidth = 240.dp
