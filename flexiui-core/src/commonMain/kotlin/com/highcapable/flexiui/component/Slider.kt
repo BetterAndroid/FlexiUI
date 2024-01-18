@@ -198,7 +198,9 @@ private fun SliderLayout(
     val offsetXFromValue = (value.coerceIn(min, max) - min) / (max - min) * maxOffsetX
     val steppedOffsetXFromValue = offsetXFromValue.withSteps()
     var absOffsetX by remember { mutableStateOf(0f) }
-    var offsetX by remember { mutableStateOf(steppedOffsetXFromValue) }
+    var offsetX by remember { mutableStateOf(0f) }
+    // Needs update every time when [value] or [trackWidth] changed.
+    offsetX = steppedOffsetXFromValue
     val animatedOffsetX by animateFloatAsState(offsetX)
     val adoptedOffsetX = if (tapped && !dragging) animatedOffsetX else offsetX
 
