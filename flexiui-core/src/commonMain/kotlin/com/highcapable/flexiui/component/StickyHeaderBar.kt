@@ -98,7 +98,8 @@ fun StickyHeaderBar(
         val iconStyle = IconDefaults.style(size = style.iconSize, tint = colors.iconTint)
         val textStyle = style.textStyle.copy(color = colors.textColor)
         Box(
-            modifier = Modifier.clip(style.iconShape)
+            modifier = Modifier
+                .clip(style.iconShape)
                 .background(colors.iconBackgroundColor)
                 .padding(style.iconPadding)
         ) {

@@ -167,16 +167,18 @@ fun Text(
     BasicText(
         text = text,
         modifier = modifier,
-        style = currentStyle.copy(color = currentColor).merge(
-            fontSize = fontSize,
-            fontStyle = fontStyle,
-            fontWeight = fontWeight,
-            fontFamily = fontFamily,
-            letterSpacing = letterSpacing,
-            textDecoration = textDecoration,
-            textAlign = textAlign,
-            lineHeight = lineHeight
-        ),
+        style = currentStyle
+            .copy(color = currentColor)
+            .merge(
+                fontSize = fontSize,
+                fontStyle = fontStyle,
+                fontWeight = fontWeight,
+                fontFamily = fontFamily,
+                letterSpacing = letterSpacing,
+                textDecoration = textDecoration,
+                textAlign = textAlign,
+                lineHeight = lineHeight
+            ),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,

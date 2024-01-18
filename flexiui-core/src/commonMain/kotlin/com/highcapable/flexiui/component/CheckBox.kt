@@ -117,13 +117,19 @@ fun CheckBox(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentAlpha by animateFloatAsState(if (checked) 1f else 0f)
     val animatedContentLayer by animateFloatAsState(if (checked) 1f else 0f)
-    Row(modifier = Modifier.componentState(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .componentState(enabled)
+            .then(modifier),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(
-            modifier = Modifier.clickable(
-                interactionSource = interactionSource,
-                enabled = enabled,
-                role = Role.Checkbox
-            ) { onCheckedChange(!checked) }
+            modifier = Modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    enabled = enabled,
+                    role = Role.Checkbox
+                ) { onCheckedChange(!checked) }
                 .size(style.strokeSize)
                 .scale(animatedStrokeScale)
                 .background(animatedColor, style.shape)
@@ -131,7 +137,8 @@ fun CheckBox(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(style.contentSize)
+                modifier = Modifier
+                    .size(style.contentSize)
                     .scale(animatedContentScale)
                     .alpha(animatedContentAlpha)
                     .graphicsLayer(

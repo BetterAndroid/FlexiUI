@@ -126,7 +126,11 @@ fun TabRow(
     tabs: @Composable () -> Unit
 ) {
     TabStyleBox(modifier, colors, style) {
-        SubcomposeLayout(Modifier.fillMaxWidth().selectableGroup()) { constraints ->
+        SubcomposeLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .selectableGroup()
+        ) { constraints ->
             val maximumConstraints = Constraints()
             val tabRowWidth = constraints.maxWidth
             val tabMeasurables = subcompose(TabSlots.Tabs, tabs)
@@ -181,7 +185,8 @@ fun ScrollableTabRow(
     TabStyleBox(modifier, colors, style) {
         val scrollableTabData = rememberScrollableTabData(scrollState)
         SubcomposeLayout(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .wrapContentSize(align = Alignment.CenterStart)
                 .horizontalScroll(scrollState)
                 .selectableGroup()
@@ -264,7 +269,8 @@ fun Tab(
         LocalTextStyle provides contentTextStyle
     ) {
         Row(
-            modifier = Modifier.componentState(enabled)
+            modifier = Modifier
+                .componentState(enabled)
                 .clip(currentContentShape)
                 .then(modifier)
                 .rippleClickable(

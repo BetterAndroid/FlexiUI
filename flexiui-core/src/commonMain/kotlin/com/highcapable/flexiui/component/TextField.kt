@@ -161,6 +161,7 @@ data class AutoCompleteOptions(
  * @see TextField
  * @see PasswordTextField
  * @see BackspaceTextField
+ * @see BasicTextField
  * @param value the text field value.
  * @param onValueChange the text field value change callback.
  * @param completionValues the auto complete values, when you want to use auto complete.
@@ -224,15 +225,17 @@ fun TextField(
     })
     val textColor = style.textStyle.color.orNull() ?: colors.textColor
     BoxWithConstraints(
-        modifier = Modifier.textField(
-            enabled = enabled,
-            colors = colors,
-            style = style,
-            borderColor = animatedBorderColor,
-            borderWidth = animatedBorderWidth,
-            interactionSource = interactionSource,
-            then = modifier
-        ).pointerHoverState(TextFieldPointerState.Text)
+        modifier = Modifier
+            .textField(
+                enabled = enabled,
+                colors = colors,
+                style = style,
+                borderColor = animatedBorderColor,
+                borderWidth = animatedBorderWidth,
+                interactionSource = interactionSource,
+                then = modifier
+            )
+            .pointerHoverState(TextFieldPointerState.Text)
     ) {
         // Note: If minWidth is not 0, a constant width is currently set.
         //       At this time, the child layout must be completely filled into the parent layout.
@@ -247,12 +250,17 @@ fun TextField(
                     content = it
                 )
             }
-            Box(modifier = Modifier.weight(1f, needInflatable).textFieldPadding(style)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f, needInflatable)
+                    .textFieldPadding(style)
+            ) {
                 TextFieldStyle(colors) {
                     BasicTextField(
                         value = value,
                         onValueChange = onValueChange,
-                        modifier = Modifier.inflatable()
+                        modifier = Modifier
+                            .inflatable()
                             .focusRequester(focusRequester)
                             .onKeyEvent { keyEventFactory.onKeyEvent?.invoke(it) ?: false },
                         enabled = enabled,
@@ -307,6 +315,7 @@ fun TextField(
  * @see TextField
  * @see PasswordTextField
  * @see BackspaceTextField
+ * @see BasicTextField
  * @param value the value of text.
  * @param onValueChange the text field value change callback.
  * @param completionValues the auto complete values, when you want to use auto complete.
@@ -458,7 +467,9 @@ fun PasswordTextField(
                 if (pressed) focusRequester.requestFocus()
                 if (value.text.isEmpty() && animatedSize == 0.dp) passwordVisible = defaultPasswordVisible
                 IconToggleButton(
-                    modifier = Modifier.size(animatedSize).pointerHoverState(TextFieldPointerState.Common),
+                    modifier = Modifier
+                        .size(animatedSize)
+                        .pointerHoverState(TextFieldPointerState.Common),
                     style = IconButtonDefaults.style(padding = TextDecorIconPadding),
                     checked = passwordVisible,
                     onCheckedChange = {
@@ -630,7 +641,9 @@ fun BackspaceTextField(
                         }
                         focusRequester.requestFocus()
                     },
-                    modifier = Modifier.width(animatedSize).pointerHoverState(TextFieldPointerState.Common),
+                    modifier = Modifier
+                        .width(animatedSize)
+                        .pointerHoverState(TextFieldPointerState.Common),
                     style = IconButtonDefaults.style(padding = TextDecorIconPadding),
                     enabled = enabled,
                     interactionSource = cInteractionSource

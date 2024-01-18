@@ -110,7 +110,8 @@ fun Icon(
         }
     else Modifier
     Box(
-        modifier = modifier.toolingGraphicsLayer()
+        modifier = modifier
+            .toolingGraphicsLayer()
             .defaultSizeFor(currentStyle, painter)
             .paint(
                 painter,

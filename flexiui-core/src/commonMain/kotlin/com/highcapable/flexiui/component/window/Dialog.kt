@@ -230,7 +230,9 @@ fun FlexiDialog(
         ) {
             neutralButton?.also { button ->
                 AdaptiveRow(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = style.buttonsSpacing),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = style.buttonsSpacing),
                     content = button
                 )
             }
@@ -327,9 +329,15 @@ private fun BasicFlexiDialog(
                 alpha = animatedAlpha
             }.then(modifier)
         else modifier
-        Box(modifier = Modifier.padding(insetsPadding).then(sModifier)) {
+        Box(
+            modifier = Modifier
+                .padding(insetsPadding)
+                .then(sModifier)
+        ) {
             AreaBox(
-                modifier = Modifier.widthIn(max = maxWidth).heightIn(max = maxHeight),
+                modifier = Modifier
+                    .widthIn(max = maxWidth)
+                    .heightIn(max = maxHeight),
                 colors = boxColors,
                 style = boxStyle,
                 contentAlignment = contentAlignment

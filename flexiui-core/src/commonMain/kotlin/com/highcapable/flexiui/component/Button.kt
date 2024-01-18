@@ -117,18 +117,20 @@ fun Button(
         backgroundColor = Color.Transparent
     )
     Box(
-        modifier = Modifier.button(
-            enabled = enabled,
-            colors = colors,
-            style = style,
-            then = modifier
-        ).rippleClickable(
-            rippleStyle = style.rippleStyle,
-            enabled = enabled,
-            role = Role.Button,
-            interactionSource = interactionSource,
-            onClick = onClick
-        ),
+        modifier = Modifier
+            .button(
+                enabled = enabled,
+                colors = colors,
+                style = style,
+                then = modifier
+            )
+            .rippleClickable(
+                rippleStyle = style.rippleStyle,
+                enabled = enabled,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                onClick = onClick
+            ),
         contentAlignment = Alignment.Center
     ) {
         CompositionLocalProvider(
@@ -171,18 +173,21 @@ fun IconButton(
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = Modifier.button(
-            enabled = enabled,
-            colors = colors,
-            style = style,
-            then = modifier
-        ).rippleClickable(
-            rippleStyle = style.rippleStyle,
-            enabled = enabled,
-            role = Role.Button,
-            interactionSource = interactionSource,
-            onClick = onClick
-        ).padding(style.padding),
+        modifier = Modifier
+            .button(
+                enabled = enabled,
+                colors = colors,
+                style = style,
+                then = modifier
+            )
+            .rippleClickable(
+                rippleStyle = style.rippleStyle,
+                enabled = enabled,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                onClick = onClick
+            )
+            .padding(style.padding),
         contentAlignment = Alignment.Center,
     ) { IconButtonStyle(colors, content) }
 }
@@ -212,19 +217,22 @@ fun IconToggleButton(
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = Modifier.button(
-            enabled = enabled,
-            colors = colors,
-            style = style,
-            then = modifier
-        ).rippleToggleable(
-            value = checked,
-            rippleStyle = style.rippleStyle,
-            onValueChange = onCheckedChange,
-            enabled = enabled,
-            role = Role.Checkbox,
-            interactionSource = interactionSource
-        ).padding(style.padding),
+        modifier = Modifier
+            .button(
+                enabled = enabled,
+                colors = colors,
+                style = style,
+                then = modifier
+            )
+            .rippleToggleable(
+                value = checked,
+                rippleStyle = style.rippleStyle,
+                onValueChange = onCheckedChange,
+                enabled = enabled,
+                role = Role.Checkbox,
+                interactionSource = interactionSource
+            )
+            .padding(style.padding),
         contentAlignment = Alignment.Center
     ) { IconButtonStyle(colors, content) }
 }
@@ -304,11 +312,13 @@ object ButtonDefaults {
      */
     @Composable
     fun style(
-        rippleStyle: RippleStyle = InteractionDefaults.rippleStyle(color = when {
-            LocalPrimaryButton.current -> ButtonProperties.PrimaryRippleColor
-            LocalInAreaBox.current -> ButtonProperties.RippleColor
-            else -> ButtonProperties.PrimaryRippleColor
-        }.toColor()),
+        rippleStyle: RippleStyle = InteractionDefaults.rippleStyle(
+            color = when {
+                LocalPrimaryButton.current -> ButtonProperties.PrimaryRippleColor
+                LocalInAreaBox.current -> ButtonProperties.RippleColor
+                else -> ButtonProperties.PrimaryRippleColor
+            }.toColor()
+        ),
         padding: ComponentPadding = ButtonProperties.Padding.toPadding(),
         shape: Shape = AreaBoxDefaults.childShape(),
         borderWidth: Dp = ButtonProperties.BorderWidth.toDp()

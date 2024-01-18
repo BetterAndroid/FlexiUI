@@ -250,9 +250,9 @@ fun DropdownList(
         ) {
             Box(modifier = Modifier.weight(1f, needInflatable)) { text() }
             Icon(
-                modifier = Modifier.graphicsLayer {
-                    rotationZ = animatedDirection
-                }.size(style.endIconSize),
+                modifier = Modifier
+                    .graphicsLayer { rotationZ = animatedDirection }
+                    .size(style.endIconSize),
                 imageVector = FlexiIcons.Dropdown,
                 style = IconDefaults.style(tint = animatedEndIconTint)
             )
@@ -261,7 +261,9 @@ fun DropdownList(
             expanded = expanded,
             onDismissRequest = { onExpandedChange(false) },
             offset = DpOffset(-style.padding.start, style.padding.end),
-            modifier = Modifier.width(menuMaxWidth).heightIn(max = menuMaxHeight),
+            modifier = Modifier
+                .width(menuMaxWidth)
+                .heightIn(max = menuMaxHeight),
             colors = menuColors,
             style = menuStyle,
             scrollState = scrollState,
@@ -405,7 +407,8 @@ fun DropdownMenuItem(
         ?: LocalDropdownMenuContentShape.current
         ?: DropdownMenuDefaults.style().contentShape
     AreaRow(
-        modifier = Modifier.componentState(enabled)
+        modifier = Modifier
+            .componentState(enabled)
             .then(modifier)
             .fillMaxWidth()
             .sizeIn(
@@ -473,7 +476,8 @@ private fun DropdownMenuContent(
         }
     ) { if (it) 1f else 0f }
     AreaColumn(
-        modifier = modifier.width(IntrinsicSize.Max)
+        modifier = modifier
+            .width(IntrinsicSize.Max)
             .verticalScroll(scrollState),
         initializer = {
             graphicsLayer {

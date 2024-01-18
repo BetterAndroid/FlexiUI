@@ -119,20 +119,28 @@ fun RadioButton(
     val animatedContentScale by animateFloatAsState(if (hovered) style.hoveredGain else 1f)
     val animatedContentShadow by animateDpAsState(if (selected) style.contentShadowSize else 0.dp)
     val animatedContentAlpha by animateFloatAsState(if (selected) 1f else 0f)
-    Row(modifier = Modifier.componentState(enabled).then(modifier), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .componentState(enabled)
+            .then(modifier),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(
-            modifier = Modifier.clickable(
-                interactionSource = interactionSource,
-                enabled = enabled,
-                role = Role.RadioButton,
-                onClick = onClick
-            ).size(strokeDiameter)
+            modifier = Modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    enabled = enabled,
+                    role = Role.RadioButton,
+                    onClick = onClick
+                )
+                .size(strokeDiameter)
                 .scale(animatedStrokeScale)
                 .background(animatedColor, style.shape),
             contentAlignment = Alignment.Center
         ) {
             Box(
-                modifier = Modifier.size(contentDiameter)
+                modifier = Modifier
+                    .size(contentDiameter)
                     .scale(animatedContentScale)
                     .shadow(animatedContentShadow, style.shape)
                     .alpha(animatedContentAlpha)

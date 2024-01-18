@@ -68,7 +68,9 @@ fun Scaffold(
     content: @Composable (innerPadding: ComponentPadding) -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxSize().then(modifier),
+        modifier = Modifier
+            .fillMaxSize()
+            .then(modifier),
         colors = colors,
         padding = ComponentPadding.None
     ) {

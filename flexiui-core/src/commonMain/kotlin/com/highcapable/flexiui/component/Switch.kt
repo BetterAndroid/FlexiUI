@@ -148,15 +148,17 @@ fun Switch(
     @Composable
     fun Track(content: @Composable RowScope.() -> Unit) {
         Row(
-            modifier = Modifier.clickable(
-                interactionSource = interactionSource,
-                enabled = enabled,
-                role = Role.Switch
-            ) {
-                distance = maxOffsetX
-                offsetX = if (checked) 0f else maxOffsetX
-                onCheckedChange(!checked)
-            }.background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
+            modifier = Modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    enabled = enabled,
+                    role = Role.Switch
+                ) {
+                    distance = maxOffsetX
+                    offsetX = if (checked) 0f else maxOffsetX
+                    onCheckedChange(!checked)
+                }
+                .background(if (efficientDragging) trackColor else animatedTrackColor, style.trackShape)
                 .borderOrElse(style.trackBorderWidth, colors.trackBorderColor, style.trackShape)
                 .size(style.trackWidth, style.trackHeight)
                 .padding(style.padding),
@@ -169,7 +171,8 @@ fun Switch(
     @Composable
     fun Thumb() {
         Box(
-            modifier = Modifier.size(thumbDiameter)
+            modifier = Modifier
+                .size(thumbDiameter)
                 .offset { IntOffset((if (efficientDragging) offsetX else animatedOffsetX).roundToInt(), 0) }
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
@@ -208,7 +211,11 @@ fun Switch(
                 )
         )
     }
-    Box(modifier = Modifier.componentState(enabled).then(modifier)) { Track { Thumb() } }
+    Box(
+        modifier = Modifier
+            .componentState(enabled)
+            .then(modifier)
+    ) { Track { Thumb() } }
 }
 
 /**
@@ -239,7 +246,8 @@ fun SwitchItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier.componentState(enabled)
+            modifier = Modifier
+                .componentState(enabled)
                 .weight(1f)
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }
         ) { content() }

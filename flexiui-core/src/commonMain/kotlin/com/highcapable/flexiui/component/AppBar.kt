@@ -266,7 +266,9 @@ interface AppBarScope {
         val iconInflateSize = impl.style.actionIconSize + impl.style.actionIconPadding
         IconButton(
             onClick = onClick,
-            modifier = Modifier.size(iconInflateSize).then(modifier),
+            modifier = Modifier
+                .size(iconInflateSize)
+                .then(modifier),
             colors = colors,
             style = style,
             enabled = enabled,
@@ -303,7 +305,8 @@ private class AppBarImpl(
             ) {
                 val actionContentMaxWidth = if (actions != null) style.actionContentMaxWidth else 0.dp
                 Row(
-                    modifier = Modifier.padding(end = style.contentSpacing)
+                    modifier = Modifier
+                        .padding(end = style.contentSpacing)
                         .widthIn(max = contentMaxWidth - actionContentMaxWidth),
                     horizontalArrangement = Arrangement.spacedBy(style.contentSpacing),
                     verticalAlignment = Alignment.CenterVertically

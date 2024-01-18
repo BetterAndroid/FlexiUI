@@ -213,9 +213,13 @@ private fun SliderLayout(
     @Composable
     fun Track(content: @Composable () -> Unit) {
         val cornerSize = (style.trackShape as? CornerBasedShape)?.topStart?.toPx(Size.Zero, LocalDensity.current) ?: 0f
-        Box(modifier = Modifier.width(trackWidth), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.width(trackWidth),
+            contentAlignment = Alignment.Center
+        ) {
             Box(
-                modifier = Modifier.size(trackAdoptWidth, style.trackHeight)
+                modifier = Modifier
+                    .size(trackAdoptWidth, style.trackHeight)
                     .background(colors.trackInactiveColor, style.trackShape)
                     .borderOrElse(style.trackBorderWidth, colors.trackBorderColor, style.trackShape)
                     .drawWithContent {
@@ -238,12 +242,12 @@ private fun SliderLayout(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            for (i in 0 until steps + 2)
-                Box(
-                    modifier = Modifier.size(style.trackHeight)
-                        .background(colors.stepColor, style.stepShape)
-                        .borderOrElse(style.stepBorderWidth, colors.stepBorderColor, style.stepShape)
-                )
+            for (i in 0 until steps + 2) Box(
+                modifier = Modifier
+                    .size(style.trackHeight)
+                    .background(colors.stepColor, style.stepShape)
+                    .borderOrElse(style.stepBorderWidth, colors.stepBorderColor, style.stepShape)
+            )
         }
     }
 
@@ -251,7 +255,8 @@ private fun SliderLayout(
     @Composable
     fun Thumb() {
         Box(
-            modifier = Modifier.size(thumbDiameter)
+            modifier = Modifier
+                .size(thumbDiameter)
                 .offset { IntOffset(adoptedOffsetX.roundToInt(), 0) }
                 .scale(animatedScale)
                 .shadow(style.thumbShadowSize, style.thumbShape)
@@ -286,7 +291,8 @@ private fun SliderLayout(
         )
     }
     Box(
-        modifier = Modifier.componentState(enabled)
+        modifier = Modifier
+            .componentState(enabled)
             .then(modifier)
             .hoverable(interactionSource, enabled)
             .pointerInput(Unit) {

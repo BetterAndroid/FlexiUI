@@ -115,7 +115,9 @@ fun NavigationBarRow(
 ) {
     NavigationBarStyleBox(modifier, horizontal = true, colors, style) {
         AreaRow(
-            modifier = Modifier.fillMaxWidth().selectableGroup(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .selectableGroup(),
             colors = AreaBoxDefaults.colors(
                 backgroundColor = colors.backgroundColor,
                 borderColor = colors.borderColor
@@ -153,7 +155,9 @@ fun NavigationBarColumn(
 ) {
     NavigationBarStyleBox(modifier, horizontal = false, colors, style) {
         AreaColumn(
-            modifier = Modifier.fillMaxWidth().selectableGroup(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .selectableGroup(),
             colors = AreaBoxDefaults.colors(
                 backgroundColor = colors.backgroundColor,
                 borderColor = colors.borderColor
@@ -219,7 +223,8 @@ fun NavigationBarItem(
     val currentIconStyle = LocalIconStyle.current.copy(tint = animatedContentColor)
     val currentTextStyle = LocalTextStyle.current.copy(color = animatedContentColor)
     Box(
-        modifier = Modifier.componentState(enabled)
+        modifier = Modifier
+            .componentState(enabled)
             .clip(currentContentShape)
             .then(modifier)
             .background(animatedIndicatorColor)
