@@ -534,3 +534,195 @@ val FlexiIcons.DeleteForever by lazy {
         }
     }
 }
+
+val FlexiIcons.TextFields by lazy {
+    ImageVector(
+        name = "text_fields",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ) {
+        path(
+            fill = SolidColor(Color.White),
+            fillAlpha = 1.0f,
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 1.0f,
+            strokeLineCap = StrokeCap.Butt,
+            strokeLineJoin = StrokeJoin.Miter,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(2.5f, 5.5f)
+            curveTo(2.5f, 6.33f, 3.17f, 7f, 4f, 7f)
+            horizontalLineToRelative(3.5f)
+            verticalLineToRelative(10.5f)
+            curveToRelative(0f, 0.83f, 0.67f, 1.5f, 1.5f, 1.5f)
+            reflectiveCurveToRelative(1.5f, -0.67f, 1.5f, -1.5f)
+            verticalLineTo(7f)
+            horizontalLineTo(14f)
+            curveToRelative(0.83f, 0f, 1.5f, -0.67f, 1.5f, -1.5f)
+            reflectiveCurveTo(14.83f, 4f, 14f, 4f)
+            horizontalLineTo(4f)
+            curveToRelative(-0.83f, 0f, -1.5f, 0.67f, -1.5f, 1.5f)
+            close()
+            moveTo(20f, 9f)
+            horizontalLineToRelative(-6f)
+            curveToRelative(-0.83f, 0f, -1.5f, 0.67f, -1.5f, 1.5f)
+            reflectiveCurveTo(13.17f, 12f, 14f, 12f)
+            horizontalLineToRelative(1.5f)
+            verticalLineToRelative(5.5f)
+            curveToRelative(0f, 0.83f, 0.67f, 1.5f, 1.5f, 1.5f)
+            reflectiveCurveToRelative(1.5f, -0.67f, 1.5f, -1.5f)
+            verticalLineTo(12f)
+            horizontalLineTo(20f)
+            curveToRelative(0.83f, 0f, 1.5f, -0.67f, 1.5f, -1.5f)
+            reflectiveCurveTo(20.83f, 9f, 20f, 9f)
+            close()
+        }
+    }
+}
+
+val FlexiIcons.AutoList by lazy {
+    ImageVector(
+        name = "auto_list",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ) {
+        path(
+            fill = SolidColor(Color.White),
+            fillAlpha = 1.0f,
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 1.0f,
+            strokeLineCap = StrokeCap.Butt,
+            strokeLineJoin = StrokeJoin.Miter,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(22f, 8f)
+            curveToRelative(0f, -0.55f, -0.45f, -1f, -1f, -1f)
+            horizontalLineToRelative(-7f)
+            curveToRelative(-0.55f, 0f, -1f, 0.45f, -1f, 1f)
+            reflectiveCurveToRelative(0.45f, 1f, 1f, 1f)
+            horizontalLineToRelative(7f)
+            curveTo(21.55f, 9f, 22f, 8.55f, 22f, 8f)
+            close()
+            moveTo(13f, 16f)
+            curveToRelative(0f, 0.55f, 0.45f, 1f, 1f, 1f)
+            horizontalLineToRelative(7f)
+            curveToRelative(0.55f, 0f, 1f, -0.45f, 1f, -1f)
+            curveToRelative(0f, -0.55f, -0.45f, -1f, -1f, -1f)
+            horizontalLineToRelative(-7f)
+            curveTo(13.45f, 15f, 13f, 15.45f, 13f, 16f)
+            close()
+            moveTo(10.47f, 4.63f)
+            curveToRelative(0.39f, 0.39f, 0.39f, 1.02f, 0f, 1.41f)
+            lineToRelative(-4.23f, 4.25f)
+            curveToRelative(-0.39f, 0.39f, -1.02f, 0.39f, -1.42f, 0f)
+            lineTo(2.7f, 8.16f)
+            curveToRelative(-0.39f, -0.39f, -0.39f, -1.02f, 0f, -1.41f)
+            curveToRelative(0.39f, -0.39f, 1.02f, -0.39f, 1.41f, 0f)
+            lineToRelative(1.42f, 1.42f)
+            lineToRelative(3.54f, -3.54f)
+            curveTo(9.45f, 4.25f, 10.09f, 4.25f, 10.47f, 4.63f)
+            close()
+            moveTo(10.48f, 12.64f)
+            curveToRelative(0.39f, 0.39f, 0.39f, 1.02f, 0f, 1.41f)
+            lineToRelative(-4.23f, 4.25f)
+            curveToRelative(-0.39f, 0.39f, -1.02f, 0.39f, -1.42f, 0f)
+            lineTo(2.7f, 16.16f)
+            curveToRelative(-0.39f, -0.39f, -0.39f, -1.02f, 0f, -1.41f)
+            reflectiveCurveToRelative(1.02f, -0.39f, 1.41f, 0f)
+            lineToRelative(1.42f, 1.42f)
+            lineToRelative(3.54f, -3.54f)
+            curveTo(9.45f, 12.25f, 10.09f, 12.25f, 10.48f, 12.64f)
+            lineTo(10.48f, 12.64f)
+            close()
+        }
+    }
+}
+
+val FlexiIcons.Signpost by lazy {
+    ImageVector(
+        name = "signpost",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ) {
+        path(
+            fill = SolidColor(Color.White),
+            fillAlpha = 1.0f,
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 1.0f,
+            strokeLineCap = StrokeCap.Butt,
+            strokeLineJoin = StrokeJoin.Miter,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(13f, 10f)
+            lineToRelative(5f, 0f)
+            lineToRelative(3f, -3f)
+            lineToRelative(-3f, -3f)
+            lineToRelative(-5f, 0f)
+            lineToRelative(0f, -2f)
+            lineToRelative(-2f, 0f)
+            lineToRelative(0f, 2f)
+            lineToRelative(-7f, 0f)
+            lineToRelative(0f, 6f)
+            lineToRelative(7f, 0f)
+            lineToRelative(0f, 2f)
+            lineToRelative(-5f, 0f)
+            lineToRelative(-3f, 3f)
+            lineToRelative(3f, 3f)
+            lineToRelative(5f, 0f)
+            lineToRelative(0f, 4f)
+            lineToRelative(2f, 0f)
+            lineToRelative(0f, -4f)
+            lineToRelative(7f, 0f)
+            lineToRelative(0f, -6f)
+            lineToRelative(-7f, 0f)
+            close()
+        }
+    }
+}
+
+val FlexiIcons.Dialog by lazy {
+    ImageVector(
+        name = "dialog",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f
+    ) {
+        path(
+            fill = SolidColor(Color.White),
+            fillAlpha = 1.0f,
+            strokeAlpha = 1.0f,
+            strokeLineWidth = 1.0f,
+            strokeLineCap = StrokeCap.Butt,
+            strokeLineJoin = StrokeJoin.Miter,
+            strokeLineMiter = 1.0f,
+            pathFillType = PathFillType.NonZero
+        ) {
+            moveTo(19f, 5f)
+            horizontalLineTo(5f)
+            curveTo(3.9f, 5f, 3f, 5.9f, 3f, 7f)
+            verticalLineToRelative(10f)
+            curveToRelative(0f, 1.1f, 0.9f, 2f, 2f, 2f)
+            horizontalLineToRelative(14f)
+            curveToRelative(1.1f, 0f, 2f, -0.9f, 2f, -2f)
+            verticalLineTo(7f)
+            curveTo(21f, 5.9f, 20.1f, 5f, 19f, 5f)
+            close()
+            moveTo(19f, 17f)
+            horizontalLineTo(5f)
+            verticalLineTo(7f)
+            horizontalLineToRelative(14f)
+            verticalLineTo(17f)
+            close()
+        }
+    }
+}

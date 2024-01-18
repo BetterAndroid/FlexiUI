@@ -45,35 +45,48 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.highcapable.betterandroid.compose.extension.ui.layout.AdaptiveRow
+import com.highcapable.flexiui.FlexiTheme
 import com.highcapable.flexiui.availableColorSchemes
 import com.highcapable.flexiui.component.AreaBox
 import com.highcapable.flexiui.component.AreaColumn
+import com.highcapable.flexiui.component.AutoCompleteOptions
 import com.highcapable.flexiui.component.Button
+import com.highcapable.flexiui.component.CircularProgressIndicator
 import com.highcapable.flexiui.component.DropdownList
 import com.highcapable.flexiui.component.DropdownMenuItem
 import com.highcapable.flexiui.component.HorizontalItemBox
 import com.highcapable.flexiui.component.Icon
 import com.highcapable.flexiui.component.IconDefaults
+import com.highcapable.flexiui.component.LinearProgressIndicator
 import com.highcapable.flexiui.component.NavigationBarItem
 import com.highcapable.flexiui.component.NavigationBarRow
 import com.highcapable.flexiui.component.PrimaryAppBar
 import com.highcapable.flexiui.component.Scaffold
 import com.highcapable.flexiui.component.SecondarySpacer
 import com.highcapable.flexiui.component.SecondaryText
+import com.highcapable.flexiui.component.Slider
 import com.highcapable.flexiui.component.StickyHeaderBar
 import com.highcapable.flexiui.component.SwitchItem
 import com.highcapable.flexiui.component.TertiarySpacer
 import com.highcapable.flexiui.component.Text
+import com.highcapable.flexiui.component.TextField
 import com.highcapable.flexiui.component.window.FlexiDialog
+import com.highcapable.flexiui.demo.AutoList
 import com.highcapable.flexiui.demo.Component
+import com.highcapable.flexiui.demo.Dialog
 import com.highcapable.flexiui.demo.GitHub
 import com.highcapable.flexiui.demo.Home
 import com.highcapable.flexiui.demo.Locale
 import com.highcapable.flexiui.demo.PROJECT_URL
 import com.highcapable.flexiui.demo.Preferences
 import com.highcapable.flexiui.demo.Screen
+import com.highcapable.flexiui.demo.Signpost
 import com.highcapable.flexiui.demo.Style
+import com.highcapable.flexiui.demo.TextFields
 import com.highcapable.flexiui.demo.displayName
 import com.highcapable.flexiui.demo.locales
 import com.highcapable.flexiui.demo.rememberRouter
@@ -145,6 +158,7 @@ fun MainScreen() {
         HorizontalPager(
             modifier = Modifier.fillMaxSize(),
             state = pagerState,
+            beyondBoundsPageCount = pageCount
         ) { index ->
             val modifier = Modifier.padding(innerPadding)
             when (index) {
@@ -158,7 +172,11 @@ fun MainScreen() {
 @Composable
 fun MainHomePage(modifier: Modifier) {
     val scrollState = rememberScrollState()
-    Column(modifier = modifier.fillMaxSize().verticalScroll(scrollState)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
         AreaBox(modifier = Modifier.fillMaxWidth()) { Text(strings.appDescription) }
         SecondarySpacer()
         AreaColumn(modifier = Modifier.fillMaxWidth()) {
@@ -268,9 +286,385 @@ fun MainHomePage(modifier: Modifier) {
 
 @Composable
 fun MainComponentPage(modifier: Modifier) {
-    // TODO: To be implemented.
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) { SecondaryText("To be implemented.", primaryFontSize = true) }
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
+        AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            StickyHeaderBar(
+                modifier = Modifier.fillMaxWidth(),
+                icon = { Icon(FlexiIcons.TextFields) },
+                title = { Text(strings.textAndInput) }
+            )
+            SecondarySpacer()
+            val defaultFontSize = FlexiTheme.typography.primary.fontSize.value
+            val maxFontSize = 30f
+            var inputText by remember { mutableStateOf("") }
+            var fontSize by remember { mutableStateOf(defaultFontSize) }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = inputText,
+                onValueChange = { inputText = it },
+                placeholder = { Text(strings.enterTextHere) }
+            )
+            SecondarySpacer()
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(10.dp),
+                text = inputText.ifEmpty { strings.enterTextHereDescription },
+                fontSize = fontSize.sp,
+                textAlign = TextAlign.Center
+            )
+            SecondarySpacer()
+            Slider(
+                modifier = Modifier.fillMaxWidth(),
+                value = fontSize,
+                onValueChange = { fontSize = it },
+                max = maxFontSize
+            )
+        }
+        SecondarySpacer()
+        AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            var expanded by remember { mutableStateOf(false) }
+            var selectedText by remember { mutableStateOf("") }
+            var inputText by remember { mutableStateOf("") }
+            StickyHeaderBar(
+                modifier = Modifier.fillMaxWidth(),
+                icon = { Icon(FlexiIcons.AutoList) },
+                title = { Text(strings.dropdownAndAutoComplete) }
+            )
+            SecondarySpacer()
+            DropdownList(
+                modifier = Modifier.fillMaxWidth(),
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                text = { Text(selectedText.ifEmpty { strings.dropdownSimpleDescription }) },
+            ) {
+                strings.simpleStringData.forEach {
+                    DropdownMenuItem(
+                        actived = selectedText == it,
+                        onClick = {
+                            expanded = false
+                            selectedText = it
+                        }
+                    ) { Text(it) }
+                }
+            }
+            SecondarySpacer()
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = inputText,
+                onValueChange = { inputText = it },
+                placeholder = { Text(strings.enterTextHere) },
+                singleLine = true,
+                completionValues = strings.simpleStringData,
+                completionOptions = AutoCompleteOptions(
+                    checkCase = false,
+                    threshold = 1
+                )
+            )
+            SecondarySpacer()
+            SecondaryText(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = strings.dropdownAndAutoCompleteDescription,
+                textAlign = TextAlign.Center
+            )
+        }
+        SecondarySpacer()
+        AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            var useCircularIndicator by remember { mutableStateOf(true) }
+            var indeterminate by remember { mutableStateOf(false) }
+            var progress by remember { mutableStateOf(30f) }
+            StickyHeaderBar(
+                modifier = Modifier.fillMaxWidth(),
+                icon = { Icon(FlexiIcons.Signpost) },
+                title = { Text(strings.progressIndicator) }
+            )
+            SecondarySpacer()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (useCircularIndicator)
+                    CircularProgressIndicator(
+                        progress = progress,
+                        max = 100f,
+                        indeterminate = indeterminate
+                    )
+                else
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                        progress = progress,
+                        max = 100f,
+                        indeterminate = indeterminate
+                    )
+            }
+            SecondarySpacer()
+            AdaptiveRow(
+                modifier = Modifier.fillMaxWidth(),
+                spacingBetween = 10.dp
+            ) {
+                Button(
+                    onClick = { progress = 30f }
+                ) { Text(strings.progressTo30, singleLine = true) }
+                Button(
+                    onClick = { progress = 100f }
+                ) { Text(strings.progressTo100, singleLine = true) }
+            }
+            SecondarySpacer()
+            SwitchItem(
+                checked = useCircularIndicator,
+                onCheckedChange = { useCircularIndicator = it }
+            ) { Text(strings.useCircularIndicator) }
+            SecondarySpacer()
+            SwitchItem(
+                checked = indeterminate,
+                onCheckedChange = { indeterminate = it }
+            ) { Text(strings.switchToIndeterminateProgress) }
+        }
+        SecondarySpacer()
+        AreaColumn(modifier = Modifier.fillMaxWidth()) {
+            StickyHeaderBar(
+                modifier = Modifier.fillMaxWidth(),
+                icon = { Icon(FlexiIcons.Dialog) },
+                title = { Text(strings.dialog) }
+            )
+            SecondarySpacer()
+            var showNormalDialog by remember { mutableStateOf(false) }
+            var showMultiButtonDialog by remember { mutableStateOf(false) }
+            var showDialogWithIcon by remember { mutableStateOf(false) }
+            var showLoadingDialog by remember { mutableStateOf(false) }
+            var showProgressDialog by remember { mutableStateOf(false) }
+            var showSingleInputDialog by remember { mutableStateOf(false) }
+            var showMultiInputDialog by remember { mutableStateOf(false) }
+            var showDropdownListDialog by remember { mutableStateOf(false) }
+            var showPasswordInputDialog by remember { mutableStateOf(false) }
+            var showSingleChoiceDialog by remember { mutableStateOf(false) }
+            var showMutliChoiceDialog by remember { mutableStateOf(false) }
+            NormalDialog(
+                visible = showNormalDialog,
+                onDismissRequest = { showNormalDialog = false }
+            )
+            MultiButtonDialog(
+                visible = showMultiButtonDialog,
+                onDismissRequest = { showMultiButtonDialog = false }
+            )
+            DialogWithIconDialog(
+                visible = showDialogWithIcon,
+                onDismissRequest = { showDialogWithIcon = false }
+            )
+            LoadingDialog(
+                visible = showLoadingDialog,
+                onDismissRequest = { showLoadingDialog = false }
+            )
+            ProgressDialog(
+                visible = showProgressDialog,
+                onDismissRequest = { showProgressDialog = false }
+            )
+            SingleInputDialog(
+                visible = showSingleInputDialog,
+                onDismissRequest = { showSingleInputDialog = false }
+            )
+            MultiInputDialog(
+                visible = showMultiInputDialog,
+                onDismissRequest = { showMultiInputDialog = false }
+            )
+            DropdownListDialog(
+                visible = showDropdownListDialog,
+                onDismissRequest = { showDropdownListDialog = false }
+            )
+            PasswordInputDialog(
+                visible = showPasswordInputDialog,
+                onDismissRequest = { showPasswordInputDialog = false }
+            )
+            SingleChoiceDialog(
+                visible = showSingleChoiceDialog,
+                onDismissRequest = { showSingleChoiceDialog = false }
+            )
+            MutliChoiceDialog(
+                visible = showMutliChoiceDialog,
+                onDismissRequest = { showMutliChoiceDialog = false }
+            )
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { showNormalDialog = true }
+            ) { Text(strings.normalDialog, singleLine = true) }
+            SecondarySpacer()
+            AdaptiveRow(
+                modifier = Modifier.fillMaxWidth(),
+                spacingBetween = 10.dp
+            ) {
+                Button(
+                    onClick = { showMultiButtonDialog = true }
+                ) { Text(strings.multiButtonDialog, singleLine = true) }
+                Button(
+                    onClick = { showDialogWithIcon = true }
+                ) { Text(strings.dialogWithIcon, singleLine = true) }
+            }
+            SecondarySpacer()
+            AdaptiveRow(
+                modifier = Modifier.fillMaxWidth(),
+                spacingBetween = 10.dp
+            ) {
+                Button(
+                    onClick = { showLoadingDialog = true }
+                ) { Text(strings.loadingDialog, singleLine = true) }
+                Button(
+                    onClick = { showProgressDialog = true }
+                ) { Text(strings.progressDialog, singleLine = true) }
+            }
+            SecondarySpacer()
+            AdaptiveRow(
+                modifier = Modifier.fillMaxWidth(),
+                spacingBetween = 10.dp
+            ) {
+                Button(
+                    onClick = { showSingleInputDialog = true }
+                ) { Text(strings.singleInputDialog, singleLine = true) }
+                Button(
+                    onClick = { showMultiInputDialog = true }
+                ) { Text(strings.multiInputDialog, singleLine = true) }
+            }
+            SecondarySpacer()
+            AdaptiveRow(
+                modifier = Modifier.fillMaxWidth(),
+                spacingBetween = 10.dp
+            ) {
+                Button(
+                    onClick = { showDropdownListDialog = true }
+                ) { Text(strings.dropdownListDialog, singleLine = true) }
+                Button(
+                    onClick = { showPasswordInputDialog = true }
+                ) { Text(strings.passwordInputDialog, singleLine = true) }
+            }
+            SecondarySpacer()
+            AdaptiveRow(
+                modifier = Modifier.fillMaxWidth(),
+                spacingBetween = 10.dp
+            ) {
+                Button(
+                    onClick = { showSingleChoiceDialog = true }
+                ) { Text(strings.singleChoiceDialog, singleLine = true) }
+                Button(
+                    onClick = { showMutliChoiceDialog = true }
+                ) { Text(strings.mutliChoiceDialog, singleLine = true) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NormalDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    FlexiDialog(
+        visible = visible,
+        onDismissRequest = onDismissRequest,
+        title = { Text(strings.normalDialog) },
+        content = { Text(strings.normalDialogDescription) },
+        confirmButton = {
+            Button(
+                onClick = onDismissRequest
+            ) { Text(strings.confirm) }
+        }
+    )
+}
+
+@Composable
+private fun MultiButtonDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    FlexiDialog(
+        visible = visible,
+        onDismissRequest = onDismissRequest,
+        title = { Text(strings.multiButtonDialog) },
+        content = { Text(strings.multiButtonDialogDescription) },
+        confirmButton = {
+            Button(
+                onClick = onDismissRequest
+            ) { Text(strings.confirm) }
+        },
+        cancelButton = {
+            Button(
+                onClick = onDismissRequest
+            ) { Text(strings.cancel) }
+        }
+    )
+}
+
+@Composable
+private fun DialogWithIconDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Dialog with icon
+}
+
+@Composable
+private fun LoadingDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Loading dialog
+}
+
+@Composable
+private fun ProgressDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Progress dialog
+}
+
+@Composable
+private fun SingleInputDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Single input dialog
+}
+
+@Composable
+private fun MultiInputDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Multi input dialog
+}
+
+@Composable
+private fun DropdownListDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Dropdown list dialog
+}
+
+@Composable
+private fun PasswordInputDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Password input dialog
+}
+
+@Composable
+private fun SingleChoiceDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Single choice dialog
+}
+
+@Composable
+private fun MutliChoiceDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit
+) {
+    // TODO: Multi choice dialog
 }

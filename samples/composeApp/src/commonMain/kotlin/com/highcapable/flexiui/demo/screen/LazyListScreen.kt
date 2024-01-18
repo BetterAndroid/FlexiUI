@@ -95,7 +95,7 @@ fun LazyListScreen() {
                             showRemoveAllDialog = false
                             testListData.clear()
                         }
-                    ) { Text(strings.comfirm) }
+                    ) { Text(strings.confirm) }
                 },
                 cancelButton = {
                     Button(
@@ -178,7 +178,9 @@ fun LazyListScreen() {
             }
             if (testListData.isNotEmpty()) when (index) {
                 0 -> LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
                     state = lazyListState,
                     verticalArrangement = ListSpacing
                 ) {
@@ -193,7 +195,9 @@ fun LazyListScreen() {
                     }
                 }
                 1 -> LazyVerticalGrid(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
                     state = lazyGridState,
                     columns = GridCells.Adaptive(GridMaxWidth),
                     verticalArrangement = ListSpacing,
@@ -210,7 +214,9 @@ fun LazyListScreen() {
                     }
                 }
             } else Box(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) { Text(strings.listNoData) }
         }
