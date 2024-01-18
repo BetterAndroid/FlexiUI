@@ -36,7 +36,7 @@ libraries:
   androidx.compose.runtime:
     runtime-android:
       alias: androidx-compose-android
-      version: 1.6.0-beta03
+      version: 1.6.0-alpha07
   com.highcapable.betterandroid:
     ui-component:
       version: 1.0.4
