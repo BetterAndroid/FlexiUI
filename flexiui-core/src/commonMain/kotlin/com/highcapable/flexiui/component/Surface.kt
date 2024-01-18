@@ -33,6 +33,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
@@ -62,6 +63,8 @@ data class SurfaceColors(
  * @param initializer the [Modifier] initializer, earlies than [modifier].
  * @param colors the colors of surface, default is [SurfaceDefaults.colors].
  * @param padding the padding of surface, default is [SurfaceDefaults.padding].
+ * @param contentAlignment the alignment of the content inside this surface, default is [Alignment.TopStart].
+ * @param propagateMinConstraints whether to propagate the min constraints from the content to this surface.
  * @param content the content of the [Surface].
  */
 @Composable
@@ -70,6 +73,8 @@ fun Surface(
     initializer: @Composable Modifier.() -> Modifier = { Modifier },
     colors: SurfaceColors = SurfaceDefaults.colors(),
     padding: ComponentPadding = SurfaceDefaults.padding,
+    contentAlignment: Alignment = Alignment.TopStart,
+    propagateMinConstraints: Boolean = false,
     content: @Composable BoxScope.() -> Unit
 ) {
     CompositionLocalProvider(
@@ -78,7 +83,14 @@ fun Surface(
             backgroundPrimary = colors.backgroundColor,
             textPrimary = colors.contentColor
         )
-    ) { Box(Modifier.surface(colors, padding, modifier, initializer), content = content) }
+    ) {
+        Box(
+            modifier = Modifier.surface(colors, padding, modifier, initializer),
+            contentAlignment = contentAlignment,
+            propagateMinConstraints = propagateMinConstraints,
+            content = content
+        )
+    }
 }
 
 private fun Modifier.surface(
