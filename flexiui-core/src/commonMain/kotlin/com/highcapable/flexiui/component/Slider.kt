@@ -61,7 +61,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.isUnspecified
 import com.highcapable.betterandroid.compose.extension.ui.borderOrElse
 import com.highcapable.betterandroid.compose.extension.ui.componentState
 import com.highcapable.flexiui.ColorsDescriptor
@@ -173,8 +172,8 @@ private fun SliderLayout(
 ) {
     val thumbDiameter = style.thumbRadius * 2
     val trackWidth = when {
-        maxWidth > 0.dp && style.trackWidth.isUnspecified -> maxWidth
-        style.trackWidth.isUnspecified -> DefaultTrackWidth
+        style.trackWidth > maxWidth && maxWidth > 0.dp -> style.trackWidth
+        maxWidth > 0.dp -> maxWidth
         else -> style.trackWidth
     }
     val trackAdoptWidth = trackWidth - thumbDiameter
@@ -406,11 +405,9 @@ internal object SliderProperties {
     val ThumbShape = ShapesDescriptor.Tertiary
     val StepShape = ShapesDescriptor.Tertiary
     val TrackShape = ShapesDescriptor.Primary
-    val TrackWidth = Dp.Unspecified
+    val TrackWidth = 240.dp
     val TrackHeight = 4.dp
     val ThumbBorderWidth = SizesDescriptor.BorderSizeTertiary
     val StepBorderWidth = SizesDescriptor.BorderSizeTertiary
     val TrackBorderWidth = SizesDescriptor.BorderSizeTertiary
 }
-
-private val DefaultTrackWidth = 240.dp
