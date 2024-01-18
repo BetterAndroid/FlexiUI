@@ -74,10 +74,10 @@ import com.highcapable.flexiui.demo.PROJECT_URL
 import com.highcapable.flexiui.demo.Preferences
 import com.highcapable.flexiui.demo.Screen
 import com.highcapable.flexiui.demo.Style
+import com.highcapable.flexiui.demo.displayName
 import com.highcapable.flexiui.demo.locales
 import com.highcapable.flexiui.demo.rememberRouter
 import com.highcapable.flexiui.demo.strings
-import com.highcapable.flexiui.demo.toName
 import com.highcapable.flexiui.displayName
 import com.highcapable.flexiui.resources.FlexiIcons
 import kotlinx.coroutines.launch
@@ -120,21 +120,25 @@ fun MainScreen() {
             )
         },
         navigationBar = {
-            NavigationBarRow(
-                arrangement = Arrangement.SpaceAround
-            ) {
-                NavigationBarItem(
-                    selected = pagerState.currentPage == 0,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(page = 0) } },
-                    icon = { Icon(FlexiIcons.Home, style = IconDefaults.style(size = 24.dp)) },
-                    text = { Text(strings.home) }
-                )
-                NavigationBarItem(
-                    selected = pagerState.currentPage == 1,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(page = 1) } },
-                    icon = { Icon(FlexiIcons.Component, style = IconDefaults.style(size = 24.dp)) },
-                    text = { Text(strings.component) }
-                )
+            NavigationBarRow(arrangement = Arrangement.SpaceAround) {
+                repeat(pageCount) { index ->
+                    NavigationBarItem(
+                        selected = pagerState.currentPage == index,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(page = index) } },
+                        icon = {
+                            Icon(when (index) {
+                                0 -> FlexiIcons.Home
+                                else -> FlexiIcons.Component
+                            }, style = IconDefaults.style(size = 24.dp))
+                        },
+                        text = {
+                            Text(when (index) {
+                                0 -> strings.home
+                                else -> strings.component
+                            })
+                        }
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -177,7 +181,7 @@ fun MainHomePage(modifier: Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    text = { Text(locale.toName()) },
+                    text = { Text(locale.displayName) },
                 ) {
                     locales.forEach {
                         DropdownMenuItem(
@@ -186,7 +190,7 @@ fun MainHomePage(modifier: Modifier) {
                                 expanded = false
                                 locale = it
                             }
-                        ) { Text(it.toName()) }
+                        ) { Text(it.displayName) }
                     }
                 }
             }

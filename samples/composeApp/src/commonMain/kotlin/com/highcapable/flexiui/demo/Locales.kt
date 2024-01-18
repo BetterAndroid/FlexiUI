@@ -34,10 +34,11 @@ enum class Locales { EN, ZH_CN }
 fun locales() = Locales.entries.toTypedArray()
 
 @Stable
-fun Locales.toName() = when (this) {
-    Locales.EN -> "English"
-    Locales.ZH_CN -> "简体中文"
-}
+val Locales.displayName
+    get() = when (this) {
+        Locales.EN -> "English"
+        Locales.ZH_CN -> "简体中文"
+    }
 
 val strings
     @Composable
