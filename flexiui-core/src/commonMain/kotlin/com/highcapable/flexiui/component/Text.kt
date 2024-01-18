@@ -194,6 +194,9 @@ fun Text(
  * @see Text
  * @param text the text to be displayed.
  * @param modifier the [Modifier] to be applied to this text.
+ * @param primaryFontSize whether the [fontSize] should be the same as the primary [Text], if you set this to true,
+ * the [fontSize] will be ignored, default is false.
+ * @param fontSize the font size of the text, see [TextStyle.fontSize].
  * @param fontStyle the font style of the text, see [TextStyle.fontStyle].
  * @param fontWeight the font weight of the text, see [TextStyle.fontWeight].
  * @param fontFamily the font family of the text, see [TextStyle.fontFamily].
@@ -212,6 +215,8 @@ fun Text(
 fun SecondaryText(
     text: String,
     modifier: Modifier = Modifier,
+    primaryFontSize: Boolean = false,
+    fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
     fontFamily: FontFamily? = null,
@@ -226,13 +231,11 @@ fun SecondaryText(
     softWrap: Boolean = !singleLine || maxLines > 1,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
-    val textColor = LocalColors.current.textSecondary
-    val textStyle = LocalTypography.current.secondary
-    Text(
-        text = text,
+    SecondaryText(
+        text = AnnotatedString(text),
         modifier = modifier,
-        color = textColor,
-        style = textStyle,
+        primaryFontSize = primaryFontSize,
+        fontSize = fontSize,
         fontStyle = fontStyle,
         fontWeight = fontWeight,
         fontFamily = fontFamily,
@@ -257,6 +260,9 @@ fun SecondaryText(
  * @see Text
  * @param text the text to be displayed.
  * @param modifier the [Modifier] to be applied to this text.
+ * @param primaryFontSize whether the [fontSize] should be the same as the primary [Text], if you set this to true,
+ * the [fontSize] will be ignored, default is false.
+ * @param fontSize the font size of the text, see [TextStyle.fontSize].
  * @param fontStyle the font style of the text, see [TextStyle.fontStyle].
  * @param fontWeight the font weight of the text, see [TextStyle.fontWeight].
  * @param fontFamily the font family of the text, see [TextStyle.fontFamily].
@@ -276,6 +282,8 @@ fun SecondaryText(
 fun SecondaryText(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
+    primaryFontSize: Boolean = false,
+    fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
     fontFamily: FontFamily? = null,
@@ -293,11 +301,15 @@ fun SecondaryText(
 ) {
     val textColor = LocalColors.current.textSecondary
     val textStyle = LocalTypography.current.secondary
+    val currentFontSize = if (primaryFontSize)
+        LocalTypography.current.primary.fontSize
+    else fontSize
     Text(
         text = text,
         modifier = modifier,
         color = textColor,
         style = textStyle,
+        fontSize = currentFontSize,
         fontStyle = fontStyle,
         fontWeight = fontWeight,
         fontFamily = fontFamily,
