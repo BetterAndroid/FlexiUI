@@ -268,5 +268,5 @@ fun MainComponentPage(modifier: Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ) { Text("To be implemented.") }
+    ) { SecondaryText("To be implemented.", primaryFontSize = true) }
 }
