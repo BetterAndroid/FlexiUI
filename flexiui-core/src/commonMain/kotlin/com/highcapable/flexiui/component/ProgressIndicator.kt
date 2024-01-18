@@ -277,7 +277,7 @@ fun LinearProgressIndicator(
     colors: ProgressIndicatorColors? = null,
     style: LinearIndicatorStyle? = null
 ) {
-    val currentColors = colors ?: LocalProgressIndicatorColors.current ?: CircularIndicatorDefaults.colors()
+    val currentColors = colors ?: LocalProgressIndicatorColors.current ?: LinearIndicatorDefaults.colors()
     val currentStyle = style ?: LocalProgressIndicatorStyle.current as? LinearIndicatorStyle? ?: LinearIndicatorDefaults.style()
 
     /** Build determinate progress indicator. */
