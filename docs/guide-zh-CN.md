@@ -7,6 +7,8 @@
 >
 > Flexi UI 尚在开发与测试，在 `1.0.0` 版本正式发布前 API 可能会发生变化，欢迎前往 [GitHub Issues](https://github.com/BetterAndroid/FlexiUI/issues)
 > 向我们提出建议。
+>
+> 我们推荐你优先使用下方的 [Dev 版本](#dev-版本)，它正在积极开发中，同步当前分支的最新代码。
 
 在开始使用之前，建议你仔细阅读此文档，以便你能更好地了解它的作用方式与功能。
 

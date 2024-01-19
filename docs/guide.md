@@ -8,6 +8,9 @@
 > Flexi UI is still under development and testing, and the API may change before the `1.0.0` version is officially released.
 >
 > We are welcome you to make suggestions to us at [GitHub Issues](https://github.com/BetterAndroid/FlexiUI/issues).
+>
+> We recommend that you use the [Dev Version](#dev-version) first, which is actively under development and synchronizes the latest code from the
+> current branch.
 
 Before you start using it, it is recommended that you read this document carefully so that you can better understand how it works and its functions.
 
