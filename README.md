@@ -43,12 +43,20 @@ You can click the link below to view the project branch of the corresponding pla
 
 We are working hard to improve it and it is expected to be released soon, so stay tuned.
 
-## Design Preview
+## Demo Screenshots
 
 <div style="display: flex">
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Day.png?raw=true" width = "200" alt="SCREENSHOT"/>
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Night.png?raw=true" width = "200" alt="SCREENSHOT"/>
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Dark.png?raw=true" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-1.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-2.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-3.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-4.png" width = "200" alt="SCREENSHOT"/>
+</div>
+
+<div style="display: flex">
+  <img src="img-src/night/shot-1.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/night/shot-2.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/night/shot-3.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/night/shot-4.png" width = "200" alt="SCREENSHOT"/>
 </div>
 
 ## Promotion

@@ -43,12 +43,20 @@ Android 原生平台的这个项目我基本上不打算继续维护了，如果
 
 正在努力完善，预计近期发布，敬请期待。
 
-## 效果预览图
+## 演示截屏
 
 <div style="display: flex">
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Day.png?raw=true" width = "200" alt="SCREENSHOT"/>
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Night.png?raw=true" width = "200" alt="SCREENSHOT"/>
-  <img src="https://github.com/BetterAndroid/FlexiUI/blob/main/img-src/UI-Dark.png?raw=true" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-1-zh.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-2-zh.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-3-zh.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/day/shot-4-zh.png" width = "200" alt="SCREENSHOT"/>
+</div>
+
+<div style="display: flex">
+  <img src="img-src/night/shot-1-zh.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/night/shot-2-zh.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/night/shot-3-zh.png" width = "200" alt="SCREENSHOT"/>
+  <img src="img-src/night/shot-4-zh.png" width = "200" alt="SCREENSHOT"/>
 </div>
 
 ## 项目推广
