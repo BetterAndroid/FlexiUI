@@ -218,7 +218,10 @@ object AreaBoxDefaults {
      */
     @Composable
     fun colors(
-        backgroundColor: Color = AreaBoxProperties.BackgroundColor.toColor(),
+        backgroundColor: Color = when (LocalInAreaBox.current) {
+            true -> AreaBoxProperties.InnerBackgroundColor
+            else -> AreaBoxProperties.BackgroundColor
+        }.toColor(),
         borderColor: Color = AreaBoxProperties.BorderColor.toColor()
     ) = AreaBoxColors(
         backgroundColor = backgroundColor,
@@ -268,6 +271,7 @@ object AreaBoxDefaults {
 @Stable
 internal object AreaBoxProperties {
     val BackgroundColor = ColorsDescriptor.ForegroundPrimary
+    val InnerBackgroundColor = ColorsDescriptor.ForegroundSecondary
     val BorderColor = ColorsDescriptor.TextPrimary
     val Padding = PaddingDescriptor(SizesDescriptor.SpacingPrimary)
     val Shape = ShapesDescriptor.Primary

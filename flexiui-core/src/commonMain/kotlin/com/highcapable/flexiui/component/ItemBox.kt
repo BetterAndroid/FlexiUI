@@ -247,7 +247,7 @@ object ItemBoxDefaults {
      */
     @Composable
     fun colors(
-        backgroundColor: Color = ItemBoxProperties.BackgroundColor.toColor(),
+        backgroundColor: Color = AreaBoxDefaults.colors().backgroundColor,
         titleTextColor: Color = ItemBoxProperties.TitleTextColor.toColor(),
         subtitleTextColor: Color = ItemBoxProperties.SubtitleTextColor.toColor(),
         arrowIconTint: Color = ItemBoxProperties.ArrowIconTint.toColor(),
@@ -290,7 +290,6 @@ object ItemBoxDefaults {
 
 @Stable
 internal object ItemBoxProperties {
-    val BackgroundColor = AreaBoxProperties.BackgroundColor
     val TitleTextColor = ColorsDescriptor.TextPrimary
     val SubtitleTextColor = ColorsDescriptor.TextSecondary
     val ArrowIconTint = ColorsDescriptor.TextSecondary
