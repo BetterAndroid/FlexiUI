@@ -447,7 +447,7 @@ internal object FlexiDialogProperties {
     val BorderColor = AreaBoxProperties.BorderColor
     val TitleTextColor = ColorsDescriptor.TextPrimary
     val TitleIconTint = ColorsDescriptor.TextPrimary
-    val ContentTextColor = ColorsDescriptor.TextSecondary
+    val ContentTextColor = ColorsDescriptor.TextPrimary
     val TitleTextStyle = TypographyDescriptor.TitleSecondary
     val ContentTextStyle = TypographyDescriptor.Primary
     val MaxWidth = 300.dp
