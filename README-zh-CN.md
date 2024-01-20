@@ -26,11 +26,14 @@
 
 这个项目早期在 Android 原生平台已经有了一个初版 [FlexiUI-Preview](https://github.com/BetterAndroid/FlexiUI-Preview)，它在 2022 年就已经初步完工，但是我一直没有将它开源出来，因为项目整体耦合度过高且包含一些与 UI 无关的工具依赖，所以我将很多东西进行了解耦合并发布到了新的项目 [BetterAndroid](https://github.com/BetterAndroid/BetterAndroid) 中。
 
-Android 原生平台的这个项目我基本上不打算继续维护了，如果你感兴趣，你可以点击页面上述的任何一个 `discussion` 加入对应的群组联系我添加查看权限。
+Android 原生平台的这个项目我正在对其进行重构，旧的 Preview 版本将不再积极维护并将在重构完成后被取代，如果你感兴趣，你可以点击页面上述的任何一个 `discussion` 加入对应的群组联系我添加查看权限。
 
 ## 开始使用
 
 你可以点击下方链接查看对应平台的项目分支。
+
+| <img src="https://developer.android.com/static/images/logos/android.svg" width = "30" height = "30" alt="LOGO"/> | Android View (正在重构) |
+| ---------------------------------------------------------------------------------------------------------------- | ----------------------- |
 
 | <img src="https://developer.android.com/static/images/spot-icons/jetpack-compose.svg" width = "30" height = "30" alt="LOGO"/> | [Jetpack Compose](https://github.com/BetterAndroid/FlexiUI/tree/compose) |
 | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |

@@ -26,11 +26,14 @@ Taking advantage of the current mainstream multi-platform frameworks, this UI ca
 
 This project already had a first version [FlexiUI-Preview](https://github.com/BetterAndroid/FlexiUI-Preview) on the Android native platform in the early days, it will be initially completed in 2022, but I have never open sourced it, because the overall coupling of the project is too high and contains some tool dependencies that have nothing to do with the UI, so I decoupled a lot of things and published them into a new project [BetterAndroid](https://github.com/BetterAndroid/BetterAndroid).
 
-I basically don’t plan to continue to maintain this project on the Android native platform, if you are interested, you can click on any `discussion` above on the page to join the corresponding group and contact me to add viewing permissions.
+I am refactoring this project for the Android native platform, the old preview version will no longer be actively maintained and will be replaced after the refactoring is completed, if you are interested, you can click on any `discussion` above on the page to join Contact me for the corresponding group to add viewing permissions.
 
 ## Get Started
 
 You can click the link below to view the project branch of the corresponding platform.
+
+| <img src="https://developer.android.com/static/images/logos/android.svg" width = "30" height = "30" alt="LOGO"/> | Android View (Refactoring) |
+| ---------------------------------------------------------------------------------------------------------------- | -------------------------- |
 
 | <img src="https://developer.android.com/static/images/spot-icons/jetpack-compose.svg" width = "30" height = "30" alt="LOGO"/> | [Jetpack Compose](https://github.com/BetterAndroid/FlexiUI/tree/compose) |
 | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
