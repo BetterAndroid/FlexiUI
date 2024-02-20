@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/9.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "ABSTRACT_COMPOSABLE_DEFAULT_PARAMETER_VALUE")
 
 package com.highcapable.flexiui.component
 
