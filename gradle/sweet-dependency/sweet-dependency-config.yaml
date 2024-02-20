@@ -11,32 +11,32 @@ repositories:
 plugins:
   org.jetbrains.kotlin.multiplatform:
     alias: kotlin-multiplatform
-    version: 1.9.21
+    version: 1.9.22
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.5.11
+    version: 1.5.12
   com.android.application:
     alias: android-application
-    version: 8.2.0
+    version: 8.2.2
   com.android.library:
     alias: android-library
     version-ref: android-application
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.26.0
+    version: 0.27.0
 
 libraries:
   org.jetbrains.compose.material:
     material-ripple:
       alias: composeExt-material-ripple
       version-ref: <plugins>::jetbrains-compose
-  # Use a placeholder for the alpha / beta compose version
+  # Use a placeholder for the android compose version
   # In the project to use "androidx.compose.android.version" to obtain the version
   # and use the "resolutionStrategy" to replace all the current "stable" versions
   androidx.compose.runtime:
     runtime-android:
       alias: androidx-compose-android
-      version: 1.6.0-alpha07
+      version: 1.6.1
   com.highcapable.betterandroid:
     ui-component:
       version: 1.0.4
@@ -50,9 +50,9 @@ libraries:
       version: 0.1.0
   androidx.activity:
     activity:
-      version: 1.8.1
+      version: 1.8.2
     activity-compose:
-      version: 1.8.1
+      version: 1.8.2
   androidx.core:
     core-ktx:
       version: 1.12.0
@@ -61,7 +61,7 @@ libraries:
       version: 1.6.1
   com.google.android.material:
     material:
-      version: 1.10.0
+      version: 1.11.0
   androidx.test.ext:
     junit:
       version: 1.1.5
