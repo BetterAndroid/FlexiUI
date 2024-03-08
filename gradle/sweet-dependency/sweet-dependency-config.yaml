@@ -39,9 +39,9 @@ libraries:
       version: 1.6.1
   com.highcapable.betterandroid:
     ui-component:
-      version: 1.0.4
+      version: 1.0.5
     ui-extension:
-      version: 1.0.2
+      version: 1.0.3
     system-extension:
       version: 1.0.1
     compose-extension:
