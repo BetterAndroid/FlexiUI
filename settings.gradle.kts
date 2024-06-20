@@ -27,6 +27,7 @@ sweetProperty {
         ":samples:androidApp",
         ":samples:desktopApp",
         ":samples:composeApp",
+        ":flexiui-core",
         ":flexiui-resources"
     ) { sourcesCode { isEnable = false } }
 }

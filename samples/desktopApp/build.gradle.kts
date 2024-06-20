@@ -1,6 +1,7 @@
 plugins {
     autowire(libs.plugins.kotlin.multiplatform)
     autowire(libs.plugins.jetbrains.compose)
+    autowire(libs.plugins.compose.compiler)
 }
 
 group = property.project.samples.desktopApp.groupName

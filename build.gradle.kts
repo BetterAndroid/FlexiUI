@@ -7,6 +7,7 @@ plugins {
     autowire(libs.plugins.android.application) apply false
     autowire(libs.plugins.android.library) apply false
     autowire(libs.plugins.jetbrains.compose) apply false
+    autowire(libs.plugins.compose.compiler) apply false
     autowire(libs.plugins.maven.publish) apply false
 }
 

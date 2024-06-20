@@ -2,6 +2,7 @@ plugins {
     autowire(libs.plugins.kotlin.multiplatform)
     autowire(libs.plugins.android.application)
     autowire(libs.plugins.jetbrains.compose)
+    autowire(libs.plugins.compose.compiler)
 }
 
 kotlin {
