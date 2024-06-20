@@ -6,7 +6,7 @@
  * Apache License Version 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance using the License.
  * You may obtain a copy of the License at
  *
  *     https://www.apache.org/licenses/LICENSE-2.0
@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/11/8.
  */
-@file:Suppress("unused", "ObjectPropertyName")
+@file:Suppress("unused", "ObjectPropertyName", "ktlint:standard:backing-property-naming")
 
 package com.highcapable.flexiui.component
 
@@ -226,7 +226,7 @@ fun CircularProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
-                    0f at 0 with CircularEasing
+                    0f at 0 using CircularEasing
                     animation.jumpRotationAngle at headAndTailAnimationDuration
                 }
             )
@@ -237,7 +237,7 @@ fun CircularProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = headAndTailAnimationDuration * 2
-                    0f at headAndTailAnimationDuration with CircularEasing
+                    0f at headAndTailAnimationDuration using CircularEasing
                     animation.jumpRotationAngle at durationMillis
                 }
             )
@@ -302,7 +302,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = animation.duration
-                    0f at animation.firstLineHeadDelay with FirstLineHeadEasing
+                    0f at animation.firstLineHeadDelay using FirstLineHeadEasing
                     1f at animation.firstLineHeadDuration + animation.firstLineHeadDelay
                 }
             )
@@ -313,7 +313,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = animation.duration
-                    0f at animation.firstLineTailDelay with FirstLineTailEasing
+                    0f at animation.firstLineTailDelay using FirstLineTailEasing
                     1f at animation.firstLineTailDuration + animation.firstLineTailDelay
                 }
             )
@@ -324,7 +324,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = animation.duration
-                    0f at animation.secondLineHeadDelay with SecondLineHeadEasing
+                    0f at animation.secondLineHeadDelay using SecondLineHeadEasing
                     1f at animation.secondLineHeadDuration + animation.secondLineHeadDelay
                 }
             )
@@ -335,7 +335,7 @@ fun LinearProgressIndicator(
             infiniteRepeatable(
                 animation = keyframes {
                     durationMillis = animation.duration
-                    0f at animation.secondLineTailDelay with SecondLineTailEasing
+                    0f at animation.secondLineTailDelay using SecondLineTailEasing
                     1f at animation.secondLineTailDuration + animation.secondLineTailDelay
                 }
             )
