@@ -60,8 +60,11 @@ data class RippleStyle(
  * @param style the style, default is [InteractionDefaults.rippleStyle].
  * @return [Indication]
  */
+@Suppress("DEPRECATION_ERROR")
 @Composable
 fun rememberRipple(style: RippleStyle = InteractionDefaults.rippleStyle()) =
+    // FIXME: Compose deprecated the rememberRipple function,
+    //        it's no effect without Android platform now, need to migrate to the new API.
     materialRememberRipple(style.bounded, style.radius, style.color)
 
 /**

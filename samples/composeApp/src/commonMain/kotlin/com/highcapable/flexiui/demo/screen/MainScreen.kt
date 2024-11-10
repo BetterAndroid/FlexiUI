@@ -19,12 +19,9 @@
  *
  * This file is created by fankes on 2024/1/12.
  */
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.highcapable.flexiui.demo.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -159,7 +156,7 @@ fun MainScreen() {
         HorizontalPager(
             modifier = Modifier.fillMaxSize(),
             state = pagerState,
-            beyondBoundsPageCount = pageCount
+            beyondViewportPageCount = pageCount
         ) { index ->
             val modifier = Modifier.padding(innerPadding)
             when (index) {

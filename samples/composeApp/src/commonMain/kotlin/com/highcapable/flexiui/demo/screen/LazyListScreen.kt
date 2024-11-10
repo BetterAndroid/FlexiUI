@@ -19,11 +19,8 @@
  *
  * This file is created by fankes on 2024/1/12.
  */
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.highcapable.flexiui.demo.screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -150,7 +147,7 @@ fun LazyListScreen() {
         HorizontalPager(
             modifier = Modifier.fillMaxSize(),
             state = pagerState,
-            beyondBoundsPageCount = pageCount
+            beyondViewportPageCount = pageCount
         ) { index ->
             @Composable
             fun LazyItem(modifier: Modifier, index: Int) {
@@ -189,7 +186,7 @@ fun LazyListScreen() {
                         key = { testListData[it].index }
                     ) { index ->
                         LazyItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(),
                             index = index
                         )
                     }
@@ -208,7 +205,7 @@ fun LazyListScreen() {
                         key = { testListData[it].index }
                     ) { index ->
                         LazyItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(),
                             index = index
                         )
                     }
