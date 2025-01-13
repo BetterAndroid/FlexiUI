@@ -91,6 +91,7 @@ fabric.properties
 
 # Gradle projects
 .gradle
+.kotlin
 build/
 
 # Mkdocs temporary serving folder
