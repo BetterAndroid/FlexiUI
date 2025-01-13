@@ -1,6 +1,6 @@
 /*
  * Flexi UI - A flexible and useful UI component library.
- * Copyright (C) 2019-2024 HighCapable
+ * Copyright (C) 2019 HighCapable
  * https://github.com/BetterAndroid/FlexiUI
  *
  * Apache License Version 2.0
