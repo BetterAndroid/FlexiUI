@@ -13,22 +13,22 @@ repositories:
 plugins:
   org.jetbrains.kotlin.multiplatform:
     alias: kotlin-multiplatform
-    version: 2.0.21
+    version: 2.1.10
   org.jetbrains.compose:
     alias: jetbrains-compose
-    version: 1.7.0
+    version: 1.7.3
   org.jetbrains.kotlin.plugin.compose:
     alias: compose-compiler
     version-ref: kotlin-multiplatform
   com.android.application:
     alias: android-application
-    version: 8.5.2
+    version: 8.9.0
   com.android.library:
     alias: android-library
     version-ref: android-application
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.30.0
+    version: 0.31.0
 
 libraries:
   org.jetbrains.compose.material:
@@ -41,12 +41,12 @@ libraries:
   androidx.compose.runtime:
     runtime-android:
       alias: androidx-compose-android
-      version: 1.7.5
+      version: 1.7.8
   com.highcapable.betterandroid:
     ui-component:
-      version: 1.0.6
+      version: 1.0.7
     ui-extension:
-      version: 1.0.5
+      version: 1.0.6
     system-extension:
       version: 1.0.2
     compose-extension:
@@ -55,9 +55,9 @@ libraries:
       version: 0.1.0
   androidx.activity:
     activity:
-      version: 1.9.3
+      version: 1.10.1
     activity-compose:
-      version: 1.9.3
+      version: 1.10.1
   androidx.core:
     core-ktx:
       version: 1.15.0
