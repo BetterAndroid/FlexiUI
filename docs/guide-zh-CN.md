@@ -1,7 +1,7 @@
 # Flexi UI 使用文档 (Jetpack Compose)
 
-![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.flexiui/core?logo=apachemaven&logoColor=orange&label=core)
-![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.flexiui/resources?logo=apachemaven&logoColor=orange&label=resources)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.flexiui/core?logo=apachemaven&logoColor=orange&label=core&style=flat-square)
+![Maven Central](https://img.shields.io/maven-central/v/com.highcapable.flexiui/resources?logo=apachemaven&logoColor=orange&label=resources&style=flat-square)
 
 > ⚠️ 注意
 >
