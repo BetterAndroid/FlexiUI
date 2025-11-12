@@ -1,8 +1,8 @@
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform)
-    autowire(libs.plugins.android.application)
-    autowire(libs.plugins.jetbrains.compose)
-    autowire(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -18,19 +18,19 @@ kotlin {
 }
 
 android {
-    namespace = property.project.samples.androidApp.packageName
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.samples.androidApp.packageName
+    compileSdk = gropify.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = property.project.samples.androidApp.packageName
-        minSdk = property.project.android.minSdk
-        targetSdk = property.project.android.targetSdk
-        versionName = property.project.samples.androidApp.versionName
-        versionCode = property.project.samples.androidApp.versionCode
+        applicationId = gropify.project.samples.androidApp.packageName
+        minSdk = gropify.project.android.minSdk
+        targetSdk = gropify.project.android.targetSdk
+        versionName = gropify.project.samples.androidApp.versionName
+        versionCode = gropify.project.samples.androidApp.versionCode
     }
     buildTypes {
         release {
@@ -45,7 +45,7 @@ android {
     }
 }
 
-val composeAndroidVersion = dependencies.androidx.compose.android.version
+val composeAndroidVersion = libs.androidx.compose.android.get().version ?: error("Unresolved compose android version.")
 
 configurations.all {
     resolutionStrategy.eachDependency {

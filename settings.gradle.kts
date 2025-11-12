@@ -1,4 +1,5 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -6,31 +7,56 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://raw.githubusercontent.com/HighCapable/maven-repository/main/repository/releases")
+    }
+}
+
 plugins {
-    id("com.highcapable.sweetdependency") version "1.0.4"
-    id("com.highcapable.sweetproperty") version "1.0.8"
+    id("com.highcapable.gropify") version "1.0.0"
 }
-sweetDependency {
-    isUseDependencyResolutionManagement = false
-}
-sweetProperty {
+
+gropify {
     global {
-        sourcesCode {
+        android {
             className = "FlexiUI"
             includeKeys("^project\\..*\$".toRegex())
-            isEnableRestrictedAccess = true
+            isRestrictedAccessEnabled = true
         }
     }
-    rootProject { all { isEnable = false } }
-    project(
+
+    rootProject {
+        common {
+            isEnabled = false
+        }
+    }
+
+    projects(
         ":samples",
         ":samples:androidApp",
         ":samples:desktopApp",
         ":samples:composeApp",
         ":flexiui-core",
         ":flexiui-resources"
-    ) { sourcesCode { isEnable = false } }
+    ) {
+        android {
+            isEnabled = false
+        }
+        jvm {
+            isEnabled = false
+        }
+        kmp {
+            isEnabled = false
+        }
+    }
 }
+
 rootProject.name = "FlexiUI"
+
 include(":samples:androidApp", ":samples:desktopApp", ":samples:composeApp")
 include(":flexiui-core", ":flexiui-resources")

@@ -1,42 +1,46 @@
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform)
-    autowire(libs.plugins.android.library)
-    autowire(libs.plugins.jetbrains.compose)
-    autowire(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
     androidTarget()
     jvm("desktop")
+
     listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = property.project.samples.composeApp.iosModuleName
+            baseName = gropify.project.samples.composeApp.iosModuleName
             isStatic = true
         }
     }
+
     jvmToolchain(17)
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+
                 api(projects.flexiuiCore)
-                api(com.highcapable.betterandroid.compose.multiplatform)
+                api(libs.betterandroid.compose.multiplatform)
             }
         }
         val androidMain by getting {
             dependencies {
-                api(androidx.core.core.ktx)
-                api(androidx.appcompat.appcompat)
-                api(androidx.activity.activity)
-                api(androidx.activity.activity.compose)
-                api(com.highcapable.betterandroid.ui.component)
-                api(com.highcapable.betterandroid.ui.extension)
-                api(com.highcapable.betterandroid.system.extension)
+                api(libs.androidx.core.ktx)
+                api(libs.androidx.appcompat)
+                api(libs.androidx.activity)
+                api(libs.androidx.activity.compose)
+                api(libs.betterandroid.ui.component)
+                api(libs.betterandroid.ui.extension)
+                api(libs.betterandroid.system.extension)
             }
         }
         val desktopMain by getting {
@@ -57,15 +61,15 @@ kotlin {
 }
 
 android {
-    namespace = property.project.samples.composeApp.namespace
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.samples.composeApp.namespace
+    compileSdk = gropify.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        minSdk = property.project.android.minSdk
+        minSdk = gropify.project.android.minSdk
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

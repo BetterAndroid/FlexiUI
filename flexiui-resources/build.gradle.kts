@@ -1,36 +1,40 @@
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform)
-    autowire(libs.plugins.android.library)
-    autowire(libs.plugins.jetbrains.compose)
-    autowire(libs.plugins.compose.compiler)
-    autowire(libs.plugins.maven.publish)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.maven.publish)
 }
 
-group = property.project.groupName
-version = property.project.flexiui.resources.version
+group = gropify.project.groupName
+version = gropify.project.flexiui.resources.version
 
 kotlin {
     androidTarget {
         publishLibraryVariants("release")
     }
+
     jvm("desktop")
+
     listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = property.project.flexiui.resources.iosModuleName
+            baseName = gropify.project.flexiui.resources.iosModuleName
             isStatic = true
         }
     }
+
     jvmToolchain(17)
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(com.highcapable.betterandroid.compose.extension)
+                implementation(libs.betterandroid.compose.extension)
             }
         }
         val androidMain by getting
@@ -48,15 +52,15 @@ kotlin {
 }
 
 android {
-    namespace = property.project.flexiui.resources.namespace
-    compileSdk = property.project.android.compileSdk
+    namespace = gropify.project.flexiui.resources.namespace
+    compileSdk = gropify.project.android.compileSdk
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        minSdk = property.project.android.minSdk
+        minSdk = gropify.project.android.minSdk
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

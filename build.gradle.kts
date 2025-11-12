@@ -3,22 +3,24 @@ import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform) apply false
-    autowire(libs.plugins.android.application) apply false
-    autowire(libs.plugins.android.library) apply false
-    autowire(libs.plugins.jetbrains.compose) apply false
-    autowire(libs.plugins.compose.compiler) apply false
-    autowire(libs.plugins.maven.publish) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.jetbrains.compose) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.maven.publish) apply false
 }
 
 libraryProjects {
     afterEvaluate {
         resolveDevPublishWorkflow()
+
         configure<PublishingExtension> {
             repositories {
                 val repositoryDir = gradle.gradleUserHomeDir
                     .resolve("highcapable-maven-repository")
                     .resolve("repository")
+
                 maven {
                     name = "HighCapableMavenReleases"
                     url = repositoryDir.resolve("releases").toURI()
@@ -29,6 +31,7 @@ libraryProjects {
                 }
             }
         }
+
         configure<MavenPublishBaseExtension> {
             configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty()))
         }
@@ -47,17 +50,23 @@ libraryProjects {
 fun Project.resolveDevPublishWorkflow() {
     fun String.parseCode() = (trim().toIntOrNull() ?: 0).toString().padStart(4, '0')
     fun String.nextCode() = (toInt() + 1).toString().parseCode()
+
     val devFile = projectDir.resolve("build").resolve("publish_dev")
     val isDevMode = devFile.exists()
     val code = (if (isDevMode) devFile.readText() else "1").parseCode()
     val devVersion = "$version-dev$code"
+
     version = if (isDevMode) devVersion else version
+
     if (isDevMode) println("Detected dev mode of $name, publish version is $devVersion")
+
     tasks.register("publishDev") {
         group = "publishing"
         dependsOn("publishAllPublicationsToHighCapableMavenSnapShotsRepository")
+
         doLast {
             val nextCode = code.nextCode()
+
             println("Dev publish is finished, next dev code is $nextCode")
             devFile.writeText(nextCode)
         }

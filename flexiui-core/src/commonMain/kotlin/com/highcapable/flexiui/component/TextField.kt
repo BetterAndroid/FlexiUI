@@ -156,6 +156,8 @@ data class AutoCompleteOptions(
     val threshold: Int = 2
 )
 
+// FIXME: (最后) TextField 重写，所有内容都需要定义到 decorationBox 中，不能在外部添加边框，否则会造成 KeyboardOptions 失效
+
 /**
  * Flexi UI text field.
  * @see TextField

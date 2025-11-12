@@ -1,15 +1,16 @@
 plugins {
-    autowire(libs.plugins.kotlin.multiplatform)
-    autowire(libs.plugins.jetbrains.compose)
-    autowire(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
-group = property.project.samples.desktopApp.groupName
-version = property.project.samples.desktopApp.version
+group = gropify.project.samples.desktopApp.groupName
+version = gropify.project.samples.desktopApp.version
 
 kotlin {
     jvm("desktop")
     jvmToolchain(17)
+
     sourceSets {
         val desktopMain by getting {
             dependencies {
