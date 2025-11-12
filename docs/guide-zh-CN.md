@@ -22,81 +22,9 @@ Flexi UI 分为 `core` 与 `resources` 两个模块，通常情况下你只需�
 
 这是一个 Kotlin Multiplatform 依赖，你需要 `org.jetbrains.kotlin.multiplatform` 插件来应用相关依赖。
 
-我们推荐使用 Kotlin DSL 作为 Gradle 构建脚本语言并推荐使用 [SweetDependency](https://github.com/HighCapable/SweetDependency) 来管理依赖。
-
-### SweetDependency (推荐)
-
-在你的项目 `SweetDependency` 配置文件中添加依赖。
-
-```yaml
-libraries:
-  com.highcapable.flexiui:
-    # commonMain
-    core:
-      version: +
-    resources:
-      version: +
-    # androidMain
-    core-android:
-      version-ref: <this>::core
-    resources-android:
-      version-ref: <this>::resources
-    # iosArm64Main
-    core-iosarm64:
-      version-ref: <this>::core
-    resources-iosarm64:
-      version-ref: <this>::resources
-    # iosX64Main
-    core-iosx64:
-      version-ref: <this>::core
-    resources-iosx64:
-      version-ref: <this>::resources
-    # iosSimulatorArm64Main
-    core-iossimulatorarm64:
-      version-ref: <this>::core
-    resources-iossimulatorarm64:
-      version-ref: <this>::resources
-    # desktopMain
-    core-desktop:
-      version-ref: <this>::core
-    resources-desktop:
-      version-ref: <this>::resources
-```
+我们推荐使用 Kotlin DSL 作为 Gradle 构建脚本语言。
 
 在你的项目 `build.gradle.kts` 中配置依赖。
-
-如果你在普通的项目中使用多平台依赖，你只需要按需部署对应平台后缀的依赖即可。
-
-```kotlin
-implementation(com.highcapable.flexiui.core.android)
-implementation(com.highcapable.flexiui.core.iosarm64)
-implementation(com.highcapable.flexiui.core.iosx64)
-implementation(com.highcapable.flexiui.core.iossimulatorarm64)
-implementation(com.highcapable.flexiui.core.desktop)
-```
-
-```kotlin
-implementation(com.highcapable.flexiui.resources.android)
-implementation(com.highcapable.flexiui.resources.iosarm64)
-implementation(com.highcapable.flexiui.resources.iosx64)
-implementation(com.highcapable.flexiui.resources.iossimulatorarm64)
-implementation(com.highcapable.flexiui.resources.desktop)
-```
-
-如果你在多平台项目中使用多平台依赖，你需要在 `commonMain` 中添加 `core` 依赖。
-
-```kotlin
-kotlin {
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(com.highcapable.flexiui.core)
-                implementation(com.highcapable.flexiui.resources)
-            }
-        }
-    }
-}
-```
 
 ### 传统方式
 
