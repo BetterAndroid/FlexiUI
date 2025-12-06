@@ -24,9 +24,9 @@ This UI does not actually rely on any Material components, but it borrows and re
 
 Taking advantage of the current mainstream multi-platform frameworks, this UI can reuse unnecessary native UI code to be presented on more platforms, and can be quickly introduced and used by developers who are familiar with development languages.
 
-This project already had a first version [FlexiUI-Preview](https://github.com/BetterAndroid/FlexiUI-Preview) on the Android native platform in the early days, it will be initially completed in 2022, but I have never open sourced it, because the overall coupling of the project is too high and contains some tool dependencies that have nothing to do with the UI, so I decoupled a lot of things and published them into a new project [BetterAndroid](https://github.com/BetterAndroid/BetterAndroid).
+This project already had a first version [FlexiUI-Android](https://github.com/BetterAndroid/FlexiUI-Android) on the Android native platform in the early days, it will be initially completed in 2022, but I have never open sourced it, because the overall coupling of the project is too high and contains some tool dependencies that have nothing to do with the UI, so I decoupled a lot of things and published them into a new project [BetterAndroid](https://github.com/BetterAndroid/BetterAndroid).
 
-I am refactoring this project for the Android native platform, the old preview version will no longer be actively maintained and will be replaced after the refactoring is completed, if you are interested, you can click on any `discussion` above on the page to join Contact me for the corresponding group to add viewing permissions.
+I am refactoring this project for the Android native platform, the old Android version will no longer be actively maintained and will be replaced after the refactoring is completed, if you are interested, you can click on any `discussion` above on the page to join Contact me for the corresponding group to add viewing permissions.
 
 ## Get Started
 

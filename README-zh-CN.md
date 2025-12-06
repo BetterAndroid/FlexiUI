@@ -24,9 +24,9 @@
 
 借助目前主流多平台框架的优势使得这套 UI 能复用不必要的原生 UI 代码在更多的平台上呈现，并可被熟悉开发语言的开发者快速引入并使用。
 
-这个项目早期在 Android 原生平台已经有了一个初版 [FlexiUI-Preview](https://github.com/BetterAndroid/FlexiUI-Preview)，它在 2022 年就已经初步完工，但是我一直没有将它开源出来，因为项目整体耦合度过高且包含一些与 UI 无关的工具依赖，所以我将很多东西进行了解耦合并发布到了新的项目 [BetterAndroid](https://github.com/BetterAndroid/BetterAndroid) 中。
+这个项目早期在 Android 原生平台已经有了一个初版 [FlexiUI-Android](https://github.com/BetterAndroid/FlexiUI-Android)，它在 2022 年就已经初步完工，但是我一直没有将它开源出来，因为项目整体耦合度过高且包含一些与 UI 无关的工具依赖，所以我将很多东西进行了解耦合并发布到了新的项目 [BetterAndroid](https://github.com/BetterAndroid/BetterAndroid) 中。
 
-Android 原生平台的这个项目我正在对其进行重构，旧的 Preview 版本将不再积极维护并将在重构完成后被取代，如果你感兴趣，你可以点击页面上述的任何一个 `discussion` 加入对应的群组联系我添加查看权限。
+Android 原生平台的这个项目我正在对其进行重构，旧的 Android 版本将不再积极维护并将在重构完成后被取代，如果你感兴趣，你可以点击页面上述的任何一个 `discussion` 加入对应的群组联系我添加查看权限。
 
 ## 开始使用
 
