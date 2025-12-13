@@ -1,10 +1,10 @@
 [versions]
-agp = "8.13.1"
-androidx-compose-android = "1.9.4"
+agp = "8.13.2"
+androidx-compose-android = "1.10.0"
 kotlin-multiplatform = "2.2.21"
 jetbrains-compose = "1.9.3"
 maven-publish = "0.35.0"
-androidx-activity = "1.11.0"
+androidx-activity = "1.12.1"
 androidx-core-ktx = "1.17.0"
 androidx-appcompat = "1.7.1"
 # noinspection GradleDependency
