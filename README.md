@@ -62,15 +62,14 @@ We are working hard to improve it and it is expected to be released soon, so sta
   <img src="img-src/night/shot-4.png" width = "200" alt="SCREENSHOT"/>
 </div>
 
-## Promotion
+## More Projects
 
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-     <h2>Hey, please stay! 👋</h2>
-     <h3>Here are related projects such as Android development tools, UI design, Gradle plugins, Xposed Modules and practical software. </h3>
-     <h3>If the project below can help you, please give me a star! </h3>
-     <h3>All projects are free, open source, and follow the corresponding open source license agreement. </h3>
-     <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README.md">→ To see more about my projects, please click here ←</a></h1>
+    <h2>Hey, wait a second! 👋</h2>
+    <h3>If this project was helpful, why not stick around and check out more of my work below?</h3>
+    <h3>Feel free to leave a follow or a star ⭐️ if they bring you value!</h3>
+    <h1><a href="https://github.com/fankes/fankes/blob/main/project-promote/README.md">→ Click here to discover more of my projects ←</a></h1>
 </div>
 
 ## Star History
