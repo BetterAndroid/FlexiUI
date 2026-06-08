@@ -12,7 +12,7 @@ English | [简体中文](README-zh-CN.md)
 | <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid](https://github.com/BetterAndroid) |
 | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 
-This project belongs to the above-mentioned organization, **click the link above to follow this organization** and discover more good projects.
+This project belongs to the organization above. **Click the link to follow us** and discover more awesome projects.
 
 ## Project Introduction
 
