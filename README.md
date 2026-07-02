@@ -1,14 +1,13 @@
 # Flexi UI for Jetpack Compose
 
 [![GitHub license](https://img.shields.io/github/license/BetterAndroid/FlexiUI?color=blue&style=flat-square)](https://github.com/BetterAndroid/FlexiUI/blob/main/LICENSE)
-[![Telegram](https://img.shields.io/badge/discussion-Telegram-blue.svg?logo=telegram&style=flat-square)](https://t.me/BetterAndroid)
-[![Telegram](https://img.shields.io/badge/discussion%20dev-Telegram-blue.svg?logo=telegram&style=flat-square)](https://t.me/HighCapable_Dev)
+[![Telegram](https://img.shields.io/badge/discussion%20dev-Telegram-blue.svg?logo=telegram&style=flat-square)](https://t.me/BetterAndroid_Dev)
 [![QQ](https://img.shields.io/badge/discussion%20dev-QQ-blue.svg?logo=tencent-qq&logoColor=red&style=flat-square)](https://qm.qq.com/cgi-bin/qm/qr?k=Pnsc5RY6N2mBKFjOLPiYldbAbprAU3V7&jump_from=webapi&authKey=X5EsOVzLXt1dRunge8ryTxDRrh9/IiW1Pua75eDLh9RE3KXE+bwXIYF5cWri/9lf)
 
 English | [简体中文](README-zh-CN.md)
 
 | <img src="https://github.com/BetterAndroid/.github/blob/main/img-src/logo.png?raw=true" width = "30" height = "30" alt="LOGO"/> | [BetterAndroid](https://github.com/BetterAndroid) |
-|---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 
 This project belongs to the above-mentioned organization, **click the link above to follow this organization** and discover more good projects.
 
