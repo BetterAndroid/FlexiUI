@@ -73,7 +73,7 @@ We are working hard to improve it and it is expected to be released soon, so sta
 
 ## Star History
 
-![Star History Chart](https://api.star-history.com/svg?repos=BetterAndroid/FlexiUI&type=Date)
+[![Star History Chart](https://api.star-history.com/chart?repos=BetterAndroid/FlexiUI&type=date&legend=top-left&sealed_token=gZnN4MOTMFpWiWgtpFYgIyDpvZXnKDFMsYG3D0gE8ikpIXQeQM7PtLh6pdPzgnI3l4phmDk379wQ1uCG2XXLuheozTuRW9Qs_cFyUjAEiuUR5Db5CnjOvQ)](https://www.star-history.com/?repos=BetterAndroid%2FFlexiUI&type=date&legend=top-left)
 
 ## License
 
